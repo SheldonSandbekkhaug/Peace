@@ -33,7 +33,7 @@ public class PeaceServer extends Listener {
 	
 	public static void main(String[] args) {
 		PeaceServer server = new PeaceServer(27960);
-		out.println("Server is up!");
+		out.println("Server is up! Listening on port " + server.port);
 	}
 	
 	/* Called when a connection is received */
