@@ -1,3 +1,0 @@
-Manifest-version: 1.0
-Main-Class: PeaceServer.PeaceServer
-Class-Path: ../../libraries/kryonet-2.21-all.jar
