@@ -1,4 +1,6 @@
-import static java.lang.System.out;
+package com.SheldonSandbekkhaug.Peace;
+
+import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
 
