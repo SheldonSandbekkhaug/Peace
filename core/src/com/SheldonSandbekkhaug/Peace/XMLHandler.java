@@ -1,6 +1,7 @@
 package com.SheldonSandbekkhaug.Peace;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -19,7 +20,6 @@ public class XMLHandler {
 	/* Read an XML file and create an Element from its data */
 	public Element read(String filename)
 	{
-		//FileHandle fh = new FileHandle(filename);
 		FileHandle fh = Gdx.files.internal(filename);
 		Element e = null;
 		try {
@@ -28,7 +28,7 @@ public class XMLHandler {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		printElement(e);
+		//printElement(e);
 		return e;
 	}
 	
@@ -55,5 +55,109 @@ public class XMLHandler {
 		{
 			printElement(e.getChild(i));
 		}
+	}
+	
+
+	/* Read Unit mappings from an XML file .
+	 * Unit mappings are XML objects that describe units properties,
+	 * such as strength and hit points.
+	 */
+	public HashMap<String, Unit> readUnitMappings()
+	{
+		String mappings_filepath = "mappings/unit_mappings.xml";
+		Element unitCatalog = read(mappings_filepath);
+		
+		HashMap<String, Unit> units = new HashMap<String, Unit>();
+		
+		if (unitCatalog.getName().equals("catalog"))
+		{
+			// Iterate through all Units in the catalog
+			for (int i = 0; i < unitCatalog.getChildCount(); i++)
+			{
+				Element unitElement = unitCatalog.getChild(i);
+				Unit u = new Unit();
+				
+				// Get all properties for this Unit
+				for (int j = 0; j < unitElement.getChildCount(); j++)
+				{
+					Element property = unitElement.getChild(j);
+					
+					if (property.getName().equals("id"))
+					{
+						u.setID(property.getText());
+					}
+					else if (property.getName().equals("name"))
+					{
+						u.setName(property.getText());
+					}
+					else if (property.getName().equals("strength"))
+					{
+						u.setStrength(Integer.parseInt(property.getText()));
+					}
+					else if (property.getName().equals("hp"))
+					{
+						u.setMaxHP(Integer.parseInt(property.getText()));
+						u.setCurrHP(u.getMaxHP());
+					}
+					else
+					{
+						// ERROR
+						System.out.println("Unidentified property in " + 
+							mappings_filepath + ": " + property.getName());
+						System.exit(1);
+					}
+				
+				units.put(u.id, u);
+				}
+			}
+		}
+		
+		return units;
+	}
+	
+	/*
+	 * Reads information for a skin and modifies the units accordingly.
+	 * Skins are like unit mappings, but they set the appearance (
+	 * (names, images, and sounds) of units.
+	 */
+	public HashMap<String, Unit> applySkin(HashMap<String, Unit> units, String skin)
+	{		
+		String mappings_filepath = skin + "/data/units.xml";
+		Element skinCatalog = read(mappings_filepath);
+		
+		if (skinCatalog.getName().equals("catalog"))
+		{
+			// Iterate through all Unit skins in the catalog
+			for (int i = 0; i < skinCatalog.getChildCount(); i++)
+			{
+				Element unitElement = skinCatalog.getChild(i);
+				
+				Unit u = units.get(unitElement.getChildByName("id").getText());
+				
+				// Get all skinned properties for this Unit
+				for (int j = 0; j < unitElement.getChildCount(); j++)
+				{
+					Element property = unitElement.getChild(j);
+					
+					if (property.getName().equals("id"))
+					{
+						// Do nothing
+					}
+					else if (property.getName().equals("name"))
+					{
+						u.setName(property.getText());
+					}
+					else
+					{
+						// ERROR
+						System.out.println("Unidentified property in " + 
+							mappings_filepath + ": " + property.getName());
+						System.exit(1);
+					}
+				}
+			}
+		}
+		
+		return units;
 	}
 }

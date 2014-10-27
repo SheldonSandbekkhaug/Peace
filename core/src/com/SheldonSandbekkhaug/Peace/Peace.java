@@ -1,6 +1,7 @@
 package com.SheldonSandbekkhaug.Peace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -27,12 +28,14 @@ public class Peace extends Game {
 	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
 	public ArrayList<Location> locations;
+	public HashMap<String, Unit> units;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		skin = "default_1.0"; // TODO: set dynamically
 		locations = createLocations();
+		loadUnits();
 		
 		this.setScreen(new MainGameScreen(this));
 	}
@@ -59,6 +62,19 @@ public class Peace extends Game {
 		
 		return locations;
 	}
+	
+	/* Load Units from XML data files */
+	private void loadUnits()
+	{
+		XMLHandler reader = new XMLHandler();
+		
+		// Create Units based on default data
+		units = reader.readUnitMappings();
+		
+		// Read all the Units in the active skin
+		units = reader.applySkin(units, skin);
+	}
+	
 	
 	public void dispose()
 	{
