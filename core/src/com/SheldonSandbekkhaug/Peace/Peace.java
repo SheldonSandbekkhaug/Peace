@@ -2,16 +2,14 @@ package com.SheldonSandbekkhaug.Peace;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Peace extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	String skin;
+public class Peace extends Game {
+	public SpriteBatch batch;
+	public String skin;
 	
 	// Constants for positioning elements on the screen
 	public static final int WINDOW_WIDTH = 1000;
@@ -28,30 +26,20 @@ public class Peace extends ApplicationAdapter {
 	public static final int LOCATION_X_BUFFER_SIZE = 40;
 	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
-	private ArrayList<Location> locations = new ArrayList<Location>();
+	public ArrayList<Location> locations;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-		skin = "default_1.0";
+		skin = "default_1.0"; // TODO: set dynamically
 		locations = createLocations();
+		
+		this.setScreen(new MainGameScreen(this));
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		
-		// Draw locations
-		for (Location l : locations)
-		{
-			l.draw(batch);
-		}
-		
-		batch.end();
+		super.render();
 	}
 	
 	private ArrayList<Location> createLocations()
