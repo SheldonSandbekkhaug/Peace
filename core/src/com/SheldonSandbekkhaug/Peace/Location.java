@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-
 /* 
  * Class to represent a region of the game world.
  * Contains a set of Tiles
@@ -15,25 +14,29 @@ public class Location {
 	String name;
 	Tile[] tiles;
 	int x, y; // The bottom-right corner of the location
-	//TextureRegion region; // TODO: remove?
 	Texture img;
 	
 	public static final int TILES_PER_ROW = 3;
 	public static final int TILES_PER_COL = 3;
 	
-	public Location(LocationID location, String locationName, int x, int y,
-			Texture t)
+	public Location(LocationID id)
 	{
-		id = location;
-		name = locationName;
-		tiles = new Tile[TILES_PER_ROW * TILES_PER_COL];
+		this.id = id;
+		this.x = 0;
 		
 		// Create blank Tiles
+		tiles = new Tile[TILES_PER_ROW * TILES_PER_COL];
 		for (int i = 0; i < tiles.length; i++)
 		{
 			tiles[i] = new Tile();
 		}
-		
+	}
+	
+	public Location(LocationID location, String locationName, int x, int y,
+			Texture t)
+	{
+		this(location);
+		name = locationName;
 		this.x = x;
 		this.y = y;
 		img = t;
@@ -105,5 +108,53 @@ public class Location {
 				System.out.println("Invalid index in indexToXOffsets.");
 				return 0;
 		}
+	}
+
+	public LocationID getId() {
+		return id;
+	}
+
+	public void setId(LocationID id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Tile[] getTiles() {
+		return tiles;
+	}
+
+	public void setTiles(Tile[] tiles) {
+		this.tiles = tiles;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public Texture getImg() {
+		return img;
+	}
+
+	public void setImg(Texture img) {
+		this.img = img;
 	}
 }

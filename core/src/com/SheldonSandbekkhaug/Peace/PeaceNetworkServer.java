@@ -3,6 +3,7 @@ package com.SheldonSandbekkhaug.Peace;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -12,9 +13,11 @@ import com.esotericsoftware.kryonet.Server;
 public class PeaceNetworkServer extends Listener {
 	Server server;
 	int port;
+	ArrayList<Connection> clientConnections;
 	
 	public PeaceNetworkServer(int port) {
 		server = new Server();
+		clientConnections = new ArrayList<Connection>();
 		
 		// Listen on a particular port
 		this.port = port;
@@ -49,8 +52,7 @@ public class PeaceNetworkServer extends Listener {
 		
 		// TODO: remove
 		// TESTING: send a packet
-		PacketMessage pm = new PacketMessage();
-		pm.message = "It begins.";
+		PacketMessage pm = new PacketMessage("It begins.");
 		
 		c.sendTCP(pm); // Sends the message
 	}
@@ -74,5 +76,14 @@ public class PeaceNetworkServer extends Listener {
 	public void disconnected(Connection c)
 	{
 		out.println("A client disconnected");
-}
+	}
+	
+	/* Send this event to all players in this game */
+	protected void broadcastToPlayers(PacketMessage event)
+	{
+		for (Connection c : clientConnections)
+		{
+			c.sendTCP(event);
+		}
+	}
 }

@@ -1,19 +1,40 @@
 package com.SheldonSandbekkhaug.Peace;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MainGameScreen implements Screen {
 	Peace game;
 	OrthographicCamera camera;
+	SpriteBatch batch;
+	
+	// Constants for positioning elements on the screen
+	public static final int WINDOW_WIDTH = 1000;
+	public static final int WINDOW_HEIGHT = 800;
+	
+	// Distance between window edge and game world
+	public static final int X_BUFFER = 100;
+	public static final int Y_BUFFER = 80;
+	
+	public static final int WORLD_WIDTH = WINDOW_WIDTH - X_BUFFER * 2;
+	public static final int WORLD_HEIGHT = WINDOW_HEIGHT - Y_BUFFER * 2;
+	
+	// Space between a Location and other objects
+	public static final int LOCATION_X_BUFFER_SIZE = 40;
+	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
     public MainGameScreen(final Peace gam) {
         game = gam;
+        setLocationPositions(game.locations);
+        batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Peace.WORLD_WIDTH, Peace.WORLD_HEIGHT);
+        camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
     }
 	
 	@Override
@@ -23,15 +44,38 @@ public class MainGameScreen implements Screen {
 		
 		camera.update();
 		
-		game.batch.begin();
+		batch.begin();
 		
 		// Draw locations
 		for (Location l : game.locations)
 		{
-			l.draw(game.batch);
+			l.draw(batch);
 		}
 		
-		game.batch.end();
+		batch.end();
+	}
+	
+	/* Modifies locations in-place to have the correct positions for this
+	 * this screen.
+	 */
+	private void setLocationPositions(ArrayList<Location> locations)
+	{
+		for (Location loc : locations)
+		{
+			switch(loc.id)
+			{
+				case NORTHEAST:
+					// Northeast location
+					loc.x = WORLD_WIDTH - LOCATION_X_BUFFER_SIZE - 
+							(Tile.TILE_SIZE * Location.TILES_PER_ROW);
+					loc.y = WORLD_HEIGHT - LOCATION_Y_BUFFER_SIZE - 
+							(Tile.TILE_SIZE * Location.TILES_PER_COL);
+					break;
+					// TODO: other cases
+				default:
+					break;
+			}
+		}
 	}
 
 	@Override

@@ -84,8 +84,7 @@ public class PeaceNetworkClient extends Listener {
 	/* Send a message */
 	public boolean sendMessage(String msg)
 	{
-		PacketMessage messageObj = new PacketMessage();
-		messageObj.message = msg;
+		PacketMessage messageObj = new PacketMessage(msg);
 		client.sendTCP((PacketMessage)messageObj);
 		return true;
 	}
