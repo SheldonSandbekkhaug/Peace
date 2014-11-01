@@ -8,7 +8,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-public class PeaceClient extends Listener {
+public class PeaceNetworkClient extends Listener {
 
 	Client client;
 	boolean messageReceived; // TODO: remove after testing
@@ -19,7 +19,7 @@ public class PeaceClient extends Listener {
 		
 		String ip = "localhost"; // IP address to connect to
 		
-		PeaceClient pClient = new PeaceClient();
+		PeaceNetworkClient pClient = new PeaceNetworkClient();
 		
 		// Wait 5000ms before failing
 		pClient.connect(5000, ip, tcpPort);
@@ -40,12 +40,13 @@ public class PeaceClient extends Listener {
 		//System.exit(0);
 	}
 	
-	public PeaceClient()
+	public PeaceNetworkClient()
 	{
 		client = new Client();
 		
 		// Must register every class that will be sent/received
 		client.getKryo().register(PacketMessage.class);
+		client.getKryo().register(LocationID.class);
 		
 		// Client must start before connecting can take place
 		client.start();

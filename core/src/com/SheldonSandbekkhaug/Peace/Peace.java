@@ -8,10 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/* Class for client-side game logic */
 public class Peace extends Game {
-	public SpriteBatch batch;
-	public String skin;
-	
 	// Constants for positioning elements on the screen
 	public static final int WINDOW_WIDTH = 1000;
 	public static final int WINDOW_HEIGHT = 800;
@@ -27,11 +25,21 @@ public class Peace extends Game {
 	public static final int LOCATION_X_BUFFER_SIZE = 40;
 	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
+	public SpriteBatch batch;
+	public String skin;
+	
 	public ArrayList<Location> locations;
 	public HashMap<String, Unit> units;
 	
+	private PeaceNetworkClient network;
+	
 	@Override
 	public void create () {
+		 // TODO: Dynamically set network information
+		int PORT = 27960;
+		network = new PeaceNetworkClient();
+		network.connect(5000, "localhost", PORT);
+		
 		batch = new SpriteBatch();
 		skin = "default_1.0"; // TODO: set dynamically
 		locations = createLocations();

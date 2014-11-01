@@ -9,11 +9,11 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 
-public class PeaceServer extends Listener {
+public class PeaceNetworkServer extends Listener {
 	Server server;
 	int port;
 	
-	public PeaceServer(int port) {
+	public PeaceNetworkServer(int port) {
 		server = new Server();
 		
 		// Listen on a particular port
@@ -27,6 +27,7 @@ public class PeaceServer extends Listener {
 		
 		// Register a packet class. We can only send registered classes.
 		server.getKryo().register(PacketMessage.class);
+		server.getKryo().register(LocationID.class);
 		
 		server.start();
 		
@@ -34,7 +35,8 @@ public class PeaceServer extends Listener {
 	}
 	
 	public static void main(String[] args) {
-		PeaceServer server = new PeaceServer(27960);
+		int PORT = 27960;
+		PeaceNetworkServer server = new PeaceNetworkServer(PORT);
 		out.println("Server is up! Listening on port " + server.port);
 	}
 	
