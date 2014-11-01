@@ -30,7 +30,7 @@ public class MainGameScreen implements Screen {
 	
     public MainGameScreen(final Peace gam) {
         game = gam;
-        setLocationPositions(game.locations);
+        setLocationPositions(game.commonData.locations);
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
@@ -47,7 +47,7 @@ public class MainGameScreen implements Screen {
 		batch.begin();
 		
 		// Draw locations
-		for (Location l : game.locations)
+		for (Location l : game.commonData.locations)
 		{
 			l.draw(batch);
 		}

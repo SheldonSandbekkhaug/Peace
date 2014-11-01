@@ -11,12 +11,12 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class XMLHandler {
-	Peace game;
+	CommonData commonData;
 	XmlReader reader;
 	
-	public XMLHandler(Peace gam)
+	public XMLHandler(CommonData cd)
 	{
-		game = gam;
+		commonData = cd;
 		reader = new XmlReader();
 	}
 	
@@ -107,7 +107,7 @@ public class XMLHandler {
 						// Load the unit's image
 						Texture t = new Texture(
 								Gdx.files.internal(
-										game.skin + 
+										commonData.skin + 
 										"/unit_pictures/" + 
 										property.getText()));
 						u.setImg(t);

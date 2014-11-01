@@ -9,7 +9,7 @@ import com.esotericsoftware.kryonet.Connection;
 
 /* Class for server-side game logic. */
 public class PeaceGameServer extends PeaceNetworkServer {
-	Peace game;
+	CommonData commonData;
 	
 	public PeaceGameServer(int port) {
 		super(port);
@@ -32,28 +32,31 @@ public class PeaceGameServer extends PeaceNetworkServer {
 	/* Initialize a new game according to the given skin. */
 	public void newGame(String skin)
 	{
-		game = new Peace(); // Creates Unit table and applies Skin
-		game.locations = game.createLocations();
+		commonData = new CommonData(); // Creates Unit table and applies Skin
 		
 		initializeMarket();
 	}
 	
-	// Select n random Units from units and put them in the market ArrayList
+	/*
+	 *  Select n random Units from units and put them in the market ArrayList.
+	 *  Note that this must be done on the server so that we can broadcast
+	 *  market changes.
+	 */
 	private void initializeMarket()
 	{
 		int MARKET_SIZE = 5;
-		game.market = new ArrayList<PeaceEntity>(MARKET_SIZE);
+		commonData.market = new ArrayList<PeaceEntity>(MARKET_SIZE);
 		
 		Random gen = new Random();
 		
-		ArrayList<String> unitKeys = new ArrayList<String>(game.units.keySet());
+		ArrayList<String> unitKeys = new ArrayList<String>(commonData.units.keySet());
 		
 		for (int i = 0; i < MARKET_SIZE; i++)
 		{
 			// Select a Unit and remove it from the bank
 			String key = unitKeys.get(gen.nextInt(unitKeys.size()));
-			game.market.add(game.units.get(key));
-			game.units.remove(key);
+			commonData.market.add(commonData.units.get(key));
+			commonData.units.remove(key);
 			
 			String message = key + "to market";
 			
