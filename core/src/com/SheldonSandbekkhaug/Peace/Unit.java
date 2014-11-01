@@ -1,33 +1,12 @@
 package com.SheldonSandbekkhaug.Peace;
 
-import com.badlogic.gdx.graphics.Texture;
-
-public class Unit {
-	String id;
-	String name;
+public class Unit extends PeaceEntity {
 	int strength;
 	int currHP, maxHP;
-	Texture img;
 	
 	public Unit()
 	{
-		
-	}
-
-	public String getID() {
-		return id;
-	}
-
-	public void setID(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		super();
 	}
 
 	public int getStrength() {
@@ -52,13 +31,5 @@ public class Unit {
 
 	public void setMaxHP(int maxHP) {
 		this.maxHP = maxHP;
-	}
-
-	public Texture getImg() {
-		return img;
-	}
-
-	public void setImg(Texture img) {
-		this.img = img;
 	}
 }
