@@ -5,15 +5,18 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class XMLHandler {
+	Peace game;
 	XmlReader reader;
 	
-	public XMLHandler()
+	public XMLHandler(Peace gam)
 	{
+		game = gam;
 		reader = new XmlReader();
 	}
 	
@@ -98,6 +101,16 @@ public class XMLHandler {
 					{
 						u.setMaxHP(Integer.parseInt(property.getText()));
 						u.setCurrHP(u.getMaxHP());
+					}
+					else if (property.getName().equals("img"))
+					{
+						// Load the unit's image
+						Texture t = new Texture(
+								Gdx.files.internal(
+										game.skin + 
+										"/unit_pictures/" + 
+										property.getText()));
+						u.setImg(t);
 					}
 					else
 					{

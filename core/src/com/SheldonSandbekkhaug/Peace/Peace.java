@@ -66,13 +66,19 @@ public class Peace extends Game {
 	/* Load Units from XML data files */
 	private void loadUnits()
 	{
-		XMLHandler reader = new XMLHandler();
+		XMLHandler reader = new XMLHandler(this);
 		
 		// Create Units based on default data
 		units = reader.readUnitMappings();
 		
 		// Read all the Units in the active skin
 		units = reader.applySkin(units, skin);
+		
+		// Create a Unit for testing and place it in a Location
+		Unit testUnit = units.get("SOLDIER_1");
+		Location testLoc = locations.get(0);
+		Tile t = testLoc.tiles[0];
+		t.setE(testUnit);
 	}
 	
 	

@@ -5,5 +5,5 @@
         <name>Soldier</name>
         <strength>1</strength>
         <hp>3</hp>
-    </unit>
+        <img>man_40x40.png</img></unit>
 </catalog>
