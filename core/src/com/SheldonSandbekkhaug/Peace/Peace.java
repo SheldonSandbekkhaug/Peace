@@ -55,7 +55,7 @@ public class Peace extends Game {
 			reply.type = EventType.START;
 			network.sendToServer(reply);
 			// TODO: wait for some other condition to start the game
-			System.out.println("Client asket to start the game");
+			System.out.println("Client asked to start the game");
 			break;
 		case TO_MARKET:
 			// Add an Entity to the Market

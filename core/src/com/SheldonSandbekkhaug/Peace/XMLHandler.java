@@ -20,21 +20,11 @@ public class XMLHandler {
 		reader = new XmlReader();
 	}
 	
-	/* Read an XML file and create an Element from its data
-	 * If onClient is false, use the server data filepath.
-	 * If onClient is true, us the generalized "internal" call.
-	 */
-	public Element read(String filename, boolean onClient)
+	/* Read an XML file and create an Element from its data	 */
+	public Element read(String filename)
 	{
 		FileHandle fh = null;
-		if (!onClient)
-		{
-			fh = Gdx.files.local(filename);
-		}
-		else
-		{
-			fh = Gdx.files.internal(filename);
-		}
+		fh = Gdx.files.internal(filename);
 		Element e = null;
 		try {
 			e = reader.parse(fh);
@@ -75,13 +65,13 @@ public class XMLHandler {
 	 * Unit mappings are XML objects that describe units properties,
 	 * such as strength and hit points.
 	 * 
-	 * If onClient is true, read data used for rendering.
-	 * If onClient is false, ignore data used for rendering.
+	 * If renderData is false, read data used for rendering.
+	 * If renderData is true, ignore data used for rendering.
 	 */
-	public HashMap<String, Unit> readUnitMappings(boolean onClient)
+	public HashMap<String, Unit> readUnitMappings(boolean renderData)
 	{
 		String mappings_filepath = "mappings/unit_mappings.xml";
-		Element unitCatalog = read(mappings_filepath, onClient);
+		Element unitCatalog = read(mappings_filepath);
 		
 		HashMap<String, Unit> units = new HashMap<String, Unit>();
 		
@@ -118,7 +108,7 @@ public class XMLHandler {
 					else if (property.getName().equals("img"))
 					{
 						// Don't need to load renderData on server
-						if (onClient == true)
+						if (renderData == true)
 						{
 							// Load the unit's image
 							Texture t = new Texture(
@@ -150,10 +140,10 @@ public class XMLHandler {
 	 * Skins are like unit mappings, but they set the appearance (
 	 * (names, images, and sounds) of units.
 	 */
-	public HashMap<String, Unit> applySkin(HashMap<String, Unit> units, String skin, boolean onClient)
+	public HashMap<String, Unit> applySkin(HashMap<String, Unit> units, String skin)
 	{		
 		String mappings_filepath = skin + "/data/units.xml";
-		Element skinCatalog = read(mappings_filepath, onClient);
+		Element skinCatalog = read(mappings_filepath);
 		
 		if (skinCatalog.getName().equals("catalog"))
 		{

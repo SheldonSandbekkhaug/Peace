@@ -2,6 +2,7 @@ package com.SheldonSandbekkhaug.Peace;
 
 public class PacketMessage {
 	/* Anything in this class can be sent over the network */
+	public byte[] clientID; // MAC address of client
 	public String message;
 	public EventType type;
 	

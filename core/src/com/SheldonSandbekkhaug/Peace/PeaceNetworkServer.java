@@ -3,7 +3,12 @@ package com.SheldonSandbekkhaug.Peace;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -13,11 +18,16 @@ import com.esotericsoftware.kryonet.Server;
 public class PeaceNetworkServer extends Listener {
 	Server server;
 	int port;
-	ArrayList<Connection> clientConnections;
+	HashMap<byte[], Connection> clientIDs;
+	public Queue<PacketMessage> events;
 	
 	public PeaceNetworkServer(int port) {
 		server = new Server();
-		clientConnections = new ArrayList<Connection>();
+		
+		// Maps MAC addresses (as client IDs) to Connections
+		clientIDs = new HashMap<byte[], Connection>();
+		
+		events = (Queue<PacketMessage>) new LinkedList<PacketMessage>();
 		
 		// Listen on a particular port
 		this.port = port;
@@ -29,6 +39,7 @@ public class PeaceNetworkServer extends Listener {
 		
 		// Register a packet class. We can only send registered classes.
 		server.getKryo().register(PacketMessage.class);
+		server.getKryo().register(byte[].class);
 		server.getKryo().register(EventType.class);
 		server.getKryo().register(LocationID.class);
 		
@@ -63,21 +74,59 @@ public class PeaceNetworkServer extends Listener {
 			// TODO: replace with real behavior
 			PacketMessage pm = (PacketMessage)object;
 			out.println(pm.message);
+			
+			// Add this client to the connections
+			if (pm.type == EventType.JOIN)
+			{
+				clientIDs.put(pm.clientID, c);
+			}
+			
+			events.offer(pm);
 		}
 	}
 	
 	/* This is run when a client has disconnected */
 	public void disconnected(Connection c)
 	{
-		clientConnections.remove(c);
-		out.println("A client disconnected. Clients remaining: " + 
-				clientConnections.size());
+		// Get client's MAC address, which functions as its ID
+		try {
+			InetAddress clientIP = c.getRemoteAddressTCP().getAddress();
+			byte[] clientID = NetworkInterface.getByInetAddress(clientIP)
+					.getHardwareAddress();
+			
+			// Remove the client from our collection of clients
+			clientIDs.remove(clientID);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		
+		if (clientIDs.size() <= 0)
+		{
+			// Close the game
+			PacketMessage endGame = new PacketMessage();
+			endGame.type = EventType.STOP;
+			events.offer(endGame);
+		}
+	}
+	
+	public void disconnected(byte[] clientID)
+	{
+		Connection c = clientIDs.get(clientID);
+		disconnected(c);
+	}
+	
+	/* Send pm to the client specified by clientID */
+	public void sendToClient(byte[] clientID, PacketMessage pm)
+	{
+		Connection c = clientIDs.get(clientID);
+		c.sendTCP(pm);
 	}
 	
 	/* Send this event to all players in this game */
-	protected void broadcastToPlayers(PacketMessage event)
+	public void broadcastToPlayers(PacketMessage event)
 	{
-		for (Connection c : clientConnections)
+		//for (Connection c : clientConnections)
+		for (Connection c: clientIDs.values())
 		{
 			c.sendTCP(event);
 		}

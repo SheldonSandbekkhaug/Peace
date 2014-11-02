@@ -24,6 +24,9 @@ public class CommonData {
 		skin = "default_1.0";
 		createLocations(renderData);
 		loadUnits(renderData);
+		
+		int MARKET_SIZE = 5;
+		market = new ArrayList<PeaceEntity>(MARKET_SIZE);
 	}
 	
 	/*
@@ -50,7 +53,7 @@ public class CommonData {
 	
 	/* 
 	 * Load Units from XML data files 
-	 If renderData is true, initialize data needed for rendering.
+	 * If renderData is true, initialize data needed for rendering.
 	 * Else, only initialize model data.
 	 */
 	public void loadUnits(boolean renderData)
@@ -61,7 +64,7 @@ public class CommonData {
 		units = reader.readUnitMappings(renderData);
 		
 		// Read all the Units in the active skin
-		units = reader.applySkin(units, skin, renderData);
+		units = reader.applySkin(units, skin);
 		
 		// Create Units for testing and place them in a Location
 		for (int i = 1; i < 5; i++)

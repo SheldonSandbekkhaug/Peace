@@ -3,6 +3,10 @@ package com.SheldonSandbekkhaug.Peace;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -15,6 +19,7 @@ public class PeaceNetworkClient extends Listener {
 	Client client;
 	boolean messageReceived; // TODO: remove after testing
 	Queue<PacketMessage> events;
+	byte[] macAddr; // Used to uniquely identify clients
 	
 	public static void main(String[] args) {
 		int tcpPort = 27960; // TODO: don't hardcode the port numbers
@@ -42,10 +47,21 @@ public class PeaceNetworkClient extends Listener {
 	{
 		client = new Client();
 		
+		InetAddress ip;
+		try {
+			ip = InetAddress.getLocalHost();
+			macAddr = NetworkInterface.getByInetAddress(ip).getHardwareAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		
 		events = (Queue<PacketMessage>) new LinkedList<PacketMessage>();
 		
 		// Must register every class that will be sent/received
 		client.getKryo().register(PacketMessage.class);
+		client.getKryo().register(byte[].class);
 		client.getKryo().register(EventType.class);
 		client.getKryo().register(LocationID.class);
 		
@@ -91,6 +107,7 @@ public class PeaceNetworkClient extends Listener {
 	
 	public void sendToServer(PacketMessage pm)
 	{
+		pm.clientID = macAddr;
 		client.sendTCP(pm);
 	}
 }
