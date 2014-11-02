@@ -24,7 +24,6 @@ public class PeaceNetworkServer extends Listener {
 		try {
 			server.bind(this.port);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -49,12 +48,6 @@ public class PeaceNetworkServer extends Listener {
 		// TODO: replace with real behavior
 		out.println("Received a connection from " + c.getRemoteAddressTCP().getHostString());
 		out.println("Their IP address: " + c.getRemoteAddressTCP().getAddress());
-		
-		// TODO: remove
-		// TESTING: send a packet
-		PacketMessage pm = new PacketMessage("It begins.");
-		
-		c.sendTCP(pm); // Sends the message
 	}
 	
 	/* This is run when we receive a packet */
@@ -75,7 +68,9 @@ public class PeaceNetworkServer extends Listener {
 	/* This is run when a client has disconnected */
 	public void disconnected(Connection c)
 	{
-		out.println("A client disconnected");
+		clientConnections.remove(c);
+		out.println("A client disconnected. Clients remaining: " + 
+				clientConnections.size());
 	}
 	
 	/* Send this event to all players in this game */

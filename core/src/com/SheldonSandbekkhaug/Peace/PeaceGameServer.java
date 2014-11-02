@@ -26,6 +26,13 @@ public class PeaceGameServer extends PeaceNetworkServer {
 		while (true)
 		{
 			// Process packets
+			try {
+				gameServer.broadcastToPlayers(new PacketMessage("Ping players"));
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -66,18 +73,6 @@ public class PeaceGameServer extends PeaceNetworkServer {
 		}
 	}
 	
-	@Override
-	public void connected(Connection c)
-	{
-		
-	}
-	
-	@Override
-	public void disconnected(Connection c)
-	{
-		
-	}
-	
 	/* This is run when we receive a packet */
 	public void received(Connection c, Object object)
 	{
@@ -96,7 +91,6 @@ public class PeaceGameServer extends PeaceNetworkServer {
 			{
 				clientConnections.remove(c);
 			}
-			
 		}
 	}
 }

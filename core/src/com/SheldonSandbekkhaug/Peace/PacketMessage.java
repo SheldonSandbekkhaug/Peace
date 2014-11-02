@@ -10,6 +10,11 @@ public class PacketMessage {
 	public LocationID targetLocation;
 	public int targetTileNum;
 	
+	public PacketMessage()
+	{
+		
+	}
+	
 	public PacketMessage(String msg)
 	{
 		message = msg;

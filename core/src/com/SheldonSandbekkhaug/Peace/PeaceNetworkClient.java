@@ -13,7 +13,6 @@ public class PeaceNetworkClient extends Listener {
 	Client client;
 	boolean messageReceived; // TODO: remove after testing
 	
-	// TODO: separate the client into its own program
 	public static void main(String[] args) {
 		int tcpPort = 27960; // TODO: don't hardcode the port numbers
 		
@@ -31,13 +30,9 @@ public class PeaceNetworkClient extends Listener {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-		//out.println("Client will now exit.");
-		//System.exit(0);
 	}
 	
 	public PeaceNetworkClient()
@@ -75,9 +70,6 @@ public class PeaceNetworkClient extends Listener {
 			PacketMessage pm = (PacketMessage)obj;
 			out.println(pm.message);
 			this.messageReceived = true;
-			
-			// Send a message to the server
-			this.sendMessage("Message from client");
 		}
 	}
 	
@@ -88,5 +80,4 @@ public class PeaceNetworkClient extends Listener {
 		client.sendTCP((PacketMessage)messageObj);
 		return true;
 	}
-	
 }

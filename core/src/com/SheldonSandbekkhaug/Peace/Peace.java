@@ -11,6 +11,8 @@ public class Peace extends Game {
 	public void create () {		
 		commonData = new CommonData();
 		
+		connectToServer("localhost");
+		
 		this.setScreen(new MainGameScreen(this));
 	}
 	
@@ -21,6 +23,7 @@ public class Peace extends Game {
 		int PORT = 27960;
 		network = new PeaceNetworkClient();
 		network.connect(5000, ipAddr, PORT);
+		
 		network.sendMessage("join");
 		
 		// TODO: return false if join was unsuccessful
