@@ -3,6 +3,8 @@ package com.SheldonSandbekkhaug.Peace;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -12,6 +14,7 @@ public class PeaceNetworkClient extends Listener {
 
 	Client client;
 	boolean messageReceived; // TODO: remove after testing
+	Queue<PacketMessage> events;
 	
 	public static void main(String[] args) {
 		int tcpPort = 27960; // TODO: don't hardcode the port numbers
@@ -39,8 +42,11 @@ public class PeaceNetworkClient extends Listener {
 	{
 		client = new Client();
 		
+		events = (Queue<PacketMessage>) new LinkedList<PacketMessage>();
+		
 		// Must register every class that will be sent/received
 		client.getKryo().register(PacketMessage.class);
+		client.getKryo().register(EventType.class);
 		client.getKryo().register(LocationID.class);
 		
 		// Client must start before connecting can take place
@@ -70,14 +76,21 @@ public class PeaceNetworkClient extends Listener {
 			PacketMessage pm = (PacketMessage)obj;
 			out.println(pm.message);
 			this.messageReceived = true;
+			
+			// Store this PacketMessage for the Game to read
+			events.offer(pm);
 		}
 	}
 	
 	/* Send a message */
-	public boolean sendMessage(String msg)
+	public void sendMessage(String msg)
 	{
 		PacketMessage messageObj = new PacketMessage(msg);
 		client.sendTCP((PacketMessage)messageObj);
-		return true;
+	}
+	
+	public void sendToServer(PacketMessage pm)
+	{
+		client.sendTCP(pm);
 	}
 }

@@ -29,6 +29,7 @@ public class PeaceNetworkServer extends Listener {
 		
 		// Register a packet class. We can only send registered classes.
 		server.getKryo().register(PacketMessage.class);
+		server.getKryo().register(EventType.class);
 		server.getKryo().register(LocationID.class);
 		
 		server.start();

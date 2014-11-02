@@ -9,7 +9,7 @@ public class Peace extends Game {
 	
 	@Override
 	public void create () {		
-		commonData = new CommonData();
+		commonData = new CommonData(true);
 		
 		connectToServer("localhost");
 		
@@ -24,10 +24,51 @@ public class Peace extends Game {
 		network = new PeaceNetworkClient();
 		network.connect(5000, ipAddr, PORT);
 		
-		network.sendMessage("join");
+		// Join a game on the server
+		PacketMessage pm = new PacketMessage();
+		pm.type = EventType.JOIN;
+		network.sendToServer(pm);
 		
 		// TODO: return false if join was unsuccessful
 		return true;
+	}
+	
+	/* Process game events */
+	public void processEvents()
+	{
+		// Get events from the network
+		PacketMessage event = network.events.poll();
+		while (event != null)
+		{
+			processNetworkEvent(event);
+			event = network.events.poll();
+		}
+	}
+	
+	public void processNetworkEvent(PacketMessage pm)
+	{
+		switch(pm.type)
+		{
+		case JOIN: // Successfully added to the server's game
+			// Start the game with the specified skin
+			PacketMessage reply = new PacketMessage(commonData.skin);
+			reply.type = EventType.START;
+			network.sendToServer(reply);
+			// TODO: wait for some other condition to start the game
+			System.out.println("Client asket to start the game");
+			break;
+		case TO_MARKET:
+			// Add an Entity to the Market
+			PeaceEntity e = commonData.units.get(pm.message);
+			// TODO: generalize for structures
+			commonData.market.add(e);
+			break;
+		case FROM_MARKET:
+			// TODO: Remove an Entity from the Market
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
