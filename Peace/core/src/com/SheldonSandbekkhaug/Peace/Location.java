@@ -1,20 +1,27 @@
 package com.SheldonSandbekkhaug.Peace;
 import com.SheldonSandbekkhaug.Peace.Tile;
-
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 
 /* 
  * Class to represent a region of the game world.
- * Contains a set of Tiles
+ * Contains a set of Tiles.
+ * Tiles are drawn in a 3x3 grid. These are their indices:
+ * 
+ * 3 2 1
+ * 4 8 0
+ * 5 6 7
+ * 
  */
 public class Location {
 	LocationID id;
 	String name;
 	Tile[] tiles;
-	int x, y; // The bottom-right corner of the location
 	Texture img;
+	Rectangle rect; // The region occupied by this location
 	
 	public static final int TILES_PER_ROW = 3;
 	public static final int TILES_PER_COL = 3;
@@ -22,7 +29,7 @@ public class Location {
 	public Location(LocationID id)
 	{
 		this.id = id;
-		this.x = 0;
+		rect = new Rectangle(0, 0, 0, 0);
 		
 		// Create blank Tiles
 		tiles = new Tile[TILES_PER_ROW * TILES_PER_COL];
@@ -32,29 +39,29 @@ public class Location {
 		}
 	}
 	
-	public Location(LocationID location, String locationName, int x, int y,
-			Texture t)
+	public Location(LocationID location, String locationName, Texture t)
 	{
 		this(location);
 		name = locationName;
-		this.x = x;
-		this.y = y;
 		img = t;
 	}
 	
-	/* Draw a rectangle outlining the boundaries of this location. */
+	/* 
+	 * Draw a rectangle outlining the boundaries of this location, as well
+	 * as the Tiles and their Entities.
+	 */
 	public void draw(SpriteBatch batch)
 	{
-		batch.draw(img, x, y,
-				TILES_PER_ROW * Tile.TILE_SIZE, 
-				TILES_PER_COL * Tile.TILE_SIZE); // TODO: remove?
+		batch.draw(img, rect.x, rect.y, rect.width, rect.height);
+		
+		// Draw each Tile
 		for (int i = 0; i < tiles.length; i++)
 		{
 			Tile tile = tiles[i];
 			if (tile.getE() != null)
 			{
-				int tileX = x + this.indexToXOffset(i);
-				int tileY = y + this.indexToYOffset(i);
+				float tileX = rect.x + indexToXOffset(i);
+				float tileY = rect.y + indexToYOffset(i);
 				batch.draw(tile.getE().getImg(), tileX, tileY);
 			}
 		}
@@ -63,7 +70,7 @@ public class Location {
 	/*
 	 * Maps an index in the Tile array to a x offset used for drawing.
 	 */
-	public int indexToXOffset(int index)
+	public static int indexToXOffset(int index)
 	{
 		switch(index)
 		{
@@ -72,6 +79,7 @@ public class Location {
 			case 7:
 				return Tile.TILE_SIZE * 2;
 			case 2:
+			case 8:
 			case 6:
 				return Tile.TILE_SIZE * 1;
 			case 3:
@@ -80,7 +88,7 @@ public class Location {
 				return 0;
 			default:
 				// ERROR
-				System.out.println("Invalid index in indexToXOffsets.");
+				System.out.println("Invalid index in indexToXOffsets: " + index);
 				return 0;
 		}
 	}
@@ -88,7 +96,7 @@ public class Location {
 	/*
 	 * Maps an index in the Tile array to a y offset used for drawing.
 	 */
-	public int indexToYOffset(int index)
+	public static int indexToYOffset(int index)
 	{
 		switch(index)
 		{
@@ -97,6 +105,7 @@ public class Location {
 			case 3:
 				return Tile.TILE_SIZE * 2;
 			case 4:
+			case 8:
 			case 0:
 				return Tile.TILE_SIZE * 1;
 			case 5:
@@ -105,16 +114,16 @@ public class Location {
 				return 0;
 			default:
 				// ERROR
-				System.out.println("Invalid index in indexToXOffsets.");
+				System.out.println("Invalid index in indexToYOffsets: " + index);
 				return 0;
 		}
 	}
 
-	public LocationID getId() {
+	public LocationID getID() {
 		return id;
 	}
 
-	public void setId(LocationID id) {
+	public void setID(LocationID id) {
 		this.id = id;
 	}
 
@@ -134,27 +143,19 @@ public class Location {
 		this.tiles = tiles;
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
 	public Texture getImg() {
 		return img;
 	}
 
 	public void setImg(Texture img) {
 		this.img = img;
+	}
+
+	public Rectangle getRect() {
+		return rect;
+	}
+
+	public void setRect(Rectangle rect) {
+		this.rect = rect;
 	}
 }
