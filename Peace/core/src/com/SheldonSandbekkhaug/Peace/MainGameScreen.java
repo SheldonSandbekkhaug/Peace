@@ -86,15 +86,14 @@ public class MainGameScreen implements Screen {
 		// Draw the market
 		batch.draw(marketBackground, MARKET_X_POS, MARKET_Y_POS);
 
-		if (game.commonData.market != null)
+		if (game.commonData.isMarketInitialized())
 		{
-			int x = MARKET_X_POS + MARKET_WIDTH / 2;
-			for (int i = 0; i < game.commonData.market.size(); i++)
+			for (int i = 0; i < game.commonData.getMarketSize(); i++)
 			{
-				PeaceEntity e = game.commonData.market.get(i);
-				int y = MARKET_Y_POS + 
-						(i * (MARKET_HEIGHT / game.commonData.market.size()));
-				batch.draw(e.getImg(), x, y);
+				Tile marketTile = game.commonData.getMarketTile(i);
+				if (marketTile.getE() != null)
+					batch.draw(marketTile.getE().getImg(),
+						marketTile.rect.x, marketTile.rect.y);
 			}
 		}
 		
@@ -129,8 +128,19 @@ public class MainGameScreen implements Screen {
 			}
 		}
 		
-		// TODO: Check if the mouse is hovering over the market
-		
+		// Check if the mouse is hovering over the market
+		for (int i = 0; i < game.commonData.getMarketSize(); i++)
+		{
+			Tile marketTile = game.commonData.getMarketTile(i);
+			
+			// Show Entity information panel
+			if (marketTile.rect.contains(mousePos2D) && 
+				marketTile.getE() != null)
+			{
+				showEntityData(marketTile.getE(), 
+					marketTile.rect.x, marketTile.rect.y);
+			}
+		}
 		
 		if (Gdx.input.isTouched())
 		{
@@ -139,12 +149,13 @@ public class MainGameScreen implements Screen {
 	}
 	
 	/* 
-	 * Display a small box containing information about the given Entity
+	 * Display a small box containing information about the given Entity.
+	 * x and y are the bottom-right corner of the Entity.
 	 */
 	private void showEntityData(PeaceEntity e, float x, float y)
 	{
 		batch.draw(infoBackground,
-				x - INFO_WIDTH, y - INFO_HEIGHT, 
+				x - INFO_WIDTH, y - INFO_HEIGHT + Tile.TILE_SIZE, 
 				INFO_WIDTH, INFO_HEIGHT);
 		font.setColor(Color.BLACK);
 		
@@ -152,22 +163,25 @@ public class MainGameScreen implements Screen {
 		float textHeight = 16;
 		
 		// Draw the Entity's name
-		font.draw(batch, e.getName(), textX, y - INFO_Y_BUFFER);
+		font.draw(batch, e.getName(),
+			textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER);
 		
 		// If it's a unit, draw the strength and HP
 		if (e instanceof Unit)
 		{
 			Unit u = (Unit)e;
 			font.draw(batch, "Str: " + u.getStrength(),
-				textX, y - INFO_Y_BUFFER - (2 * textHeight));
+				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (2 * textHeight));
 			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
-				textX, y - INFO_Y_BUFFER - (3 * textHeight));
+				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (3 * textHeight));
 		}
 		// TODO: Handle other types of PeaceEntities
 	}
 	
 	/* Modifies locations in-place to have the correct positions for this
 	 * this screen.
+	 * 
+	 * Also sets the positions of Market Tiles.
 	 */
 	private void setLocationPositions(ArrayList<Location> locations)
 	{
@@ -199,6 +213,18 @@ public class MainGameScreen implements Screen {
 					loc.rect.y + Location.indexToYOffset(i),
 					Tile.TILE_SIZE, Tile.TILE_SIZE);
 			}
+		}
+		
+		// Set market tile positions
+		for (int i = 0; i < game.commonData.getMarketSize(); i++)
+		{
+			Tile t = game.commonData.getMarketTile(i);
+			
+			int x = MARKET_X_POS + MARKET_WIDTH / 2 - Tile.TILE_SIZE / 2;
+			int y = MARKET_Y_POS + 
+					(i * (MARKET_HEIGHT / game.commonData.getMarketSize()));
+			
+			t.rect = new Rectangle(x, y, Tile.TILE_SIZE, Tile.TILE_SIZE);
 		}
 	}
 

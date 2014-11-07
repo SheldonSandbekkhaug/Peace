@@ -12,7 +12,7 @@ public class CommonData {
 	
 	public ArrayList<Location> locations;
 	public HashMap<String, Unit> units;
-	public ArrayList<PeaceEntity> market;
+	private ArrayList<Tile> market;
 	
 	/*
 	 * Create the commonData object.
@@ -24,9 +24,7 @@ public class CommonData {
 		skin = "default_1.0";
 		createLocations(renderData);
 		loadUnits(renderData);
-		
-		int MARKET_SIZE = 5;
-		market = new ArrayList<PeaceEntity>(MARKET_SIZE);
+		initializeMarket();
 	}
 	
 	/*
@@ -74,5 +72,106 @@ public class CommonData {
 			Tile t = testLoc.tiles[i];
 			t.setE(testUnit);
 		}
+	}
+	
+	/* Initialize the market */
+	private void initializeMarket()
+	{
+		int MARKET_SIZE = 5;
+		market = new ArrayList<Tile>(MARKET_SIZE);
+		for (int i = 0; i < MARKET_SIZE; i++)
+		{
+			market.add(new Tile());
+		}
+	}
+	
+	/* 
+	 * Return true if the market is ready for use.
+	 * Else return false.
+	 */
+	public boolean isMarketInitialized()
+	{
+		if (market != null)
+			return true;
+		return false;
+	}
+	
+	/* Return the size of the market */
+	public int getMarketSize()
+	{
+		return market.size();
+	}
+	
+	public Tile getMarketTile(int index)
+	{
+		return market.get(index);
+	}
+	
+	/*
+	 * Add PeaceEntity e to a Tile in the market that has a null PeaceEntity.
+	 */
+	public boolean addToMarket(PeaceEntity e)
+	{
+		for (Tile t : market)
+		{
+			if (t.getE() == null)
+			{
+				t.setE(e);
+				return true;
+			}
+		}
+		
+		// Throw an error if we can't add to the market
+		try
+		{
+			throw new Exception();
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error: cannot add " + e.getName() + 
+					" to the market.");
+			ex.printStackTrace();
+			System.exit(1);
+		}
+		
+		// Java requires this even though it's impossible to get to this point
+		return false;
+	}
+	
+	
+	/*
+	 * Convenience method for removeFromMarket(int index)
+	 */
+	public void removeFromMarket(PeaceEntity e)
+	{
+		for (int i = 0; i < market.size(); i++)
+		{
+			if (market.get(i).getE() == e)
+			{
+				removeFromMarket(i);
+				return;
+			}
+		}
+	}
+	
+	/* 
+	 * Remove PeaceEntity e from the Market, shifting indexes to fill 
+	 * the gap. The highest indexed Tile in market will end up with a null
+	 * PeaceEntity.
+	 */
+	public PeaceEntity removeFromMarket(int index)
+	{
+		PeaceEntity e = market.get(index).getE();
+		for (int i = index; i < market.size(); i++)
+		{
+			if (i + 1 < market.size())
+			{
+				// Shift all PeaceEntities down
+				market.get(i).setE(market.get(i + 1).getE());
+				market.get(i + 1).setE(null);
+			}
+		}
+		
+		return e;
 	}
 }

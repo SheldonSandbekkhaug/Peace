@@ -98,7 +98,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		{
 			// Select a Unit and remove it from the bank
 			String key = unitKeys.get(gen.nextInt(unitKeys.size()));
-			commonData.market.add(commonData.units.remove(key));
+			commonData.addToMarket(commonData.units.remove(key));
 			unitKeys.remove(key);
 			
 			// Create a event and broadcast it to the players

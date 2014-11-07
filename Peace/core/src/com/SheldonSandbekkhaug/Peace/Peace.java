@@ -61,7 +61,7 @@ public class Peace extends Game {
 			// Add an Entity to the Market
 			PeaceEntity e = commonData.units.get(pm.message);
 			// TODO: generalize for structures
-			commonData.market.add(e);
+			commonData.addToMarket(e);
 			break;
 		case FROM_MARKET:
 			// TODO: Remove an Entity from the Market
