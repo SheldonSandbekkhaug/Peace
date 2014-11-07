@@ -3,9 +3,6 @@ package com.SheldonSandbekkhaug.PeaceGameServer;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -21,14 +18,14 @@ import com.esotericsoftware.kryonet.Server;
 public class PeaceNetworkServer extends Listener {
 	Server server;
 	int port;
-	HashMap<byte[], Connection> clientIDs;
+	HashMap<byte[], Connection> clients;
 	public Queue<PacketMessage> events;
 	
 	public PeaceNetworkServer(int port) {
 		server = new Server();
 		
 		// Maps MAC addresses (as client IDs) to Connections
-		clientIDs = new HashMap<byte[], Connection>();
+		clients = new HashMap<byte[], Connection>();
 		
 		events = (Queue<PacketMessage>) new LinkedList<PacketMessage>();
 		
@@ -81,7 +78,8 @@ public class PeaceNetworkServer extends Listener {
 			// Add this client to the connections
 			if (pm.type == EventType.JOIN)
 			{
-				clientIDs.put(pm.clientID, c);
+				c.setName("" + clients.size());
+				clients.put(pm.clientID, c);
 			}
 			
 			events.offer(pm);
@@ -91,19 +89,16 @@ public class PeaceNetworkServer extends Listener {
 	/* This is run when a client has disconnected */
 	public void disconnected(Connection c)
 	{
-		// Get client's MAC address, which functions as its ID
-		try {
-			InetAddress clientIP = c.getRemoteAddressTCP().getAddress();
-			byte[] clientID = NetworkInterface.getByInetAddress(clientIP)
-					.getHardwareAddress();
-			
-			// Remove the client from our collection of clients
-			clientIDs.remove(clientID);
-		} catch (SocketException e) {
-			e.printStackTrace();
+		// Remove the connection from the client table
+		for (byte[] key : clients.keySet())
+		{
+			if (clients.get(key) == c)
+			{
+				clients.remove(key);
+			}
 		}
 		
-		if (clientIDs.size() <= 0)
+		if (clients.size() <= 0)
 		{
 			// Close the game
 			PacketMessage endGame = new PacketMessage();
@@ -114,14 +109,14 @@ public class PeaceNetworkServer extends Listener {
 	
 	public void disconnected(byte[] clientID)
 	{
-		Connection c = clientIDs.get(clientID);
+		Connection c = clients.get(clientID);
 		disconnected(c);
 	}
 	
 	/* Send pm to the client specified by clientID */
 	public void sendToClient(byte[] clientID, PacketMessage pm)
 	{
-		Connection c = clientIDs.get(clientID);
+		Connection c = clients.get(clientID);
 		c.sendTCP(pm);
 	}
 	
@@ -129,7 +124,7 @@ public class PeaceNetworkServer extends Listener {
 	public void broadcastToPlayers(PacketMessage event)
 	{
 		//for (Connection c : clientConnections)
-		for (Connection c: clientIDs.values())
+		for (Connection c: clients.values())
 		{
 			c.sendTCP(event);
 		}

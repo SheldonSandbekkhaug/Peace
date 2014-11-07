@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
-import com.SheldonSandbekkhaug.Peace.PeaceNetworkServer;
 
 public class PeaceGameServer extends ApplicationAdapter {
 	PeaceNetworkServer network;
