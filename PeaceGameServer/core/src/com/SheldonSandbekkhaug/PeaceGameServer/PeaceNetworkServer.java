@@ -1,4 +1,4 @@
-package com.SheldonSandbekkhaug.Peace;
+package com.SheldonSandbekkhaug.PeaceGameServer;
 
 import static java.lang.System.out; // TODO: remove?
 
@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.SheldonSandbekkhaug.Peace.EventType;
+import com.SheldonSandbekkhaug.Peace.LocationID;
+import com.SheldonSandbekkhaug.Peace.PacketMessage;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
