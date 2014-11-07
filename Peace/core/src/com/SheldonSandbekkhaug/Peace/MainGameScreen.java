@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -16,6 +18,7 @@ public class MainGameScreen implements Screen {
 	Peace game;
 	OrthographicCamera camera;
 	SpriteBatch batch;
+	BitmapFont font;
 	
 	// Constants for positioning elements on the screen
 	public static final int WINDOW_WIDTH = 1000;
@@ -37,7 +40,16 @@ public class MainGameScreen implements Screen {
 	public static final int MARKET_HEIGHT = (int)(WORLD_HEIGHT * (8.0 / 10.0));
 	public static final int MARKET_X_POS = WINDOW_WIDTH - X_BUFFER - MARKET_WIDTH;
 	public static final int MARKET_Y_POS = Y_BUFFER;
-	public static Texture marketBackground;
+	public static Texture marketBackground; // Market background texture
+	
+	// Size of Entity information panels
+	public static final int INFO_WIDTH = WORLD_WIDTH / 8;
+	public static final int INFO_HEIGHT = WORLD_HEIGHT / 5;
+	
+	// Space between text and panel border
+	public static final int INFO_X_BUFFER = INFO_WIDTH / 20;
+	public static final int INFO_Y_BUFFER = INFO_HEIGHT / 20;
+	Texture infoBackground; // Entity information panel background
 	
     public MainGameScreen(final Peace gam) {
         game = gam;
@@ -45,24 +57,25 @@ public class MainGameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         setLocationPositions(game.commonData.locations);
         batch = new SpriteBatch();
+        font = new BitmapFont(); // Defaults to Arial
         
-        // Create texture for the Market background
-        marketBackground = new Texture(
-			Gdx.files.internal(game.commonData.skin +
-			"/misc/market_background.png"));
+        // Create textures
+        marketBackground = new Texture(Gdx.files.internal(
+			game.commonData.skin + "/misc/market_background.png"));
+        
+        infoBackground = new Texture(Gdx.files.internal(
+            	game.commonData.skin + "/misc/info_background.png"));    
     }
 	
 	@Override
 	public void render(float delta) {
-		handleMouseInput();
-		game.processEvents();
-		
 		Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		camera.update();
-		
+
 		batch.begin();
+		
+		game.processEvents();
+		camera.update();
 		
 		// Draw locations
 		for (Location l : game.commonData.locations)
@@ -84,6 +97,8 @@ public class MainGameScreen implements Screen {
 				batch.draw(e.getImg(), x, y);
 			}
 		}
+		
+		handleMouseInput();
 		
 		batch.end();
 	}
@@ -128,8 +143,27 @@ public class MainGameScreen implements Screen {
 	 */
 	private void showEntityData(PeaceEntity e, float x, float y)
 	{
-		// TODO
-		System.out.println(e.getName());
+		batch.draw(infoBackground,
+				x - INFO_WIDTH, y - INFO_HEIGHT, 
+				INFO_WIDTH, INFO_HEIGHT);
+		font.setColor(Color.BLACK);
+		
+		float textX = x - INFO_WIDTH + INFO_X_BUFFER;
+		float textHeight = 16;
+		
+		// Draw the Entity's name
+		font.draw(batch, e.getName(), textX, y - INFO_Y_BUFFER);
+		
+		// If it's a unit, draw the strength and HP
+		if (e instanceof Unit)
+		{
+			Unit u = (Unit)e;
+			font.draw(batch, "Str: " + u.getStrength(),
+				textX, y - INFO_Y_BUFFER - (2 * textHeight));
+			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
+				textX, y - INFO_Y_BUFFER - (3 * textHeight));
+		}
+		// TODO: Handle other types of PeaceEntities
 	}
 	
 	/* Modifies locations in-place to have the correct positions for this
