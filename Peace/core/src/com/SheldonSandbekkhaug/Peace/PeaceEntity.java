@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 public class PeaceEntity {
 	String id;
 	String name;
+	int owner; // playerID
 	Texture img;
+	
+	public static final int NEUTRAL = 0; // Owned by no one
 	
 	public String getID() {
 		return id;
@@ -22,6 +25,14 @@ public class PeaceEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getOwner() {
+		return owner;
+	}
+
+	public void setOwner(int owner) {
+		this.owner = owner;
 	}
 
 	public Texture getImg() {
