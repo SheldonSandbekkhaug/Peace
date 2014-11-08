@@ -121,19 +121,13 @@ public class MainGameScreen implements Screen {
 		Vector2 cursorPos2D = new Vector2(cursorPos3D.x, cursorPos3D.y);
 		
 		Tile cursorOnTile = cursorOnTile(cursorPos2D);
+		tryToPickUpEntity(cursorOnTile);
+		
 		if (cursorOnTile != null && cursorOnTile.getE() != null)
 		{
-			if (Gdx.input.isTouched() && selectedEntity == null)
-			{
-				// User pressed the PeaceEntity
-				selectedEntity = cursorOnTile.getE();
-				selectedEntityTile = cursorOnTile;
-			}
-			else
-			{
-				showEntityData(cursorOnTile.getE(),
-					cursorOnTile.rect.x, cursorOnTile.rect.y);
-			}
+			// Show Entity data if cursor is not clicked
+			showEntityData(cursorOnTile.getE(),
+				cursorOnTile.rect.x, cursorOnTile.rect.y);
 		}
 		
 		// Check if the mouse is hovering over the market
@@ -143,18 +137,15 @@ public class MainGameScreen implements Screen {
 			
 			// Show Entity information panel if mouse is not clicked
 			if (marketTile.rect.contains(cursorPos2D) && 
-				marketTile.getE() != null && !Gdx.input.isTouched())
+					marketTile.getE() != null && 
+					!tryToPickUpEntity(marketTile))
 			{
 				showEntityData(marketTile.getE(), 
 					marketTile.rect.x, marketTile.rect.y);
 			}
-			else if (marketTile.rect.contains(cursorPos2D) && 
-					marketTile.getE() != null && Gdx.input.isTouched())
-			{
-				// User pressed the PeaceEntity
-				selectedEntity = marketTile.getE();
-				selectedEntityTile = marketTile;
-			}
+			
+			// TODO: cost to buy from market
+			
 		}
 		
 		// If the mouse button is held down
@@ -167,9 +158,9 @@ public class MainGameScreen implements Screen {
 				
 				// Going from screen coordinates to game coordinates
 				Vector3 selectedEntityPos = new Vector3(
-						Gdx.input.getX() - Tile.TILE_SIZE / 2,
-						Gdx.input.getY() + Tile.TILE_SIZE / 2,
-						0);
+					Gdx.input.getX() - Tile.TILE_SIZE / 2,
+					Gdx.input.getY() + Tile.TILE_SIZE / 2,
+					0);
 				camera.unproject(selectedEntityPos);
 				
 				batch.draw(selectedEntity.getImg(), 
@@ -213,12 +204,33 @@ public class MainGameScreen implements Screen {
 					if (t.rect.contains(cursorPos))
 					{
 						return t;
-
 					}
 				}
 			}
 		}
 		return null;
+	}
+	
+	/* 
+	 * Try to use the Entity from tile as the selected Entity.
+	 * Return true if successful, false otherwise.
+	 */
+	public boolean tryToPickUpEntity(Tile tile)
+	{
+		if (tile != null && tile.getE() != null)
+		{
+			if (Gdx.input.isTouched() && selectedEntity == null)
+			{
+				// User pressed the PeaceEntity
+				selectedEntity = tile.getE();
+				selectedEntityTile = tile;
+				
+				// TODO: send message to server?
+				
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/* 
