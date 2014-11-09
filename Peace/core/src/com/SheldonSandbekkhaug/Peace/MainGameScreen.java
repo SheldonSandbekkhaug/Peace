@@ -40,21 +40,25 @@ public class MainGameScreen implements Screen {
 	
 	// Market size and position
 	public static final int MARKET_WIDTH = WORLD_WIDTH / 10;
-	public static final int MARKET_HEIGHT = (int)(WORLD_HEIGHT * (8.0 / 10.0));
+	public static final int MARKET_HEIGHT = (int)(WORLD_HEIGHT * (6.0 / 10.0));
 	public static final int MARKET_X_POS = WINDOW_WIDTH - X_BUFFER - MARKET_WIDTH;
-	public static final int MARKET_Y_POS = Y_BUFFER;
+	public static final int MARKET_Y_POS = (WINDOW_HEIGHT - MARKET_HEIGHT) / 2;
 	public static Texture marketBackground; // Market background texture
 	
 	// Size of Entity information panels
-	public static final int INFO_WIDTH = WORLD_WIDTH / 8;
-	public static final int INFO_HEIGHT = WORLD_HEIGHT / 5;
+	public static final int ENTITY_INFO_WIDTH = WORLD_WIDTH / 8;
+	public static final int ENTITY_INFO_HEIGHT = WORLD_HEIGHT / 5;
 	
 	// Space between text and panel border
-	public static final int INFO_X_BUFFER = INFO_WIDTH / 20;
-	public static final int INFO_Y_BUFFER = INFO_HEIGHT / 20;
+	public static final int ENTITY_INFO_X_BUFFER = ENTITY_INFO_WIDTH / 20;
+	public static final int ENTITY_INFO_Y_BUFFER = ENTITY_INFO_HEIGHT / 20;
 	Texture infoBackground; // Entity information panel background
 	Texture infoBackgroundBorder;
-	public static final int INFO_BORDER_THICKNESS = 2;
+	public static final int ENTITY_INFO_BORDER_THICKNESS = 2;
+	
+	// Bottom Information Panel
+	public static final int BOTTOM_INFO_PANEL_WIDTH = 0;
+	public static final int BOTTOM_INFO_PANEL_HEIGHT = 0;
 	
     public MainGameScreen(final Peace gam) {
         game = gam;
@@ -92,7 +96,9 @@ public class MainGameScreen implements Screen {
 		}
 		
 		// Draw the market
-		batch.draw(marketBackground, MARKET_X_POS, MARKET_Y_POS);
+		batch.draw(marketBackground,
+				MARKET_X_POS, MARKET_Y_POS,
+				MARKET_WIDTH, MARKET_HEIGHT);
 
 		if (game.commonData.isMarketInitialized())
 		{
@@ -104,6 +110,10 @@ public class MainGameScreen implements Screen {
 						marketTile.rect.x, marketTile.rect.y);
 			}
 		}
+		
+		// Draw some basic player information
+		font.setColor(Color.BLACK);
+		font.draw(batch, "Funds: " + game.player.getMoney(), 100, 100);
 		
 		handleMouseInput();
 		
@@ -262,32 +272,32 @@ public class MainGameScreen implements Screen {
 	private void showEntityData(PeaceEntity e, float x, float y)
 	{
 		batch.draw(infoBackgroundBorder,
-				x - INFO_WIDTH - INFO_BORDER_THICKNESS,
-				y - INFO_HEIGHT + Tile.TILE_SIZE - INFO_BORDER_THICKNESS, 
-				INFO_WIDTH + INFO_BORDER_THICKNESS * 2,
-				INFO_HEIGHT + INFO_BORDER_THICKNESS * 2);
+				x - ENTITY_INFO_WIDTH - ENTITY_INFO_BORDER_THICKNESS,
+				y - ENTITY_INFO_HEIGHT + Tile.TILE_SIZE - ENTITY_INFO_BORDER_THICKNESS, 
+				ENTITY_INFO_WIDTH + ENTITY_INFO_BORDER_THICKNESS * 2,
+				ENTITY_INFO_HEIGHT + ENTITY_INFO_BORDER_THICKNESS * 2);
 		batch.draw(infoBackground,
-				x - INFO_WIDTH, y - INFO_HEIGHT + Tile.TILE_SIZE, 
-				INFO_WIDTH, INFO_HEIGHT);
+				x - ENTITY_INFO_WIDTH, y - ENTITY_INFO_HEIGHT + Tile.TILE_SIZE, 
+				ENTITY_INFO_WIDTH, ENTITY_INFO_HEIGHT);
 		font.setColor(Color.BLACK);
 		
-		float textX = x - INFO_WIDTH + INFO_X_BUFFER;
+		float textX = x - ENTITY_INFO_WIDTH + ENTITY_INFO_X_BUFFER;
 		float textHeight = 16;
 		
 		// Draw the Entity's name
 		font.draw(batch, e.getName(),
-			textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER);
+			textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER);
 		
 		// If it's a unit, draw the strength and HP
 		if (e instanceof Unit)
 		{
 			Unit u = (Unit)e;
 			font.draw(batch, "Str: " + u.getStrength(),
-				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (2 * textHeight));
+				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (2 * textHeight));
 			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
-				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (3 * textHeight));
+				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (3 * textHeight));
 			font.draw(batch, "Cost: " + u.getCost(),
-				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (4 * textHeight));
+				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (4 * textHeight));
 			
 		}
 		// TODO: Handle other types of PeaceEntities
@@ -336,8 +346,14 @@ public class MainGameScreen implements Screen {
 			Tile t = game.commonData.getMarketTile(i);
 			
 			int x = MARKET_X_POS + MARKET_WIDTH / 2 - Tile.TILE_SIZE / 2;
-			int y = MARKET_Y_POS + 
-					(i * (MARKET_HEIGHT / game.commonData.getMarketSize()));
+			//int y = MARKET_Y_POS + 
+			//		(i * (MARKET_HEIGHT / game.commonData.getMarketSize()));
+			int space_between_market_tiles = (MARKET_HEIGHT - 
+					(Tile.TILE_SIZE * game.commonData.getMarketSize())) /
+					game.commonData.getMarketSize();
+			int y = MARKET_Y_POS + (i * Tile.TILE_SIZE) + 
+					(i * space_between_market_tiles) + 
+					(space_between_market_tiles / 2);
 			
 			t.rect = new Rectangle(x, y, Tile.TILE_SIZE, Tile.TILE_SIZE);
 		}
