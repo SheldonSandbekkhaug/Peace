@@ -2,7 +2,7 @@ package com.SheldonSandbekkhaug.Peace;
 
 public class Player {
 	int playerID;
-	static int lastPlayerID;
+	private static int lastPlayerID = -1;
 	String name;
 	int money;
 	int vp; // Victory points
@@ -10,7 +10,7 @@ public class Player {
 	public Player()
 	{
 		super();
-		playerID = lastPlayerID++;
+		playerID = lastPlayerID + 1;
 		lastPlayerID = playerID;
 		money = 1000;
 	}

@@ -3,15 +3,14 @@ package com.SheldonSandbekkhaug.Peace;
 public class PacketMessage {
 	/* Anything in this class can be sent over the network */
 	public byte[] clientID; // MAC address of client
+	public int playerID; // Player number
 	public String message; // General-purpose String
 	public int number; // General-purpose integer
 	public EventType type;
 	
-	public LocationID srcLocation;
-	public int srcTileNum;
+	public int srcTileID;
 	
-	public LocationID targetLocation;
-	public int targetTileNum;
+	public int targetTileID;
 	
 	public PacketMessage()
 	{

@@ -12,7 +12,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
+import com.SheldonSandbekkhaug.Peace.PeaceEntity;
 import com.SheldonSandbekkhaug.Peace.Player;
+import com.SheldonSandbekkhaug.Peace.Tile;
 
 public class PeaceGameServer extends ApplicationAdapter {
 	PeaceNetworkServer network;
@@ -68,13 +70,13 @@ public class PeaceGameServer extends ApplicationAdapter {
 		case LEAVE:
 			network.disconnected(pm.clientID);
 			lobby.remove(pm.message);
-			commonData.players.remove(pm.number);
+			commonData.players.remove(pm.playerID);
 			break;
 		case STOP:
 			commonData = null;
 			break;
-		case FROM_MARKET:
-			// TODO: Remove an Entity from the Market
+		case FROM_MARKET: // A Player bought an Entity
+			buyEntity(pm.playerID, pm.message, pm.targetTileID);
 			break;
 		default:
 			break;
@@ -124,5 +126,42 @@ public class PeaceGameServer extends ApplicationAdapter {
 			
 			network.broadcastToPlayers(event);
 		}
+	}
+	
+	/*
+	 * Take the Entity off the market and add a new 
+	 * Entity to the market
+	 */
+	public void buyEntity(int playerID, String entityID, int destTileID)
+	{
+		Player p = commonData.players.get(playerID);
+		
+		// TODO: check other EntityBanks for certain entities
+		Tile t = commonData.getTileFromMarket(entityID);
+		PeaceEntity e = t.getE();
+
+		// Subtract the cost of the Entity from the Player's funds
+		p.setMoney(p.getMoney() - e.getCost());
+		
+		// Tell all players that P spent money
+		PacketMessage moneyUpdate = new PacketMessage("money");
+		moneyUpdate.type = EventType.PLAYER_UPDATE;
+		moneyUpdate.playerID = playerID;
+		moneyUpdate.number = p.getMoney();
+		network.broadcastToPlayers(moneyUpdate);
+		
+		// Update market
+		commonData.removeFromMarket(e);
+		e.setOwner(playerID);
+		
+		// Tell all players which Entity was bought and its destination
+		PacketMessage marketUpdate = new PacketMessage(e.getID());
+		marketUpdate.type = EventType.FROM_MARKET;
+		marketUpdate.playerID = playerID;
+		marketUpdate.targetTileID = destTileID;
+		network.broadcastToPlayers(marketUpdate);
+		
+		// TODO: add new entity to market
+		
 	}
 }

@@ -53,6 +53,7 @@ public class Peace extends Game {
 	
 	public void processNetworkEvent(PacketMessage pm)
 	{
+		PeaceEntity e = null;
 		switch(pm.type)
 		{
 		case JOIN: // Successfully added to the server's game
@@ -66,16 +67,43 @@ public class Peace extends Game {
 			// TODO: send/receive information about other players
 		case TO_MARKET:
 			// Add an Entity to the Market
-			PeaceEntity e = commonData.units.get(pm.message);
-			// TODO: generalize for structures
+			e = commonData.units.get(pm.message);
+			// TODO: generalize for other Entity types
 			commonData.addToMarket(e);
 			break;
-		case FROM_MARKET:
-			// TODO: Remove an Entity from the Market
+		case FROM_MARKET: // A Player bought something
+			Tile src = commonData.getTileFromMarket(pm.message);
+			e = src.getE();
+			e.setOwner(pm.playerID);
+			Tile targetTile = commonData.getTile(pm.targetTileID);
+			targetTile.setE(e);
+			src.setE(null);
 			break;
+		case PLAYER_UPDATE:
+			if (pm.message.equals("money"))
+			{
+				commonData.players.get(pm.playerID).setMoney(pm.number);
+			}
 		default:
 			break;
 		}
+	}
+	
+	/*
+	 * Buy Entity e from the market for Player p. Tell the server the
+	 * Entity will appear at the specified TileID.
+	 * 
+	 * This method should only be called by clients.
+	 */
+	public void buyEntity(PeaceEntity e, Player p, int tileID)
+	{
+		PacketMessage pm = new PacketMessage();
+		pm.type = EventType.FROM_MARKET;
+		pm.playerID = p.getPlayerID();
+		pm.targetTileID = tileID;
+		pm.message = e.getID();
+		
+		network.sendToServer(pm);
 	}
 
 	@Override
@@ -88,7 +116,7 @@ public class Peace extends Game {
 		// TODO: Dispose textures
 		PacketMessage pm = new PacketMessage(player.getName());
 		pm.type = EventType.LEAVE;
-		pm.number = player.getPlayerID();
+		pm.playerID = player.getPlayerID();
 		network.sendToServer(pm);
 	}
 }

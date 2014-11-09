@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class PeaceEntity {
 	String id;
 	String name;
+	int cost;
 	int owner; // playerID
 	Texture img;
 	
@@ -25,6 +26,14 @@ public class PeaceEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getCost() {
+		return cost;
+	}
+
+	public void setCost(int cost) {
+		this.cost = cost;
 	}
 
 	public int getOwner() {

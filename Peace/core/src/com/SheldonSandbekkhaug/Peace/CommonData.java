@@ -11,7 +11,8 @@ public class CommonData {
 	public String skin;
 	
 	public ArrayList<Location> locations;
-	public HashMap<String, Unit> units;
+	public HashMap<String, Unit> units; // All Units in the game
+	public HashMap<String, Unit> unitsForMarket; // Available for Market
 	private ArrayList<Tile> market;
 	public ArrayList<Player> players; // Indexed by playerID
 	
@@ -58,6 +59,7 @@ public class CommonData {
 	 * If renderData is true, initialize data needed for rendering.
 	 * Else, only initialize model data.
 	 */
+	@SuppressWarnings("unchecked") // For cloning units HashMap
 	public void loadUnits(boolean renderData)
 	{
 		XMLHandler reader = new XMLHandler(this);
@@ -72,10 +74,13 @@ public class CommonData {
 		for (int i = 1; i < 5; i++)
 		{
 			Unit testUnit = units.get("SOLDIER_" + i);
+			testUnit.owner = 1;
 			Location testLoc = locations.get(0);
 			Tile t = testLoc.tiles[i];
 			t.setE(testUnit);
 		}
+		
+		unitsForMarket = (HashMap<String, Unit>)units.clone();
 	}
 	
 	/* Initialize the market */
@@ -86,6 +91,7 @@ public class CommonData {
 		for (int i = 0; i < MARKET_SIZE; i++)
 		{
 			market.add(new Tile());
+			market.get(i).setMarketTile(true);
 		}
 	}
 	
@@ -109,6 +115,22 @@ public class CommonData {
 	public Tile getMarketTile(int index)
 	{
 		return market.get(index);
+	}
+	
+	/*
+	 * Return the Tile that has an Entity with the specified entityID in the 
+	 * Market. Return null if no Tile was found.
+	 */
+	public Tile getTileFromMarket(String entityID)
+	{
+		for (int i = 0; i < market.size(); i++)
+		{
+			if (market.get(i).getE().getID().equals(entityID))
+			{
+				return market.get(i);
+			}
+		}
+		return null;
 	}
 	
 	/*
@@ -147,7 +169,7 @@ public class CommonData {
 	 * Convenience method for removeFromMarket(int index)
 	 */
 	public void removeFromMarket(PeaceEntity e)
-	{
+	{	
 		for (int i = 0; i < market.size(); i++)
 		{
 			if (market.get(i).getE() == e)
@@ -177,5 +199,31 @@ public class CommonData {
 		}
 		
 		return e;
+	}
+	
+	/*
+	 * Return the Tile corresponding to the given tile ID.
+	 * Return null if that Tile does not exist.
+	 */
+	public Tile getTile(int tileID)
+	{
+		// Check all Locations
+		for (Location loc : locations)
+		{
+			for (Tile t : loc.getTiles())
+			{
+				if (t.getTileID() == tileID)
+					return t;
+			}
+		}
+		
+		// Check the market
+		for (Tile t : market)
+		{
+			if (t.getTileID() == tileID)
+				return t;
+		}
+		
+		return null;
 	}
 }

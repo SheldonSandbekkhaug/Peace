@@ -135,17 +135,24 @@ public class MainGameScreen implements Screen {
 		{
 			Tile marketTile = game.commonData.getMarketTile(i);
 			
+			boolean pickedUpEntity = false;
+			
+			// Possibly attempt to buy the Entity
+			if (marketTile.getE() != null &&
+					marketTile.rect.contains(cursorPos2D) &&
+					game.player.getMoney() >= marketTile.getE().getCost())
+			{
+				pickedUpEntity = tryToPickUpEntity(marketTile);
+			}
+			
 			// Show Entity information panel if mouse is not clicked
 			if (marketTile.rect.contains(cursorPos2D) && 
 					marketTile.getE() != null && 
-					!tryToPickUpEntity(marketTile))
+					!pickedUpEntity)
 			{
 				showEntityData(marketTile.getE(), 
 					marketTile.rect.x, marketTile.rect.y);
 			}
-			
-			// TODO: cost to buy from market
-			
 		}
 		
 		// If the mouse button is held down
@@ -171,9 +178,16 @@ public class MainGameScreen implements Screen {
 			if (selectedEntity != null && cursorOnTile != null && 
 					cursorOnTile.getE() == null)
 			{
-				// Move the Entity to this new Tile
-				selectedEntityTile.setE(null);
-				cursorOnTile.setE(selectedEntity);
+				// If the Entity came from the Market, buy it
+				if (selectedEntityTile.isMarketTile())
+				{
+					// Put the selected PeaceEntity back in the market
+					// The server takes care of this logic
+					selectedEntityTile.setE(selectedEntity);
+					
+					game.buyEntity(selectedEntity, game.player,
+						cursorOnTile.getTileID());
+				}
 			}
 			else if (selectedEntity != null)
 			{
@@ -214,12 +228,16 @@ public class MainGameScreen implements Screen {
 	 * Return true if successful, false otherwise.
 	 * 
 	 * To be picked up (selected), an Entity be owned by the player trying to
-	 * pick it up.
+	 * pick it up or the Entity is in the market.
 	 */
 	public boolean tryToPickUpEntity(Tile tile)
 	{
+		if (tile == null || tile.getE() == null)
+			return false;
+		
+		boolean isOwned = game.player.getPlayerID() == tile.getE().getOwner();
 		if (tile != null && tile.getE() != null &&
-				game.player.getPlayerID() == tile.getE().getOwner())
+				(isOwned || tile.isMarketTile()))
 		{
 			if (Gdx.input.isTouched() && selectedEntity == null)
 			{
@@ -268,6 +286,9 @@ public class MainGameScreen implements Screen {
 				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (2 * textHeight));
 			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
 				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (3 * textHeight));
+			font.draw(batch, "Cost: " + u.getCost(),
+				textX, y + Tile.TILE_SIZE - INFO_Y_BUFFER - (4 * textHeight));
+			
 		}
 		// TODO: Handle other types of PeaceEntities
 	}

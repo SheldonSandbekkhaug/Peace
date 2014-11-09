@@ -89,7 +89,11 @@ public class XMLHandler {
 				{
 					Element property = unitElement.getChild(j);
 					
-					if (property.getName().equals("id"))
+					if (property.getName().equals("cost"))
+					{
+						u.setCost(Integer.parseInt(property.getText()));
+					}
+					else if (property.getName().equals("id"))
 					{
 						u.setID(property.getText());
 					}
@@ -113,10 +117,10 @@ public class XMLHandler {
 						{
 							// Load the unit's image
 							Texture t = new Texture(
-									Gdx.files.internal(
-										commonData.skin + 
-										"/unit_pictures/" + 
-										property.getText()));
+								Gdx.files.internal(
+									commonData.skin + 
+									"/unit_pictures/" + 
+									property.getText()));
 							u.setImg(t);
 						}
 					}
@@ -160,7 +164,11 @@ public class XMLHandler {
 				{
 					Element property = unitElement.getChild(j);
 					
-					if (property.getName().equals("id"))
+					if (property.getName().equals("cost"))
+					{
+						u.setCost(Integer.parseInt(property.getText()));
+					}
+					else if (property.getName().equals("id"))
 					{
 						// Do nothing
 					}
