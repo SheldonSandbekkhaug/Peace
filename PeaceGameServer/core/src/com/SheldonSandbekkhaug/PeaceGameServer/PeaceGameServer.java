@@ -12,16 +12,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
+import com.SheldonSandbekkhaug.Peace.Player;
 
 public class PeaceGameServer extends ApplicationAdapter {
 	PeaceNetworkServer network;
 	CommonData commonData;
 	Queue<PacketMessage> events;
+	ArrayList<String> lobby; // Player names that will join the next game
 	
 	@Override
 	public void create () {
 		int PORT = 27960;
 		network = new PeaceNetworkServer(PORT);
+		lobby = new ArrayList<String>();
 	}
 
 	public void render () {
@@ -49,18 +52,23 @@ public class PeaceGameServer extends ApplicationAdapter {
 		switch(pm.type)
 		{
 		case JOIN: // Client attempts to join the game
+			lobby.add(pm.message);
 			// Send a reply for their success
 			PacketMessage reply = new PacketMessage();
 			reply.type = EventType.JOIN;
 			byte[] clientID = pm.clientID;
 			network.sendToClient(clientID, reply);
+			
+			// TODO: send information about other players
 			break;
 		case START:
 			out.println("Received request to start game");
-			newGame(pm.message);
+			newGame(pm.message, lobby);
 			break;
 		case LEAVE:
 			network.disconnected(pm.clientID);
+			lobby.remove(pm.message);
+			commonData.players.remove(pm.number);
 			break;
 		case STOP:
 			commonData = null;
@@ -74,9 +82,15 @@ public class PeaceGameServer extends ApplicationAdapter {
 	}
 	
 	/* Initialize a new game according to the given skin. */
-	public void newGame(String skin)
+	public void newGame(String skin, ArrayList<String> playerNames)
 	{		
 		commonData = new CommonData(false); // Creates Unit table and applies Skin
+		
+		// Add Players to the game
+		for (String name : playerNames)
+		{
+			commonData.players.add(new Player(name));
+		}
 		
 		initializeMarket();
 	}

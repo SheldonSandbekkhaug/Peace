@@ -154,8 +154,6 @@ public class MainGameScreen implements Screen {
 			// Draw the selected Entity centered on the cursor
 			if (selectedEntity != null)
 			{
-				selectedEntityTile.setE(null);
-				
 				// Going from screen coordinates to game coordinates
 				Vector3 selectedEntityPos = new Vector3(
 					Gdx.input.getX() - Tile.TILE_SIZE / 2,
@@ -174,8 +172,8 @@ public class MainGameScreen implements Screen {
 					cursorOnTile.getE() == null)
 			{
 				// Move the Entity to this new Tile
-				cursorOnTile.setE(selectedEntity);
 				selectedEntityTile.setE(null);
+				cursorOnTile.setE(selectedEntity);
 			}
 			else if (selectedEntity != null)
 			{
@@ -214,16 +212,22 @@ public class MainGameScreen implements Screen {
 	/* 
 	 * Try to use the Entity from tile as the selected Entity.
 	 * Return true if successful, false otherwise.
+	 * 
+	 * To be picked up (selected), an Entity be owned by the player trying to
+	 * pick it up.
 	 */
 	public boolean tryToPickUpEntity(Tile tile)
 	{
-		if (tile != null && tile.getE() != null)
+		if (tile != null && tile.getE() != null &&
+				game.player.getPlayerID() == tile.getE().getOwner())
 		{
 			if (Gdx.input.isTouched() && selectedEntity == null)
 			{
 				// User pressed the PeaceEntity
 				selectedEntity = tile.getE();
 				selectedEntityTile = tile;
+				
+				tile.setE(null);
 				
 				// TODO: send message to server?
 				

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Game;
 public class Peace extends Game {
 	CommonData commonData;
 	private PeaceNetworkClient network;
+	Player player; // The user
 	
 	@Override
 	public void create () {		
@@ -25,9 +26,14 @@ public class Peace extends Game {
 		network.connect(5000, ipAddr, PORT);
 		
 		// Join a game on the server
-		PacketMessage pm = new PacketMessage();
+		String playerName = "Primo";
+		PacketMessage pm = new PacketMessage(playerName); // Player name
 		pm.type = EventType.JOIN;
 		network.sendToServer(pm);
+		
+		// TODO: do this only after the game is joined successfully
+		player = new Player(playerName);
+		commonData.players.add(player);
 		
 		// TODO: return false if join was unsuccessful
 		return true;
@@ -57,6 +63,7 @@ public class Peace extends Game {
 			// TODO: wait for some other condition to start the game
 			System.out.println("Client asked to start the game");
 			break;
+			// TODO: send/receive information about other players
 		case TO_MARKET:
 			// Add an Entity to the Market
 			PeaceEntity e = commonData.units.get(pm.message);
@@ -79,5 +86,9 @@ public class Peace extends Game {
 	public void dispose()
 	{
 		// TODO: Dispose textures
+		PacketMessage pm = new PacketMessage(player.getName());
+		pm.type = EventType.LEAVE;
+		pm.number = player.getPlayerID();
+		network.sendToServer(pm);
 	}
 }

@@ -13,6 +13,7 @@ public class CommonData {
 	public ArrayList<Location> locations;
 	public HashMap<String, Unit> units;
 	private ArrayList<Tile> market;
+	public ArrayList<Player> players; // Indexed by playerID
 	
 	/*
 	 * Create the commonData object.
@@ -22,6 +23,9 @@ public class CommonData {
 	public CommonData(boolean renderData)
 	{
 		skin = "default_1.0";
+		players = new ArrayList<Player>();
+		players.add(new Player("Neutral"));
+		
 		createLocations(renderData);
 		loadUnits(renderData);
 		initializeMarket();
