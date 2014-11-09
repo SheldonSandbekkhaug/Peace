@@ -341,16 +341,14 @@ public class MainGameScreen implements Screen {
 		}
 		
 		// Set market tile positions
+		int space_between_market_tiles = (MARKET_HEIGHT - 
+				(Tile.TILE_SIZE * game.commonData.getMarketSize())) /
+				game.commonData.getMarketSize();
 		for (int i = 0; i < game.commonData.getMarketSize(); i++)
 		{
 			Tile t = game.commonData.getMarketTile(i);
 			
 			int x = MARKET_X_POS + MARKET_WIDTH / 2 - Tile.TILE_SIZE / 2;
-			//int y = MARKET_Y_POS + 
-			//		(i * (MARKET_HEIGHT / game.commonData.getMarketSize()));
-			int space_between_market_tiles = (MARKET_HEIGHT - 
-					(Tile.TILE_SIZE * game.commonData.getMarketSize())) /
-					game.commonData.getMarketSize();
 			int y = MARKET_Y_POS + (i * Tile.TILE_SIZE) + 
 					(i * space_between_market_tiles) + 
 					(space_between_market_tiles / 2);
