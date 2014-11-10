@@ -17,31 +17,8 @@ import com.esotericsoftware.kryonet.Listener;
 public class PeaceNetworkClient extends Listener {
 
 	Client client;
-	boolean messageReceived; // TODO: remove after testing
 	Queue<PacketMessage> events;
 	byte[] macAddr; // Used to uniquely identify clients
-	
-	public static void main(String[] args) {
-		int tcpPort = 27960; // TODO: don't hardcode the port numbers
-		
-		String ip = "localhost"; // IP address to connect to
-		
-		PeaceNetworkClient pClient = new PeaceNetworkClient();
-		
-		// Wait 5000ms before failing
-		pClient.connect(5000, ip, tcpPort);
-		
-		// Wait for a message
-		pClient.messageReceived = false;
-		while(pClient.messageReceived == false)
-		{
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 	
 	public PeaceNetworkClient()
 	{
@@ -91,7 +68,6 @@ public class PeaceNetworkClient extends Listener {
 			out.println("Client recieved a PacketMessage:");
 			PacketMessage pm = (PacketMessage)obj;
 			out.println(pm.message);
-			this.messageReceived = true;
 			
 			// Store this PacketMessage for the Game to read
 			events.offer(pm);

@@ -67,7 +67,7 @@ public class Peace extends Game {
 			// TODO: send/receive information about other players
 		case TO_MARKET:
 			// Add an Entity to the Market
-			e = commonData.units.get(pm.message);
+			e = commonData.availableForMarket.get(pm.message);
 			// TODO: generalize for other Entity types
 			commonData.addToMarket(e);
 			break;

@@ -65,15 +65,14 @@ public class PeaceNetworkServer extends Listener {
 	/* This is run when we receive a packet */
 	public void received(Connection c, Object object)
 	{
-		// TODO: replace with real behavior
-		out.println("Receieved a message:");
-		
 		// Print the message if it's a PacketMessage
 		if (object instanceof PacketMessage)
 		{
-			// TODO: replace with real behavior
 			PacketMessage pm = (PacketMessage)object;
-			out.println(pm.message);
+			
+			// TODO: remove print statements
+			out.println("Receieved a message: " + pm.message);
+			out.println("Type: " + pm.type);
 			
 			// Add this client to the connections
 			if (pm.type == EventType.JOIN)

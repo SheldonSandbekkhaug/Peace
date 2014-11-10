@@ -3,6 +3,7 @@ package com.SheldonSandbekkhaug.PeaceGameServer;
 import static java.lang.System.out;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Queue;
 import java.util.Random;
 
@@ -21,12 +22,15 @@ public class PeaceGameServer extends ApplicationAdapter {
 	CommonData commonData;
 	Queue<PacketMessage> events;
 	ArrayList<String> lobby; // Player names that will join the next game
+	Random gen;
 	
 	@Override
 	public void create () {
 		int PORT = 27960;
 		network = new PeaceNetworkServer(PORT);
 		lobby = new ArrayList<String>();
+		
+		gen = new Random();
 	}
 
 	public void render () {
@@ -106,24 +110,16 @@ public class PeaceGameServer extends ApplicationAdapter {
 	{
 		int MARKET_SIZE = 5;
 		
-		Random gen = new Random();
-		
-		ArrayList<String> unitKeys = new ArrayList<String>(commonData.units.keySet());
-		
 		for (int i = 0; i < MARKET_SIZE; i++)
 		{
-			// Select a Unit and remove it from the bank
-			String key = unitKeys.get(gen.nextInt(unitKeys.size()));
-			commonData.addToMarket(commonData.units.remove(key));
-			unitKeys.remove(key);
+			String key = randomSelection(commonData.availableForMarket);
+			PeaceEntity e = commonData.availableForMarket.get(key);
+			commonData.addToMarket(e);
+			commonData.availableForMarket.remove(key);
 			
-			// Create a event and broadcast it to the players
-			String message = key;
-			PacketMessage event = new PacketMessage(message);
+			// Create a TO_MARKET and broadcast it to the players
+			PacketMessage event = new PacketMessage(e.getID());
 			event.type = EventType.TO_MARKET;
-			
-			out.println("Added " + key + " to the market on server");
-			
 			network.broadcastToPlayers(event);
 		}
 	}
@@ -161,7 +157,51 @@ public class PeaceGameServer extends ApplicationAdapter {
 		marketUpdate.targetTileID = destTileID;
 		network.broadcastToPlayers(marketUpdate);
 		
-		// TODO: add new entity to market
+		// Select a random PeaceEntity from the availability HashMap
+		String newEntityKey = randomSelection(commonData.availableForMarket);
+		PeaceEntity newEntity = 
+			commonData.availableForMarket.get(newEntityKey);
 		
+		// Remove that Entity from the availability HashMap
+		commonData.availableForMarket.remove(newEntity.getID());
+		
+		// Add the PeaceEntity to the Market
+		commonData.addToMarket(newEntity);
+		
+		// Tell all clients which Entity was added
+		PacketMessage marketAdd = new PacketMessage(newEntity.getID());
+		marketAdd.type = EventType.TO_MARKET;
+		network.broadcastToPlayers(marketAdd);
+	}
+	
+	/* Select a random key from HashMap */
+	public String randomSelection(HashMap<String, PeaceEntity> h)
+	{
+		int indexToTake = gen.nextInt(commonData.availableForMarket.size());
+		
+		int i = 0;
+		for (String id : h.keySet())
+		{
+			if (i == indexToTake)
+			{
+				return id;
+			}
+			i++;
+		}
+		
+		// Should never get to this point
+		try
+		{
+			throw new Exception();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Could not select a random entity from the Market.");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		// Also should never get to this point
+		return null;
 	}
 }

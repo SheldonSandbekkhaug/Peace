@@ -5,14 +5,14 @@
         <name>Soldier 1</name>
         <strength>1</strength>
         <hp>3</hp>
-        <cost>9999</cost>
+        <cost>1</cost>
         <img>man_40x40.png</img></unit>
     <unit>
         <id>SOLDIER_2</id>
         <name>Soldier 2</name>
         <strength>1</strength>
         <hp>3</hp>
-        <cost>9999</cost>
+        <cost>2</cost>
         <img>man_40x40.png</img></unit>
     <unit>
         <id>SOLDIER_3</id>
@@ -41,5 +41,19 @@
         <strength>1</strength>
         <hp>3</hp>
         <cost>6</cost>
+        <img>man_40x40.png</img></unit>
+	<unit>
+        <id>SOLDIER_7</id>
+        <name>Soldier 7</name>
+        <strength>1</strength>
+        <hp>7</hp>
+        <cost>7</cost>
+        <img>man_40x40.png</img></unit>
+<unit>
+        <id>SOLDIER_8</id>
+        <name>Soldier 8</name>
+        <strength>8</strength>
+        <hp>3</hp>
+        <cost>8</cost>
         <img>man_40x40.png</img></unit>
 </catalog>

@@ -12,6 +12,17 @@ public class PeaceEntity {
 	
 	public static final int NEUTRAL = 0; // Owned by no one
 	
+	public PeaceEntity clone()
+	{
+		PeaceEntity e = new PeaceEntity();
+		e.setID(id);
+		e.setName(name);
+		e.setCost(cost);
+		e.setOwner(owner);
+		e.setImg(img);
+		return e;
+	}
+	
 	public String getID() {
 		return id;
 	}

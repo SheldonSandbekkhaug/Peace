@@ -12,7 +12,9 @@ public class CommonData {
 	
 	public ArrayList<Location> locations;
 	public HashMap<String, Unit> units; // All Units in the game
-	public HashMap<String, Unit> unitsForMarket; // Available for Market
+	
+	// PeaceEntities available to be added to the Market
+	public HashMap<String, PeaceEntity> availableForMarket;
 	private ArrayList<Tile> market;
 	public ArrayList<Player> players; // Indexed by playerID
 	
@@ -26,6 +28,8 @@ public class CommonData {
 		skin = "default_1.0";
 		players = new ArrayList<Player>();
 		players.add(new Player("Neutral"));
+		
+		availableForMarket = new HashMap<String, PeaceEntity>();
 		
 		createLocations(renderData);
 		loadUnits(renderData);
@@ -80,7 +84,13 @@ public class CommonData {
 			t.setE(testUnit);
 		}
 		
-		unitsForMarket = (HashMap<String, Unit>)units.clone();
+		// Add Units to the Market availability HashMap
+		for (String id : units.keySet())
+		{
+			availableForMarket.put(id, units.get(id));
+		}
+		
+		availableForMarket = (HashMap<String, PeaceEntity>)units.clone();
 	}
 	
 	/* Initialize the market */
@@ -142,7 +152,7 @@ public class CommonData {
 		{
 			if (t.getE() == null)
 			{
-				t.setE(e);
+				t.setE(e.clone());
 				return true;
 			}
 		}
@@ -154,8 +164,15 @@ public class CommonData {
 		}
 		catch(Exception ex)
 		{
-			System.out.println("Error: cannot add " + e.getName() + 
+			System.out.println("Error: Cannot add " + e.getName() + 
 					" to the market.");
+			
+			System.out.println("Market contents:");
+			for (int i = 0; i < market.size(); i++)
+			{
+				System.out.println(i + ": " + e.getID());
+			}
+			
 			ex.printStackTrace();
 			System.exit(1);
 		}
@@ -188,6 +205,7 @@ public class CommonData {
 	public PeaceEntity removeFromMarket(int index)
 	{
 		PeaceEntity e = market.get(index).getE();
+		market.get(index).setE(null);
 		for (int i = index; i < market.size(); i++)
 		{
 			if (i + 1 < market.size())
