@@ -7,36 +7,45 @@
 \f0\fs24 \cf0 Pax V2 PacketMessage Formats\
 \
 In general, these are defaults:\
-	clientID: MAC address of client\
-	playerID: player number\
+	playerID: player number. A value of -1 indicates the client does not know its ID.\
 \
 Client sends:\
 JOIN\
+	Request to join the game.\
 	message: the client\'92s player name\
 START\
+	Request to start the game.\
 	message: name of the skin\
 LEAVE\
+	This client left the game.\
 	default\
 STOP\
+	Stop the game.\
 	nothing\
 FROM_MARKET\
+	Moved a PeaceEntity from the Market to somewhere else.\
 	message: EntityID\
 	targetTileID: where the Entity is going\
 	\
 \
 Server Sends:\
 JOIN\
-	nothing\
+	The client successfully joined the game.\
+	message: the client\'92s player name\
 TO_MARKET\
+	Added a PeaceEntity to the Market.\
 	message: Entity ID\
 FROM_MARKET\
+	Removed a PeaceEntity from the Market.\
 	message: EntityID\
 	playerID: the player who bought the Entity\
 PLAYER_UPDATE\
+	Changed something about a Player.\
 	message: player field to set\
 	number: the new value for that field\
 	targetTileID: TileID for where the Entity is going\
 MOVE\
+	Moved an Entity from one Tile to another.\
 	message: Entity ID\
 	srcTileID: TileID for where the Entity came from\
 	targetTileID: TileID for where the Entity is going}
