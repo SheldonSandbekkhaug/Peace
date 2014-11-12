@@ -9,6 +9,7 @@ public class PeaceEntity {
 	int cost;
 	int owner; // playerID
 	Texture img;
+	// NOTE: must adjust clone() method after adding new fields
 	
 	public static final int NEUTRAL = 0; // Owned by no one
 	

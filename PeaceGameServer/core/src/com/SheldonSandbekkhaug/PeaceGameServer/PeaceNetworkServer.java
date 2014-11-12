@@ -3,7 +3,7 @@ package com.SheldonSandbekkhaug.PeaceGameServer;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -18,14 +18,15 @@ import com.esotericsoftware.kryonet.Server;
 public class PeaceNetworkServer extends Listener {
 	Server server;
 	int port;
-	HashMap<byte[], Connection> clients;
+	ArrayList<Connection> clients; // Indexed by playerID
 	public Queue<PacketMessage> events;
 	
 	public PeaceNetworkServer(int port) {
 		server = new Server();
 		
 		// Maps MAC addresses (as client IDs) to Connections
-		clients = new HashMap<byte[], Connection>();
+		clients = new ArrayList<Connection>();
+		clients.add(null); // 0th index is reserved
 		
 		events = (Queue<PacketMessage>) new LinkedList<PacketMessage>();
 		
@@ -39,7 +40,6 @@ public class PeaceNetworkServer extends Listener {
 		
 		// Register a packet class. We can only send registered classes.
 		server.getKryo().register(PacketMessage.class);
-		server.getKryo().register(byte[].class);
 		server.getKryo().register(EventType.class);
 		server.getKryo().register(LocationID.class);
 		
@@ -77,8 +77,23 @@ public class PeaceNetworkServer extends Listener {
 			// Add this client to the connections
 			if (pm.type == EventType.JOIN)
 			{
-				c.setName("" + clients.size());
-				clients.put(pm.clientID, c);
+				// Try to replace a null element in the client list
+				boolean added = false;
+				for (int i = 1; i < clients.size(); i++)
+				{
+					if (clients.get(i) == null)
+					{
+						clients.add(i, c);
+						added = true;
+						break;
+					}
+				}
+				
+				// Append to list if never replaced a null
+				if (added == false)
+				{
+					clients.add(c);
+				}
 			}
 			
 			events.offer(pm);
@@ -89,15 +104,18 @@ public class PeaceNetworkServer extends Listener {
 	public void disconnected(Connection c)
 	{
 		// Remove the connection from the client table
-		for (byte[] key : clients.keySet())
+		int numClients = 0;
+		for (int i = 1; i < clients.size(); i++)
 		{
-			if (clients.get(key) == c)
+			if (clients.get(i) == c)
 			{
-				clients.remove(key);
+				clients.set(i, null);
+				break;
 			}
+			numClients++;
 		}
 		
-		if (clients.size() <= 0)
+		if (numClients <= 0)
 		{
 			// Close the game
 			PacketMessage endGame = new PacketMessage();
@@ -106,16 +124,20 @@ public class PeaceNetworkServer extends Listener {
 		}
 	}
 	
-	public void disconnected(byte[] clientID)
+	public void disconnected(int playerID)
 	{
-		Connection c = clients.get(clientID);
+		Connection c = clients.get(playerID);
+		
+		
+		
 		disconnected(c);
 	}
 	
 	/* Send pm to the client specified by clientID */
-	public void sendToClient(byte[] clientID, PacketMessage pm)
+	//public void sendToClient(byte[] clientID, PacketMessage pm) // TODO: remove
+	public void sendToClient(PacketMessage pm, int playerID)
 	{
-		Connection c = clients.get(clientID);
+		Connection c = clients.get(playerID);
 		c.sendTCP(pm);
 	}
 	
@@ -123,9 +145,10 @@ public class PeaceNetworkServer extends Listener {
 	public void broadcastToPlayers(PacketMessage event)
 	{
 		//for (Connection c : clientConnections)
-		for (Connection c: clients.values())
+		for (Connection c: clients)
 		{
-			c.sendTCP(event);
+			if (c != null)
+				c.sendTCP(event);
 		}
 	}
 }

@@ -21,7 +21,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 	PeaceNetworkServer network;
 	CommonData commonData;
 	Queue<PacketMessage> events;
-	ArrayList<String> lobby; // Player names that will join the next game
+	
+	// Player names that will join the next game. Index corresponds to playerID.
+	ArrayList<String> lobby; 
 	Random gen;
 	
 	@Override
@@ -29,6 +31,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		int PORT = 27960;
 		network = new PeaceNetworkServer(PORT);
 		lobby = new ArrayList<String>();
+		lobby.add("Neutral"); // Player 0 is not a user
 		
 		gen = new Random();
 	}
@@ -62,8 +65,8 @@ public class PeaceGameServer extends ApplicationAdapter {
 			// Send a reply for their success
 			PacketMessage reply = new PacketMessage();
 			reply.type = EventType.JOIN;
-			byte[] clientID = pm.clientID;
-			network.sendToClient(clientID, reply);
+			int playerID = lobby.size() - 1;
+			network.sendToClient(reply, playerID);
 			
 			// TODO: send information about other players
 			break;
@@ -72,7 +75,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 			newGame(pm.message, lobby);
 			break;
 		case LEAVE:
-			network.disconnected(pm.clientID);
+			network.disconnected(pm.playerID);
 			lobby.remove(pm.message);
 			commonData.players.remove(pm.playerID);
 			break;
@@ -96,6 +99,8 @@ public class PeaceGameServer extends ApplicationAdapter {
 		for (String name : playerNames)
 		{
 			commonData.players.add(new Player(name));
+			
+			// TODO: broadcast to clients
 		}
 		
 		initializeMarket();

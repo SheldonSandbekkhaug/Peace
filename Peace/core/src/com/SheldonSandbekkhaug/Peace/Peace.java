@@ -6,7 +6,7 @@ import com.badlogic.gdx.Game;
 public class Peace extends Game {
 	CommonData commonData;
 	private PeaceNetworkClient network;
-	Player player; // The user
+	int playerID; // The user's playerID
 	
 	@Override
 	public void create () {		
@@ -29,11 +29,7 @@ public class Peace extends Game {
 		String playerName = "Primo";
 		PacketMessage pm = new PacketMessage(playerName); // Player name
 		pm.type = EventType.JOIN;
-		network.sendToServer(pm);
-		
-		// TODO: do this only after the game is joined successfully
-		player = new Player(playerName);
-		commonData.players.add(player);
+		network.sendToServer(pm, -1);
 		
 		// TODO: return false if join was unsuccessful
 		return true;
@@ -57,10 +53,14 @@ public class Peace extends Game {
 		switch(pm.type)
 		{
 		case JOIN: // Successfully added to the server's game
+			// Now we know our player ID
+			playerID = pm.playerID;
+			
 			// Start the game with the specified skin
 			PacketMessage reply = new PacketMessage(commonData.skin);
 			reply.type = EventType.START;
-			network.sendToServer(reply);
+			network.sendToServer(reply, playerID);
+			
 			// TODO: wait for some other condition to start the game
 			System.out.println("Client asked to start the game");
 			break;
@@ -103,7 +103,7 @@ public class Peace extends Game {
 		pm.targetTileID = tileID;
 		pm.message = e.getID();
 		
-		network.sendToServer(pm);
+		network.sendToServer(pm, playerID);
 	}
 
 	@Override
@@ -114,9 +114,8 @@ public class Peace extends Game {
 	public void dispose()
 	{
 		// TODO: Dispose textures
-		PacketMessage pm = new PacketMessage(player.getName());
+		PacketMessage pm = new PacketMessage();
 		pm.type = EventType.LEAVE;
-		pm.playerID = player.getPlayerID();
-		network.sendToServer(pm);
+		network.sendToServer(pm, playerID);
 	}
 }

@@ -113,7 +113,9 @@ public class MainGameScreen implements Screen {
 		
 		// Draw some basic player information
 		font.setColor(Color.BLACK);
-		font.draw(batch, "Funds: " + game.player.getMoney(), 100, 100);
+		int playerMoneyAmt =
+			game.commonData.players.get(game.playerID).getMoney();
+		font.draw(batch, "Funds: " + playerMoneyAmt, 100, 100);
 		
 		handleMouseInput();
 		
@@ -148,9 +150,11 @@ public class MainGameScreen implements Screen {
 			boolean pickedUpEntity = false;
 			
 			// Possibly attempt to buy the Entity
+			int playerMoneyAmt =
+					game.commonData.players.get(game.playerID).getMoney();
 			if (marketTile.getE() != null &&
 					marketTile.rect.contains(cursorPos2D) &&
-					game.player.getMoney() >= marketTile.getE().getCost())
+					playerMoneyAmt >= marketTile.getE().getCost())
 			{
 				pickedUpEntity = tryToPickUpEntity(marketTile);
 			}
@@ -195,7 +199,8 @@ public class MainGameScreen implements Screen {
 					// The server takes care of this logic
 					selectedEntityTile.setE(selectedEntity);
 					
-					game.buyEntity(selectedEntity, game.player,
+					game.buyEntity(selectedEntity,
+						game.commonData.players.get(game.playerID),
 						cursorOnTile.getTileID());
 				}
 			}
@@ -245,7 +250,7 @@ public class MainGameScreen implements Screen {
 		if (tile == null || tile.getE() == null)
 			return false;
 		
-		boolean isOwned = game.player.getPlayerID() == tile.getE().getOwner();
+		boolean isOwned = game.playerID == tile.getE().getOwner();
 		if (tile != null && tile.getE() != null &&
 				(isOwned || tile.isMarketTile()))
 		{

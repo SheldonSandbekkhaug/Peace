@@ -3,10 +3,6 @@ package com.SheldonSandbekkhaug.Peace;
 import static java.lang.System.out; // TODO: remove?
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -15,30 +11,17 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 public class PeaceNetworkClient extends Listener {
-
 	Client client;
 	Queue<PacketMessage> events;
-	byte[] macAddr; // Used to uniquely identify clients
 	
 	public PeaceNetworkClient()
 	{
 		client = new Client();
 		
-		InetAddress ip;
-		try {
-			ip = InetAddress.getLocalHost();
-			macAddr = NetworkInterface.getByInetAddress(ip).getHardwareAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		
 		events = (Queue<PacketMessage>) new LinkedList<PacketMessage>();
 		
 		// Must register every class that will be sent/received
 		client.getKryo().register(PacketMessage.class);
-		client.getKryo().register(byte[].class);
 		client.getKryo().register(EventType.class);
 		client.getKryo().register(LocationID.class);
 		
@@ -81,9 +64,9 @@ public class PeaceNetworkClient extends Listener {
 		client.sendTCP((PacketMessage)messageObj);
 	}
 	
-	public void sendToServer(PacketMessage pm)
+	public void sendToServer(PacketMessage pm, int playerID)
 	{
-		pm.clientID = macAddr;
+		pm.playerID = playerID;
 		client.sendTCP(pm);
 	}
 }
