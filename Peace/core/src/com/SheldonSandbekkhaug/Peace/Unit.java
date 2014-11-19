@@ -1,8 +1,8 @@
 package com.SheldonSandbekkhaug.Peace;
 
 public class Unit extends PeaceEntity {
-	int strength;
-	int currHP, maxHP;
+	int strength; // Damage dealt in combat
+	// NOTE: must change clone() when adding/removing properties
 	
 	public Unit()
 	{
@@ -30,21 +30,5 @@ public class Unit extends PeaceEntity {
 
 	public void setStrength(int strength) {
 		this.strength = strength;
-	}
-	
-	public int getCurrHP() {
-		return currHP;
-	}
-
-	public void setCurrHP(int currHP) {
-		this.currHP = currHP;
-	}
-
-	public int getMaxHP() {
-		return maxHP;
-	}
-
-	public void setMaxHP(int maxHP) {
-		this.maxHP = maxHP;
 	}
 }

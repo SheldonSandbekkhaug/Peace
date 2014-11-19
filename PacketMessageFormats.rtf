@@ -30,7 +30,10 @@ MOVE\
 	Moved a PeaceEntity from a normal Tile to another\
 	srcTileID: Where the Entity is coming from\
 	targetTileID: Where the Entity is going\
-	\
+ATTACK\
+	A PeaceEntity from attacked another PeaceEntity\
+	srcTileID: TileID for the attacking Entity\
+	targetTileID: TileID for the defending Entity	\
 \
 Server Sends:\
 JOIN\
@@ -54,4 +57,11 @@ MOVE\
 	Moved an Entity from one Tile to another.\
 	message: Entity ID\
 	srcTileID: TileID for where the Entity came from\
-	targetTileID: TileID for where the Entity is going}
+	targetTileID: TileID for where the Entity is going\
+UPDATE_ENTITY\
+	Changed a property for a unit\
+	message: Field to change\
+	number: New value for that field\
+REMOVE_ENTITY\
+	Removed a PeaceEntity from the game.\
+	srcTileID: The Entity\'92s tileID}

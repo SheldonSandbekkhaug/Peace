@@ -85,7 +85,7 @@ public class Peace extends Game {
 			src.getE().setOwner(pm.playerID);
 			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			break;
-		case PLAYER_UPDATE: // Update a Player field
+		case PLAYER_UPDATE: // Update a Player property
 			if (pm.message.equals("money"))
 			{
 				commonData.players.get(pm.playerID).setMoney(pm.number);
@@ -93,6 +93,12 @@ public class Peace extends Game {
 			break;
 		case MOVE: // Move a PeaceEntity
 			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
+			break;
+		case UPDATE_ENTITY: // Change an Entity's property
+			processUpdateEntity(pm);
+			break;
+		case REMOVE_ENTITY: // Destroy a PeaceEntity from the world
+			commonData.destroyEntity(pm.srcTileID);
 			break;
 		default:
 			break;
@@ -116,7 +122,7 @@ public class Peace extends Game {
 		network.sendToServer(pm, playerID);
 	}
 	
-	/* Tell the server to move the PeaceEntity at srcTileID to destTileID */
+	/* Ask the server to move the PeaceEntity at srcTileID to destTileID */
 	public void requestMoveEntity(int srcTileID, int destTileID)
 	{
 		PacketMessage pm = new PacketMessage();
@@ -125,6 +131,30 @@ public class Peace extends Game {
 		pm.targetTileID = destTileID;
 		
 		network.sendToServer(pm, playerID);
+	}
+	
+	/* Ask the server to use the PeaceEntity at srcTileID to attack the
+	 * PeaceEntity at destTileID.
+	 */
+	public void requestAttackEntity(int srcTileID, int destTileID)
+	{
+		PacketMessage pm = new PacketMessage();
+		pm.type = EventType.ATTACK;
+		pm.srcTileID = srcTileID;
+		pm.targetTileID = destTileID;
+		
+		network.sendToServer(pm, playerID);
+	}
+	
+	/* Process a PacketMessage of type UPDATE_ENTITY. */
+	public void processUpdateEntity(PacketMessage pm)
+	{
+		Tile t = commonData.getTile(pm.srcTileID);
+		PeaceEntity e = t.getE();
+		
+		if (pm.message.equals("currHP"))
+			e.setCurrHP(pm.number);
+		
 	}
 
 	@Override

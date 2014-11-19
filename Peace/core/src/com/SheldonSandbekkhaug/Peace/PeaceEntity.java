@@ -7,9 +7,10 @@ public class PeaceEntity {
 	String id;
 	String name;
 	int cost;
+	int currHP, maxHP;
 	int owner; // playerID
 	Texture img;
-	// NOTE: must adjust clone() method after adding new fields
+	// NOTE: must adjust clone() method after adding/removing properties
 	
 	public static final int NEUTRAL = 0; // Owned by no one
 	
@@ -19,6 +20,8 @@ public class PeaceEntity {
 		e.setID(id);
 		e.setName(name);
 		e.setCost(cost);
+		e.setCurrHP(currHP);
+		e.setMaxHP(maxHP);
 		e.setOwner(owner);
 		e.setImg(img);
 		return e;
@@ -46,6 +49,22 @@ public class PeaceEntity {
 
 	public void setCost(int cost) {
 		this.cost = cost;
+	}
+	
+	public int getCurrHP() {
+		return currHP;
+	}
+
+	public void setCurrHP(int currHP) {
+		this.currHP = currHP;
+	}
+
+	public int getMaxHP() {
+		return maxHP;
+	}
+
+	public void setMaxHP(int maxHP) {
+		this.maxHP = maxHP;
 	}
 
 	public int getOwner() {

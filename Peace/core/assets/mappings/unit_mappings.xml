@@ -11,7 +11,7 @@
         <id>SOLDIER_2</id>
         <name>Soldier 2</name>
         <strength>1</strength>
-        <hp>3</hp>
+        <hp>2</hp>
         <cost>2</cost>
         <img>man_40x40.png</img></unit>
     <unit>
@@ -25,7 +25,7 @@
         <id>SOLDIER_4</id>
         <name>Soldier 4</name>
         <strength>1</strength>
-        <hp>3</hp>
+        <hp>4</hp>
         <cost>4</cost>
         <img>man_40x40.png</img></unit>
     <unit>

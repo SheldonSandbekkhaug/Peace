@@ -16,6 +16,7 @@ import com.SheldonSandbekkhaug.Peace.PacketMessage;
 import com.SheldonSandbekkhaug.Peace.PeaceEntity;
 import com.SheldonSandbekkhaug.Peace.Player;
 import com.SheldonSandbekkhaug.Peace.Tile;
+import com.SheldonSandbekkhaug.Peace.Unit;
 
 public class PeaceGameServer extends ApplicationAdapter {
 	PeaceNetworkServer network;
@@ -90,6 +91,8 @@ public class PeaceGameServer extends ApplicationAdapter {
 			broadcastMoveEntity(pm.srcTileID, pm.targetTileID);
 			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			break;
+		case ATTACK: // A Player ordered an Entity to attack
+			attackEntity(pm.srcTileID, pm.targetTileID);
 		default:
 			break;
 		}
@@ -247,5 +250,70 @@ public class PeaceGameServer extends ApplicationAdapter {
 			}
 			return false;
 		}
+	}
+	
+	/* PeaceEntity at srcTileID attacks PeaceEntity at targetTileID. */
+	private void attackEntity(int srcTileID, int targetTileID)
+	{
+		Unit attacker = (Unit)commonData.getTile(srcTileID).getE();
+		PeaceEntity defender = commonData.getTile(targetTileID).getE();
+		
+		// Subtract HP from the defender
+		defender.setCurrHP(defender.getCurrHP() - attacker.getStrength());
+		
+		// Subtract HP from the attacker
+		if (defender instanceof Unit)
+		{
+			Unit defenderUnit = (Unit)defender;
+			attacker.setCurrHP(
+				attacker.getCurrHP() - defenderUnit.getStrength());
+			
+			if (attacker.getCurrHP() > 0)
+			{
+				// Attacker is still alive
+				broadcastUpdateEntity(srcTileID, "currHP", 
+					attacker.getCurrHP());
+			}
+			else
+			{
+				// Attacker is dead, remove attacker
+				broadcastRemoveEntity(srcTileID);
+				commonData.destroyEntity(srcTileID);
+			}
+		}
+		
+		if (defender.getCurrHP() > 0)
+		{
+			// Update defender HP
+			broadcastUpdateEntity(targetTileID, "currHP", 
+				defender.getCurrHP());
+		}
+		else
+		{
+			// Destroy the defender
+			broadcastRemoveEntity(targetTileID);
+			commonData.destroyEntity(targetTileID);
+		}
+	}
+	
+	/* Broadcast an update to a PeaceEntity property. */
+	private void broadcastUpdateEntity(int tileID, String property,
+			int newVal)
+	{
+		PacketMessage pm = new PacketMessage(property);
+		pm.type = EventType.UPDATE_ENTITY;
+		pm.srcTileID = tileID;
+		pm.number = newVal;
+		
+		network.broadcastToPlayers(pm);
+	}
+	
+	/* Broadcast that the Entity at tileID is removed. */
+	private void broadcastRemoveEntity(int tileID)
+	{
+		PacketMessage removeEntity = new PacketMessage();
+		removeEntity.type = EventType.REMOVE_ENTITY;
+		removeEntity.srcTileID = tileID;
+		network.broadcastToPlayers(removeEntity);
 	}
 }

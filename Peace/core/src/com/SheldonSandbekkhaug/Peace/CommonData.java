@@ -263,4 +263,35 @@ public class CommonData {
 		
 		return true;
 	}
+	
+	/* Return true if both Tiles are in the same Location, false otherwise. */
+	public boolean sameLocation(Tile a, Tile b)
+	{
+		boolean foundA = false;
+		boolean foundB = false;
+		for (Location loc : locations)
+		{
+			for (Tile t : loc.getTiles())
+			{
+				if (t == a)
+					foundA = true;
+				else if (t == b)
+					foundB = true;
+			}
+			
+			if (foundA && foundB)
+				return true;
+			else if (foundA || foundB)
+				return false;
+		}
+		
+		return false;
+	}
+	
+	/* Destroy the Entity at tileID */
+	public void destroyEntity(int tileID)
+	{
+		Tile t = getTile(tileID);
+		t.setE(null);
+	}
 }
