@@ -203,6 +203,11 @@ public class MainGameScreen implements Screen {
 						game.commonData.players.get(game.playerID),
 						cursorOnTile.getTileID());
 				}
+				else
+				{
+					// Normal move
+					cursorOnTile.setE(selectedEntity);
+				}
 			}
 			else if (selectedEntity != null)
 			{
