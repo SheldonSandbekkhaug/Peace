@@ -7,6 +7,7 @@ public class Peace extends Game {
 	CommonData commonData;
 	private PeaceNetworkClient network;
 	int playerID; // The user's playerID
+	int activePlayer; // playerID for whose turn it is
 	
 	@Override
 	public void create () {		
@@ -30,6 +31,9 @@ public class Peace extends Game {
 		PacketMessage pm = new PacketMessage(playerName); // Player name
 		pm.type = EventType.JOIN;
 		network.sendToServer(pm, -1);
+		
+		// TODO: have the server assign active player number
+		activePlayer = 1;
 		
 		// TODO: return false if join was unsuccessful
 		return true;
@@ -69,21 +73,27 @@ public class Peace extends Game {
 			// Add an Entity to the Market
 			e = commonData.availableForMarket.get(pm.message);
 			// TODO: generalize for other Entity types
+			if (pm.srcTileID != -1)
+			{
+				Tile t = commonData.getTile(pm.srcTileID);
+				t.setE(null);
+			}
 			commonData.addToMarket(e);
 			break;
 		case FROM_MARKET: // A Player bought something
-			Tile src = commonData.getTileFromMarket(pm.message);
-			e = src.getE();
-			e.setOwner(pm.playerID);
-			Tile targetTile = commonData.getTile(pm.targetTileID);
-			targetTile.setE(e);
-			src.setE(null);
+			Tile src = commonData.getTile(pm.srcTileID);
+			src.getE().setOwner(pm.playerID);
+			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			break;
-		case PLAYER_UPDATE:
+		case PLAYER_UPDATE: // Update a Player field
 			if (pm.message.equals("money"))
 			{
 				commonData.players.get(pm.playerID).setMoney(pm.number);
 			}
+			break;
+		case MOVE: // Move a PeaceEntity
+			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
+			break;
 		default:
 			break;
 		}
@@ -102,6 +112,17 @@ public class Peace extends Game {
 		pm.playerID = p.getPlayerID();
 		pm.targetTileID = tileID;
 		pm.message = e.getID();
+		
+		network.sendToServer(pm, playerID);
+	}
+	
+	/* Tell the server to move the PeaceEntity at srcTileID to destTileID */
+	public void requestMoveEntity(int srcTileID, int destTileID)
+	{
+		PacketMessage pm = new PacketMessage();
+		pm.type = EventType.MOVE;
+		pm.srcTileID = srcTileID;
+		pm.targetTileID = destTileID;
 		
 		network.sendToServer(pm, playerID);
 	}

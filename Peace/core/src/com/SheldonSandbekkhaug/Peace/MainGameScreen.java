@@ -187,36 +187,66 @@ public class MainGameScreen implements Screen {
 					selectedEntityPos.y);
 			}
 		}
-		else if (!Gdx.input.isTouched())
+		else if (!Gdx.input.isTouched() && selectedEntity != null)
 		{
-			if (selectedEntity != null && cursorOnTile != null && 
-					cursorOnTile.getE() == null)
-			{
-				// If the Entity came from the Market, buy it
-				if (selectedEntityTile.isMarketTile())
-				{
-					// Put the selected PeaceEntity back in the market
-					// The server takes care of this logic
-					selectedEntityTile.setE(selectedEntity);
-					
-					game.buyEntity(selectedEntity,
-						game.commonData.players.get(game.playerID),
-						cursorOnTile.getTileID());
-				}
-				else
-				{
-					// Normal move
-					cursorOnTile.setE(selectedEntity);
-				}
-			}
-			else if (selectedEntity != null)
+			if (cursorOnTile == null) // Not a valid target Tile
 			{
 				// Return the Entity to its original location
 				selectedEntityTile.setE(selectedEntity);
 			}
-			
+			else
+			{
+				releaseSelectedEntityOverTile(cursorOnTile);
+			}
 			selectedEntity = null;
 			selectedEntityTile = null;
+		}
+	}
+	
+	/* Try to release the selected PeaceEntity into the specified Tile. */
+	private void releaseSelectedEntityOverTile(Tile cursorOnTile)
+	{
+		// Examine the target PeaceEntity
+		PeaceEntity targetEntity = cursorOnTile.getE();
+		
+		// Coming from market
+		if (selectedEntityTile.isMarketTile())
+		{
+			if (targetEntity == null)
+			{
+				// Put the selected PeaceEntity back in the market
+				selectedEntityTile.setE(selectedEntity);
+				
+				// Server will send an event to move the Entity
+				game.buyEntity(selectedEntity,
+					game.commonData.players.get(game.playerID),
+					cursorOnTile.getTileID());
+			}
+			else
+			{
+				// Don't remove the PeaceEntity from the Market
+				selectedEntityTile.setE(selectedEntity);
+			}
+		}
+		else
+		{
+			// Move to empty tile or attack?
+			if (targetEntity == null) // Normal move
+			{
+				// Undo state changes and allow server to handle logic
+				selectedEntityTile.setE(selectedEntity);
+				game.requestMoveEntity(selectedEntityTile.getTileID(),
+					cursorOnTile.getTileID());
+			}
+			else if (targetEntity.getOwner() == selectedEntity.getOwner())
+			{
+				// Invalid move, return to original location
+				selectedEntityTile.setE(selectedEntity);
+			}
+			else if (targetEntity.getOwner() != selectedEntity.getOwner())
+			{
+				// TODO: attack enemy
+			}
 		}
 	}
 	

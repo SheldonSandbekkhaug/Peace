@@ -8,7 +8,6 @@ public class PacketMessage {
 	public EventType type;
 	
 	public int srcTileID;
-	
 	public int targetTileID;
 	
 	public PacketMessage()

@@ -58,12 +58,13 @@ public class PeaceGameServer extends ApplicationAdapter {
 	
 	public void processNetworkEvent(PacketMessage pm)
 	{
+		PacketMessage reply;
 		switch(pm.type)
 		{
 		case JOIN: // Client attempts to join the game
 			lobby.add(pm.message);
 			// Send a reply for their success
-			PacketMessage reply = new PacketMessage();
+			reply = new PacketMessage();
 			reply.type = EventType.JOIN;
 			int playerID = lobby.size() - 1;
 			network.sendToClient(reply, playerID);
@@ -84,6 +85,10 @@ public class PeaceGameServer extends ApplicationAdapter {
 			break;
 		case FROM_MARKET: // A Player bought an Entity
 			buyEntity(pm.playerID, pm.message, pm.targetTileID);
+			break;
+		case MOVE: // A Player moved an Entity
+			broadcastMoveEntity(pm.srcTileID, pm.targetTileID);
+			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			break;
 		default:
 			break;
@@ -124,6 +129,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 			
 			// Create a TO_MARKET and broadcast it to the players
 			PacketMessage event = new PacketMessage(e.getID());
+			event.srcTileID = -1;
 			event.type = EventType.TO_MARKET;
 			network.broadcastToPlayers(event);
 		}
@@ -140,6 +146,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		// TODO: check other EntityBanks for certain entities
 		Tile t = commonData.getTileFromMarket(entityID);
 		PeaceEntity e = t.getE();
+		e.setOwner(playerID);
 
 		// Subtract the cost of the Entity from the Player's funds
 		p.setMoney(p.getMoney() - e.getCost());
@@ -151,14 +158,18 @@ public class PeaceGameServer extends ApplicationAdapter {
 		moneyUpdate.number = p.getMoney();
 		network.broadcastToPlayers(moneyUpdate);
 		
-		// Update market
-		commonData.removeFromMarket(e);
-		e.setOwner(playerID);
+		// Move the PeaceEntity from the market to its destination
+		commonData.moveEntity(t.getTileID(), destTileID);
+		
+		// Update market. Have to create a "dummy" Entity to remove from Market
+		PeaceEntity eClone = e.clone();
+		commonData.removeFromMarket(eClone);
 		
 		// Tell all players which Entity was bought and its destination
-		PacketMessage marketUpdate = new PacketMessage(e.getID());
+		PacketMessage marketUpdate = new PacketMessage();
 		marketUpdate.type = EventType.FROM_MARKET;
 		marketUpdate.playerID = playerID;
+		marketUpdate.srcTileID = t.getTileID();
 		marketUpdate.targetTileID = destTileID;
 		network.broadcastToPlayers(marketUpdate);
 		
@@ -176,6 +187,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		// Tell all clients which Entity was added
 		PacketMessage marketAdd = new PacketMessage(newEntity.getID());
 		marketAdd.type = EventType.TO_MARKET;
+		marketAdd.srcTileID = t.getTileID();
 		network.broadcastToPlayers(marketAdd);
 	}
 	
@@ -208,5 +220,32 @@ public class PeaceGameServer extends ApplicationAdapter {
 		
 		// Also should never get to this point
 		return null;
+	}
+	
+	/* Move the Entity at srcTileID to destTileID.
+	 * Return true if successful, false otherwise.
+	 */
+	private boolean broadcastMoveEntity(int srcTileID, int destTileID)
+	{
+		if (commonData.moveEntity(srcTileID, destTileID))
+		{
+			PacketMessage reply = new PacketMessage();
+			reply = new PacketMessage();
+			reply.type = EventType.MOVE;
+			reply.srcTileID = srcTileID;
+			reply.targetTileID = destTileID;
+			network.broadcastToPlayers(reply);
+			return true;
+		}
+		else
+		{
+			System.out.println("Could not move PeaceEntity");
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
 	}
 }

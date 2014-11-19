@@ -25,24 +25,30 @@ STOP\
 FROM_MARKET\
 	Moved a PeaceEntity from the Market to somewhere else.\
 	message: EntityID\
-	targetTileID: where the Entity is going\
+	targetTileID: Where the Entity is going\
+MOVE\
+	Moved a PeaceEntity from a normal Tile to another\
+	srcTileID: Where the Entity is coming from\
+	targetTileID: Where the Entity is going\
 	\
 \
 Server Sends:\
 JOIN\
 	The client successfully joined the game.\
-	message: the client\'92s player name\
+	message: The client\'92s player name\
 TO_MARKET\
 	Added a PeaceEntity to the Market.\
 	message: Entity ID\
+	srcTileID: TileID of the market tile that is having its PeaceEntity removed\
 FROM_MARKET\
 	Removed a PeaceEntity from the Market.\
-	message: EntityID\
-	playerID: the player who bought the Entity\
+	srcTileID: Where the Entity is coming from\
+	targetTileID: Where the Entity is going\
+	playerID: The player who bought the Entity\
 PLAYER_UPDATE\
 	Changed something about a Player.\
-	message: player field to set\
-	number: the new value for that field\
+	message: Player field to set\
+	number: The new value for that field\
 	targetTileID: TileID for where the Entity is going\
 MOVE\
 	Moved an Entity from one Tile to another.\

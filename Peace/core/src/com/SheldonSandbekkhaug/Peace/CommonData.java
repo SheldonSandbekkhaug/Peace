@@ -244,4 +244,23 @@ public class CommonData {
 		
 		return null;
 	}
+	
+	/* Move the Entity at srcTileID to destTileID.
+	 * Return true if successful, false otherwise.
+	 */
+	public boolean moveEntity(int srcTileID, int destTileID)
+	{
+		Tile dest = getTile(destTileID);
+		if (dest == null || dest.getE() != null)
+			return false;
+		
+		Tile src = getTile(srcTileID);
+		if (src == null || src.getE() == null)
+			return false;
+		
+		dest.setE(src.getE());
+		src.setE(null);
+		
+		return true;
+	}
 }
