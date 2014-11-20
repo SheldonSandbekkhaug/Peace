@@ -17,6 +17,7 @@ public class CommonData {
 	public HashMap<String, PeaceEntity> availableForMarket;
 	private ArrayList<Tile> market;
 	public ArrayList<Player> players; // Indexed by playerID
+	int activePlayer; // playerID for whose turn it is
 	
 	/*
 	 * Create the commonData object.
@@ -293,5 +294,14 @@ public class CommonData {
 	{
 		Tile t = getTile(tileID);
 		t.setE(null);
+	}
+	
+	/* Change whose turn it is. */
+	public void nextTurn()
+	{
+		if (activePlayer >= players.size())
+			activePlayer = 1; // 0 is not a user
+		else
+			activePlayer++;
 	}
 }

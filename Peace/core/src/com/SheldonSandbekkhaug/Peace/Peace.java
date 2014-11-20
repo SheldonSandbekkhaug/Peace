@@ -7,7 +7,7 @@ public class Peace extends Game {
 	CommonData commonData;
 	private PeaceNetworkClient network;
 	int playerID; // The user's playerID
-	int activePlayer; // playerID for whose turn it is
+	
 	
 	@Override
 	public void create () {		
@@ -33,7 +33,7 @@ public class Peace extends Game {
 		network.sendToServer(pm, -1);
 		
 		// TODO: have the server assign active player number
-		activePlayer = 1;
+		commonData.activePlayer = 1;
 		
 		// TODO: return false if join was unsuccessful
 		return true;
