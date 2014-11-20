@@ -32,9 +32,16 @@ public class PeaceGameServer extends ApplicationAdapter {
 		int PORT = 27960;
 		network = new PeaceNetworkServer(PORT);
 		lobby = new ArrayList<String>();
-		lobby.add("Neutral"); // Player 0 is not a user
+		clearLobby(lobby);
 		
 		gen = new Random();
+	}
+	
+	/* Make the Lobby ready for a new set of users. Modifies in-place. */
+	private void clearLobby(ArrayList<String> l)
+	{
+		l.clear();
+		l.add("Neutral"); // Player 0 is not a user
 	}
 
 	public void render () {
@@ -68,13 +75,15 @@ public class PeaceGameServer extends ApplicationAdapter {
 			reply = new PacketMessage();
 			reply.type = EventType.JOIN;
 			int playerID = lobby.size() - 1;
+			reply.playerID = playerID;
 			network.sendToClient(reply, playerID);
-			
-			// TODO: send information about other players
 			break;
 		case START:
 			out.println("Received request to start game");
 			newGame(pm.message, lobby);
+			break;
+		case NEXT_TURN:
+			commonData.nextTurn();
 			break;
 		case LEAVE:
 			network.disconnected(pm.playerID);
@@ -83,16 +92,22 @@ public class PeaceGameServer extends ApplicationAdapter {
 			break;
 		case STOP:
 			commonData = null;
+			clearLobby(lobby);
 			break;
 		case FROM_MARKET: // A Player bought an Entity
-			buyEntity(pm.playerID, pm.message, pm.targetTileID);
+			if (pm.playerID == commonData.getActivePlayer())
+				buyEntity(pm.playerID, pm.message, pm.targetTileID);
 			break;
 		case MOVE: // A Player moved an Entity
-			broadcastMoveEntity(pm.srcTileID, pm.targetTileID);
-			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
+			if (pm.playerID == commonData.getActivePlayer())
+			{
+				broadcastMoveEntity(pm.srcTileID, pm.targetTileID);
+				commonData.moveEntity(pm.srcTileID, pm.targetTileID);
+			}
 			break;
 		case ATTACK: // A Player ordered an Entity to attack
-			attackEntity(pm.srcTileID, pm.targetTileID);
+			if (pm.playerID == commonData.getActivePlayer())
+				attackEntity(pm.srcTileID, pm.targetTileID);
 		default:
 			break;
 		}
@@ -104,14 +119,26 @@ public class PeaceGameServer extends ApplicationAdapter {
 		commonData = new CommonData(false); // Creates Unit table and applies Skin
 		
 		// Add Players to the game
+		int i = 1;
 		for (String name : playerNames)
 		{
-			commonData.players.add(new Player(name));
+			commonData.players.add(new Player(name, i));
 			
-			// TODO: broadcast to clients
+			PacketMessage pm = new PacketMessage(name);
+			pm.type = EventType.ADD_PLAYER;
+			pm.playerID = i;
+			network.broadcastToPlayers(pm);
+			
+			i++;
 		}
 		
 		initializeMarket();
+		
+		commonData.running = true;
+		
+		PacketMessage setupDone = new PacketMessage();
+		setupDone.type = EventType.SETUP_DONE;
+		network.broadcastToPlayers(setupDone);
 	}
 	
 	/*

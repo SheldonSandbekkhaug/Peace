@@ -8,11 +8,14 @@ public class PeaceEntity {
 	String name;
 	int cost;
 	int currHP, maxHP;
-	int owner; // playerID
+	int owner; // playerID, 0 by default
 	Texture img;
 	// NOTE: must adjust clone() method after adding/removing properties
 	
-	public static final int NEUTRAL = 0; // Owned by no one
+	public PeaceEntity()
+	{
+		owner = Player.NEUTRAL;
+	}
 	
 	public PeaceEntity clone()
 	{

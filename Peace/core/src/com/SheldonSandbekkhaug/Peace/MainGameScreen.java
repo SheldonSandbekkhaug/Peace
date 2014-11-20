@@ -3,6 +3,7 @@ package com.SheldonSandbekkhaug.Peace;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -111,13 +112,18 @@ public class MainGameScreen implements Screen {
 			}
 		}
 		
-		// Draw some basic player information
-		font.setColor(Color.BLACK);
-		int playerMoneyAmt =
-			game.commonData.players.get(game.playerID).getMoney();
-		font.draw(batch, "Funds: " + playerMoneyAmt, 100, 100);
-		
-		handleMouseInput();
+		if (game.commonData.running)
+		{
+			// Draw some basic player information
+			font.setColor(Color.BLACK);
+			int playerMoneyAmt = 
+				game.commonData.players.get(game.playerID).getMoney();
+			
+			font.draw(batch, "Funds: " + playerMoneyAmt, 100, 100);
+			
+			handleMouseInput();
+			handleKeyInput();
+		}
 		
 		batch.end();
 	}
@@ -325,6 +331,20 @@ public class MainGameScreen implements Screen {
 		return false;
 	}
 	
+	/* Handle key input. */
+	private void handleKeyInput()
+	{
+		if(Gdx.input.isKeyJustPressed(Keys.ENTER))
+		{
+			// End this Player's turn.
+			System.out.println("It is now Player " + 
+					game.commonData.getActivePlayer() + "'s turn." +
+					"You are Player " + game.playerID);
+			game.requestEndTurn();
+		}
+		
+	}
+	
 	/* 
 	 * Display a small box containing information about the given Entity.
 	 * x and y are the bottom-right corner of the Entity.
@@ -352,14 +372,19 @@ public class MainGameScreen implements Screen {
 		if (e instanceof Unit)
 		{
 			Unit u = (Unit)e;
-			font.draw(batch, "Str: " + u.getStrength(),
-				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (2 * textHeight));
+			font.draw(batch, "Str: " + u.getStrength(),	textX,
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (2 * textHeight));
 			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
-				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (3 * textHeight));
-			font.draw(batch, "Cost: " + u.getCost(),
-				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (4 * textHeight));
-			
+				textX,
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (3 * textHeight));
+			font.draw(batch, "Cost: " + u.getCost(), textX,
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (4 * textHeight));
 		}
+		
+		if (e.getOwner() != 0)
+			font.draw(batch, "Owner: " + e.getOwner(),
+				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (5 * textHeight));
+		
 		// TODO: Handle other types of PeaceEntities
 	}
 	

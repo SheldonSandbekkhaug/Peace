@@ -16,6 +16,8 @@ JOIN\
 START\
 	Request to start the game.\
 	message: name of the skin\
+NEXT_TURN\
+	Player ends his/her turn.\
 LEAVE\
 	This client left the game.\
 	default\
@@ -39,6 +41,10 @@ Server Sends:\
 JOIN\
 	The client successfully joined the game.\
 	message: The client\'92s player name\
+SETUP_DONE\
+	Server is done setting up the game\
+NEXT_TURN\
+	The active Player ended their turn.\
 TO_MARKET\
 	Added a PeaceEntity to the Market.\
 	message: Entity ID\
@@ -48,6 +54,10 @@ FROM_MARKET\
 	srcTileID: Where the Entity is coming from\
 	targetTileID: Where the Entity is going\
 	playerID: The player who bought the Entity\
+ADD_PLAYER\
+	Add a Player to the game\
+	message: Player name\
+	playerID: Player number\
 PLAYER_UPDATE\
 	Changed something about a Player.\
 	message: Player field to set\

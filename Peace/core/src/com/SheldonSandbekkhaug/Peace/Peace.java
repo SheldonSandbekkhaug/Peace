@@ -32,9 +32,6 @@ public class Peace extends Game {
 		pm.type = EventType.JOIN;
 		network.sendToServer(pm, -1);
 		
-		// TODO: have the server assign active player number
-		commonData.activePlayer = 1;
-		
 		// TODO: return false if join was unsuccessful
 		return true;
 	}
@@ -68,7 +65,12 @@ public class Peace extends Game {
 			// TODO: wait for some other condition to start the game
 			System.out.println("Client asked to start the game");
 			break;
-			// TODO: send/receive information about other players
+		case SETUP_DONE: // Server is done setting up
+			commonData.running = true;
+			break;
+		case NEXT_TURN: // End turn and go to next Player
+			commonData.nextTurn();
+			break;
 		case TO_MARKET:
 			// Add an Entity to the Market
 			e = commonData.availableForMarket.get(pm.message);
@@ -84,6 +86,10 @@ public class Peace extends Game {
 			Tile src = commonData.getTile(pm.srcTileID);
 			src.getE().setOwner(pm.playerID);
 			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
+			break;
+		case ADD_PLAYER: // Add a Player to the game
+			Player p = new Player(pm.message, pm.playerID);
+			commonData.players.add(p);
 			break;
 		case PLAYER_UPDATE: // Update a Player property
 			if (pm.message.equals("money"))
@@ -154,7 +160,14 @@ public class Peace extends Game {
 		
 		if (pm.message.equals("currHP"))
 			e.setCurrHP(pm.number);
-		
+	}
+	
+	/* Tell the server this Player is done with this turn. */
+	public void requestEndTurn()
+	{
+		PacketMessage pm = new PacketMessage();
+		pm.type = EventType.NEXT_TURN;
+		network.sendToServer(pm, playerID);
 	}
 
 	@Override

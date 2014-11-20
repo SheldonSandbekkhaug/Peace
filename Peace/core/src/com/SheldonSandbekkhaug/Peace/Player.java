@@ -1,32 +1,28 @@
 package com.SheldonSandbekkhaug.Peace;
 
 public class Player {
-	int playerID;
-	private static int lastPlayerID = -1;
+	private int playerID;
 	String name;
 	int money;
 	int vp; // Victory points
 	
+	public static final int NEUTRAL = 0;
+	
 	public Player()
 	{
 		super();
-		playerID = lastPlayerID + 1;
-		lastPlayerID = playerID;
 		money = 1000;
 	}
 
-	public Player(String name)
+	public Player(String name, int pid)
 	{
 		this();
 		this.name = name;
+		this.playerID = pid;
 	}
 	
 	public int getPlayerID() {
 		return playerID;
-	}
-
-	public void setPlayerID(int playerID) {
-		this.playerID = playerID;
 	}
 
 	public String getName() {

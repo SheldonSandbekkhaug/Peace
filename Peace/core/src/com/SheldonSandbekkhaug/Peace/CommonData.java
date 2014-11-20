@@ -17,7 +17,9 @@ public class CommonData {
 	public HashMap<String, PeaceEntity> availableForMarket;
 	private ArrayList<Tile> market;
 	public ArrayList<Player> players; // Indexed by playerID
-	int activePlayer; // playerID for whose turn it is
+	private int activePlayer; // playerID for whose turn it is
+	
+	public boolean running = false; // True if the game is running
 	
 	/*
 	 * Create the commonData object.
@@ -28,7 +30,8 @@ public class CommonData {
 	{
 		skin = "default_1.0";
 		players = new ArrayList<Player>();
-		players.add(new Player("Neutral"));
+		players.add(new Player("Neutral", Player.NEUTRAL));
+		activePlayer = 1;
 		
 		availableForMarket = new HashMap<String, PeaceEntity>();
 		
@@ -75,11 +78,12 @@ public class CommonData {
 		// Read all the Units in the active skin
 		units = reader.applySkin(units, skin);
 		
+		// TODO: remove test Units
 		// Create Units for testing and place them in a Location
 		for (int i = 1; i < 5; i++)
 		{
 			Unit testUnit = units.get("SOLDIER_" + i);
-			testUnit.owner = 1;
+			testUnit.owner = 0;
 			Location testLoc = locations.get(0);
 			Tile t = testLoc.tiles[i];
 			t.setE(testUnit);
@@ -154,6 +158,7 @@ public class CommonData {
 			if (t.getE() == null)
 			{
 				t.setE(e.clone());
+				t.getE().setOwner(Player.NEUTRAL);
 				return true;
 			}
 		}
@@ -294,6 +299,11 @@ public class CommonData {
 	{
 		Tile t = getTile(tileID);
 		t.setE(null);
+	}
+	
+	public int getActivePlayer()
+	{
+		return activePlayer;
 	}
 	
 	/* Change whose turn it is. */

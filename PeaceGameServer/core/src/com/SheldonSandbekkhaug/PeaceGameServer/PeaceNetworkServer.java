@@ -118,6 +118,7 @@ public class PeaceNetworkServer extends Listener {
 		if (numClients <= 0)
 		{
 			// Close the game
+			System.out.println("Closing game.");
 			PacketMessage endGame = new PacketMessage();
 			endGame.type = EventType.STOP;
 			events.offer(endGame);
@@ -127,14 +128,10 @@ public class PeaceNetworkServer extends Listener {
 	public void disconnected(int playerID)
 	{
 		Connection c = clients.get(playerID);
-		
-		
-		
 		disconnected(c);
 	}
 	
 	/* Send pm to the client specified by clientID */
-	//public void sendToClient(byte[] clientID, PacketMessage pm) // TODO: remove
 	public void sendToClient(PacketMessage pm, int playerID)
 	{
 		Connection c = clients.get(playerID);

@@ -82,7 +82,7 @@ public class XMLHandler {
 			{
 				Element unitElement = unitCatalog.getChild(i);
 				Unit u = new Unit();
-				u.setOwner(PeaceEntity.NEUTRAL);
+				u.setOwner(Player.NEUTRAL);
 				
 				// Get all properties for this Unit
 				for (int j = 0; j < unitElement.getChildCount(); j++)
