@@ -6,54 +6,62 @@
         <strength>1</strength>
         <hp>3</hp>
         <cost>1</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
     <unit>
         <id>SOLDIER_2</id>
         <name>Soldier 2</name>
         <strength>1</strength>
         <hp>2</hp>
         <cost>2</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
     <unit>
         <id>SOLDIER_3</id>
         <name>Soldier 3</name>
         <strength>1</strength>
         <hp>3</hp>
         <cost>3</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
 	<unit>
         <id>SOLDIER_4</id>
         <name>Soldier 4</name>
         <strength>1</strength>
         <hp>4</hp>
         <cost>4</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
     <unit>
         <id>SOLDIER_5</id>
         <name>Soldier 5</name>
         <strength>1</strength>
         <hp>3</hp>
         <cost>5</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
     <unit>
         <id>SOLDIER_6</id>
         <name>Soldier 6</name>
         <strength>1</strength>
         <hp>3</hp>
         <cost>6</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
 	<unit>
         <id>SOLDIER_7</id>
         <name>Soldier 7</name>
         <strength>1</strength>
         <hp>7</hp>
         <cost>7</cost>
-        <img>man_40x40.png</img></unit>
-<unit>
+        <img>man_40x40.png</img>
+    </unit>
+	<unit>
         <id>SOLDIER_8</id>
         <name>Soldier 8</name>
         <strength>8</strength>
         <hp>3</hp>
         <cost>8</cost>
-        <img>man_40x40.png</img></unit>
+        <img>man_40x40.png</img>
+    </unit>
 </catalog>
