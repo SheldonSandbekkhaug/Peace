@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -26,7 +27,7 @@ public class MainGameScreen implements Screen {
 	
 	// Constants for positioning elements on the screen
 	public static final int WINDOW_WIDTH = 1000;
-	public static final int WINDOW_HEIGHT = 800;
+	public static final int WINDOW_HEIGHT = 794;
 	
 	// Distance between window edge and game world
 	public static final int X_BUFFER = 20;
@@ -63,8 +64,16 @@ public class MainGameScreen implements Screen {
 	
     public MainGameScreen(final Peace gam) {
         game = gam;
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        // Set up the camera
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        
+        camera = new OrthographicCamera(WINDOW_WIDTH, WINDOW_WIDTH * (h / w));
+        camera.position.set(camera.viewportWidth / 2f, 
+        		camera.viewportHeight / 2f, 0);
+        camera.update();
+        
         setLocationPositions(game.commonData.locations);
         batch = new SpriteBatch();
         font = new BitmapFont(); // Defaults to Arial
@@ -84,11 +93,12 @@ public class MainGameScreen implements Screen {
 		Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		batch.setProjectionMatrix(camera.combined);
+		camera.update();
+		
 		batch.begin();
 		
 		game.processEvents();
-		
-		camera.update();
 		
 		// Draw locations
 		for (Location l : game.commonData.locations)
@@ -254,7 +264,6 @@ public class MainGameScreen implements Screen {
 			else if (targetEntity.getOwner() != selectedEntity.getOwner() &&
 					selectedEntity instanceof Unit)
 			{
-				System.out.println("Attack move"); // TODO: remove
 				// Attack enemy
 				Unit u = (Unit)selectedEntity;
 				
@@ -265,7 +274,6 @@ public class MainGameScreen implements Screen {
 				// Attacker must have strength > 0
 				if (u.getStrength() > 0 && inSameLocation)
 				{
-					System.out.println("Request attack"); // TODO: remove
 					game.requestAttackEntity(selectedEntityTile.getTileID(),
 						cursorOnTile.getTileID());
 					
@@ -323,8 +331,6 @@ public class MainGameScreen implements Screen {
 				
 				tile.setE(null);
 				
-				// TODO: send message to server?
-				
 				return true;
 			}
 		}
@@ -343,6 +349,39 @@ public class MainGameScreen implements Screen {
 			game.requestEndTurn();
 		}
 		
+		// TODO: change key mappings. Use mouse controls too.
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+            camera.zoom += 0.02;
+            System.out.println("zoom: " + camera.zoom);
+        }
+        if (Gdx.input.isKeyPressed(Keys.Q)) {
+            camera.zoom -= 0.02;
+        }
+        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+            camera.translate(-3, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+            camera.translate(3, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+            camera.translate(0, -3, 0);
+        }
+        if (Gdx.input.isKeyPressed(Keys.UP)) {
+            camera.translate(0, 3, 0);
+        }
+        
+        // Don't show too little of the world or go out of bounds
+        float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
+        float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
+
+        camera.zoom = MathUtils.clamp(camera.zoom, 0.1f,
+        		WINDOW_WIDTH/camera.viewportWidth);
+        camera.position.x = MathUtils.clamp(camera.position.x,
+        		effectiveViewportWidth / 2f,
+        		WINDOW_WIDTH - effectiveViewportWidth / 2f);
+        camera.position.y = MathUtils.clamp(camera.position.y,
+        		effectiveViewportHeight / 2f,
+        		WINDOW_HEIGHT - effectiveViewportHeight / 2f);
 	}
 	
 	/* 
@@ -444,10 +483,11 @@ public class MainGameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		// Resize camera's projection
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.update();
-		// TODO: fix this
+		// Changes perceived zoom when resized
+		// Don't change these, otherwise game might crash when moving Entities
+		camera.viewportWidth = WORLD_WIDTH;
+		camera.viewportHeight = WORLD_WIDTH * height/width;
+        camera.update();
 	}
 
 	@Override
