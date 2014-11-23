@@ -1,6 +1,7 @@
 package com.SheldonSandbekkhaug.Peace;
 
 public enum Attribute {
+	ARMORED,
 	NORMAL,
 	RAIDER;
 	
@@ -9,12 +10,14 @@ public enum Attribute {
 	{
 		switch(this)
 		{
-			case NORMAL:
-				return "Normal";
-			case RAIDER:
-				return "Raider";
-			default:
-				return "Default Attribute";
+		case ARMORED:
+			return "Armored";
+		case NORMAL:
+			return "Normal";
+		case RAIDER:
+			return "Raider";
+		default:
+			return "Default Attribute";
 		}
 	}
 }

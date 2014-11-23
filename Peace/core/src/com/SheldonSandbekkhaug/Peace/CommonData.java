@@ -89,6 +89,13 @@ public class CommonData {
 			t.setE(testUnit);
 		}
 		
+		// Testing new PeaceEntities
+		Unit tank = units.get("TANK_1");
+		tank.owner = 0;
+		Location testLoc = locations.get(1);
+		Tile t = testLoc.tiles[0];
+		t.setE(tank);
+		
 		// Add Units to the Market availability HashMap
 		for (String id : units.keySet())
 		{

@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
     <unit>
+        <id>GLASS_CANNON_1</id>
+        <name>Glass Cannon</name>
+        <strength>5</strength>
+        <hp>3</hp>
+        <cost>15</cost>
+        <img>GLASS_CANNON_1.png</img>
+        <attribute>NORMAL</attribute>
+    </unit>
+    <unit>
         <id>SOLDIER_1</id>
         <name>Soldier 1</name>
         <strength>1</strength>
@@ -81,5 +90,23 @@
         <cost>1</cost>
         <img>RAIDER_1.png</img>
         <attribute>RAIDER</attribute>
+    </unit>
+	<unit>
+        <id>TANK_1</id>
+        <name>Tank</name>
+        <strength>3</strength>
+        <hp>4</hp>
+        <cost>14</cost>
+        <img>TANK_1.png</img>
+        <attribute>ARMORED</attribute>
+    </unit>
+    <unit>
+        <id>TURTLE_1</id>
+        <name>Turtle</name>
+        <strength>1</strength>
+        <hp>10</hp>
+        <cost>10</cost>
+        <img>TURTLE_1.png</img>
+        <attribute>NORMAL</attribute>
     </unit>
 </catalog>

@@ -299,14 +299,14 @@ public class PeaceGameServer extends ApplicationAdapter {
 		PeaceEntity defender = commonData.getTile(targetTileID).getE();
 		
 		// Subtract HP from the defender
-		defender.setCurrHP(defender.getCurrHP() - attacker.getStrength());
+		damageEntity(attacker, defender);
 		
-		// Subtract HP from the attacker
+		// Subtract HP from the attacker if applicable
 		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER))
 		{
 			Unit defenderUnit = (Unit)defender;
-			attacker.setCurrHP(
-				attacker.getCurrHP() - defenderUnit.getStrength());
+			
+			damageEntity(defenderUnit, attacker);
 			
 			if (attacker.getCurrHP() > 0)
 			{
@@ -334,6 +334,20 @@ public class PeaceGameServer extends ApplicationAdapter {
 			broadcastRemoveEntity(targetTileID);
 			commonData.destroyEntity(targetTileID);
 		}
+	}
+	
+	/* e1 damages e2 */
+	private void damageEntity(Unit e1, PeaceEntity e2)
+	{
+		int dmg = e1.getStrength();
+		
+		// Reduce damage taken by 1 if armored
+		if (e2.hasAttribute(Attribute.ARMORED))
+		{
+			dmg = (dmg <= 0) ? 0 : dmg - 1;
+		}
+		
+		e2.setCurrHP(e2.getCurrHP() - dmg);
 	}
 	
 	/* Broadcast an update to a PeaceEntity property. */
