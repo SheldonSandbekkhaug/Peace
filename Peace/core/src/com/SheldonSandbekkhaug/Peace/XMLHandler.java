@@ -83,61 +83,72 @@ public class XMLHandler {
 				Element unitElement = unitCatalog.getChild(i);
 				Unit u = new Unit();
 				u.setOwner(Player.NEUTRAL);
-				
-				// Get all properties for this Unit
-				for (int j = 0; j < unitElement.getChildCount(); j++)
-				{
-					Element property = unitElement.getChild(j);
-					
-					if (property.getName().equals("cost"))
-					{
-						u.setCost(Integer.parseInt(property.getText()));
-					}
-					else if (property.getName().equals("id"))
-					{
-						u.setID(property.getText());
-					}
-					else if (property.getName().equals("name"))
-					{
-						u.setName(property.getText());
-					}
-					else if (property.getName().equals("strength"))
-					{
-						u.setStrength(Integer.parseInt(property.getText()));
-					}
-					else if (property.getName().equals("hp"))
-					{
-						u.setMaxHP(Integer.parseInt(property.getText()));
-						u.setCurrHP(u.getMaxHP());
-					}
-					else if (property.getName().equals("img"))
-					{
-						// Don't need to load renderData on server
-						if (renderData == true)
-						{
-							// Load the unit's image
-							Texture t = new Texture(
-								Gdx.files.internal(
-									commonData.skin + 
-									"/unit_pictures/" + 
-									property.getText()));
-							u.setImg(t);
-						}
-					}
-					else
-					{
-						// ERROR
-						System.out.println("Unidentified property in " + 
-							mappings_filepath + ": " + property.getName());
-						System.exit(1);
-					}
+				readUnitProperties(unitElement, u, renderData, 
+					mappings_filepath);
 				
 				units.put(u.id, u);
-				}
 			}
 		}
 		
 		return units;
+	}
+	
+	/* Modifies Unit u in-place to have the properties in the given Element. 
+	 * If renderData is false, ignore data needed for rendering.
+	 * mappings_filepath is the filepath to the file that is being read. This
+	 * is used for error reporting.
+	 */
+	private void readUnitProperties(Element unitElement, Unit u, 
+			boolean renderData, String mappings_filepath)
+	{
+		// Get all properties for this Unit
+		for (int j = 0; j < unitElement.getChildCount(); j++)
+		{
+			Element property = unitElement.getChild(j);
+			
+			if (property.getName().equals("cost"))
+			{
+				u.setCost(Integer.parseInt(property.getText()));
+			}
+			else if (property.getName().equals("id"))
+			{
+				u.setID(property.getText());
+			}
+			else if (property.getName().equals("name"))
+			{
+				u.setName(property.getText());
+			}
+			else if (property.getName().equals("strength"))
+			{
+				u.setStrength(Integer.parseInt(property.getText()));
+			}
+			else if (property.getName().equals("hp"))
+			{
+				u.setMaxHP(Integer.parseInt(property.getText()));
+				u.setCurrHP(u.getMaxHP());
+			}
+			else if (property.getName().equals("img"))
+			{
+				// Don't need to load renderData on server
+				if (renderData == true)
+				{
+					// Load the unit's image
+					Texture t = new Texture(
+						Gdx.files.internal(
+							commonData.skin +
+							"/unit_pictures/" +
+							property.getText()));
+					u.setImg(t);
+				}
+			}
+			else
+			{
+				// ERROR
+				System.out.println("Unidentified property in " + 
+					mappings_filepath + ": " + property.getName());
+				System.exit(1);
+			}
+		}
 	}
 	
 	/*
