@@ -50,7 +50,7 @@ public class PeaceNetworkClient extends Listener {
 		{
 			out.println("Client recieved a PacketMessage:");
 			PacketMessage pm = (PacketMessage)obj;
-			out.println(pm.message);
+			out.println("type: " + pm.type + "; Message: " + pm.message);
 			
 			// Store this PacketMessage for the Game to read
 			events.offer(pm);

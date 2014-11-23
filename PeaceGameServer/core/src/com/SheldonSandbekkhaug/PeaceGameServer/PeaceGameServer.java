@@ -115,7 +115,8 @@ public class PeaceGameServer extends ApplicationAdapter {
 	
 	/* Initialize a new game according to the given skin. */
 	public void newGame(String skin, ArrayList<String> playerNames)
-	{		
+	{	
+		Tile.resetLastTileID();
 		commonData = new CommonData(false); // Creates Unit table and applies Skin
 		
 		// Add Players to the game
