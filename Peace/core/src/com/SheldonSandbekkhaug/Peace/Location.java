@@ -1,6 +1,7 @@
 package com.SheldonSandbekkhaug.Peace;
 import com.SheldonSandbekkhaug.Peace.Tile;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -21,6 +22,7 @@ public class Location {
 	Tile[] tiles;
 	Texture img;
 	Rectangle rect; // The region occupied by this location
+	static BitmapFont font; // Used for rendering strength and HP values of Entities
 	
 	public static final int TILES_PER_ROW = 3;
 	public static final int TILES_PER_COL = 3;
@@ -62,6 +64,20 @@ public class Location {
 				float tileX = rect.x + indexToXOffset(i);
 				float tileY = rect.y + indexToYOffset(i);
 				batch.draw(tile.getE().getImg(), tileX, tileY);
+				
+				// Draw HP. These coordinates specify top-left corner
+				float hpX = tileX + Tile.TILE_SIZE - (Tile.TILE_SIZE / 3);
+				String label = "" + tile.getE().getCurrHP();
+				float hpY = tileY + font.getBounds(label).height;
+				font.draw(batch, label, hpX, hpY);
+				
+				// Draw Strength if E is a Unit
+				if (tile.getE() instanceof Unit)
+				{
+					Unit u = (Unit)tile.getE();
+					float strengthX = tileX;
+					font.draw(batch, "" + u.getStrength(), strengthX, hpY);
+				}
 			}
 		}
 	}

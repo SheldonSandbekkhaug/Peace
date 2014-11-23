@@ -77,6 +77,13 @@ public class MainGameScreen implements Screen {
         setLocationPositions(game.commonData.locations);
         batch = new SpriteBatch();
         font = new BitmapFont(); // Defaults to Arial
+        font.setColor(Color.BLACK);
+        
+        // Font for things drawn by Locations
+        BitmapFont locationFont = new BitmapFont();
+        locationFont.setColor(Color.BLACK);
+        locationFont.scale(0.05f);
+        Location.font = locationFont;
         
         // Create textures
         marketBackground = new Texture(Gdx.files.internal(
@@ -125,7 +132,6 @@ public class MainGameScreen implements Screen {
 		if (game.commonData.running)
 		{
 			// Draw some basic player information
-			font.setColor(Color.BLACK);
 			int playerMoneyAmt = 
 				game.commonData.players.get(game.playerID).getMoney();
 			
