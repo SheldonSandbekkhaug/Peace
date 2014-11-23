@@ -79,7 +79,7 @@
         <strength>2</strength>
         <hp>5</hp>
         <cost>1</cost>
-        <img>man_40x40.png</img>
+        <img>RAIDER_1.png</img>
         <attribute>RAIDER</attribute>
     </unit>
 </catalog>
