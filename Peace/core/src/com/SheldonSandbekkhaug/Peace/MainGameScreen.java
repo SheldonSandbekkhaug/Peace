@@ -428,31 +428,55 @@ public class MainGameScreen implements Screen {
 	}
 	
 	/* Modifies locations in-place to have the correct positions for this
-	 * this screen.
+	 * this screen by setting the bottom-right corner of the locations.
 	 * 
 	 * Also sets the positions of Market Tiles.
+	 * TODO: Polish Location world positions
 	 */
 	private void setLocationPositions(ArrayList<Location> locations)
 	{
 		int locationWidth = 3 * Tile.TILE_SIZE;
+		
+		int eastX = WORLD_WIDTH - LOCATION_X_BUFFER_SIZE - 
+				MARKET_WIDTH - 
+				(Tile.TILE_SIZE * Location.TILES_PER_ROW);
+		int westX = X_BUFFER + LOCATION_X_BUFFER_SIZE;
+		int northY = WORLD_HEIGHT - LOCATION_Y_BUFFER_SIZE - 
+				(Tile.TILE_SIZE * Location.TILES_PER_COL);
+		int southY =  Y_BUFFER + LOCATION_Y_BUFFER_SIZE;
+		
 		for (Location loc : locations)
 		{
+			int x = 0;
+			int y = 0;
 			switch(loc.id)
 			{
-				case NORTHEAST:
-					// Northeast location
-					int x = WORLD_WIDTH - LOCATION_X_BUFFER_SIZE - 
-						MARKET_WIDTH - 
-						(Tile.TILE_SIZE * Location.TILES_PER_ROW);
-					int y = WORLD_HEIGHT - LOCATION_Y_BUFFER_SIZE - 
-						(Tile.TILE_SIZE * Location.TILES_PER_COL);
-					loc.rect = new Rectangle(x, y,
-							locationWidth, locationWidth);
+				case NORTHEAST: // Northeast location
+					x = eastX;
+					y = northY;
 					break;
-					// TODO: other cases
+				case NORTHWEST: // Northwest location
+					x = westX;
+					y = northY;
+					break;
+				case SOUTHWEST:
+					x = westX;
+					y = southY;
+					break;
+				case SOUTHEAST:
+					x = eastX;
+					y = southY;
+					break;
+				case CENTER:
+					x = (westX + eastX) / 2;
+					y = (northY + southY) / 2;
+					break;
 				default:
 					break;
 			}
+			
+			loc.rect = new Rectangle(x, y,
+					locationWidth, locationWidth);
 			
 			// Set Tile Rectangles
 			for (int i = 0; i < loc.getTiles().length; i++)
