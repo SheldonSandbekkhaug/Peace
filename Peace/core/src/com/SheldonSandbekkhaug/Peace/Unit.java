@@ -12,13 +12,7 @@ public class Unit extends PeaceEntity {
 	public Unit clone()
 	{
 		Unit u = new Unit();
-		u.setCost(cost);
-		u.setCurrHP(currHP);
-		u.setID(id);
-		u.setImg(img);
-		u.setMaxHP(maxHP);
-		u.setName(name);
-		u.setOwner(currHP);
+		u.cloneHelper(this);
 		u.setStrength(strength);
 		
 		return u;

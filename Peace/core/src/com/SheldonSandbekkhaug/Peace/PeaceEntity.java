@@ -1,6 +1,7 @@
 package com.SheldonSandbekkhaug.Peace;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 
 /* A Unit or Structure */
 public class PeaceEntity {
@@ -10,24 +11,38 @@ public class PeaceEntity {
 	int currHP, maxHP;
 	int owner; // playerID, 0 by default
 	Texture img;
+	Array<Attribute> attributes;
 	// NOTE: must adjust clone() method after adding/removing properties
 	
 	public PeaceEntity()
 	{
 		owner = Player.NEUTRAL;
+		attributes = new Array<Attribute>(4);
 	}
 	
 	public PeaceEntity clone()
 	{
 		PeaceEntity e = new PeaceEntity();
-		e.setID(id);
-		e.setName(name);
-		e.setCost(cost);
-		e.setCurrHP(currHP);
-		e.setMaxHP(maxHP);
-		e.setOwner(owner);
-		e.setImg(img);
+		e.cloneHelper(this);
+		
 		return e;
+	}
+	
+	/* Clone all the attributes of src */
+	public void cloneHelper(PeaceEntity src)
+	{
+		setID(src.id);
+		setName(src.name);
+		setCost(src.cost);
+		setCurrHP(src.currHP);
+		setMaxHP(src.maxHP);
+		setOwner(src.owner);
+		setImg(src.img);
+		
+		for (Attribute a : src.getAttributes())
+		{
+			addAttribute(a);
+		}
 	}
 	
 	public String getID() {
@@ -84,5 +99,18 @@ public class PeaceEntity {
 
 	public void setImg(Texture img) {
 		this.img = img;
+	}
+
+	public Array<Attribute> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Array<Attribute> attributes) {
+		this.attributes = attributes;
+	}
+	
+	public void addAttribute(Attribute a)
+	{
+		attributes.add(a);
 	}
 }

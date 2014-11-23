@@ -141,6 +141,10 @@ public class XMLHandler {
 					u.setImg(t);
 				}
 			}
+			else if (property.getName().equals("attribute"))
+			{
+				u.addAttribute(Attribute.valueOf(property.getText()));
+			}
 			else
 			{
 				// ERROR
@@ -171,30 +175,7 @@ public class XMLHandler {
 				Unit u = units.get(unitElement.getChildByName("id").getText());
 				
 				// Get all skinned properties for this Unit
-				for (int j = 0; j < unitElement.getChildCount(); j++)
-				{
-					Element property = unitElement.getChild(j);
-					
-					if (property.getName().equals("cost"))
-					{
-						u.setCost(Integer.parseInt(property.getText()));
-					}
-					else if (property.getName().equals("id"))
-					{
-						// Do nothing
-					}
-					else if (property.getName().equals("name"))
-					{
-						u.setName(property.getText());
-					}
-					else
-					{
-						// ERROR
-						System.out.println("Unidentified property in " + 
-							mappings_filepath + ": " + property.getName());
-						System.exit(1);
-					}
-				}
+				readUnitProperties(unitElement, u, false, mappings_filepath);
 			}
 		}
 		

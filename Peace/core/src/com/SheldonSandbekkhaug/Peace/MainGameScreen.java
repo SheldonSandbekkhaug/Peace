@@ -412,22 +412,40 @@ public class MainGameScreen implements Screen {
 		font.draw(batch, e.getName(),
 			textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER);
 		
+		int row = 2; // For positioning text
+		
 		// If it's a unit, draw the strength and HP
 		if (e instanceof Unit)
 		{
 			Unit u = (Unit)e;
 			font.draw(batch, "Str: " + u.getStrength(),	textX,
-				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (2 * textHeight));
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
+			row++;
 			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
 				textX,
-				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (3 * textHeight));
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
+			row++;
 			font.draw(batch, "Cost: " + u.getCost(), textX,
-				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (4 * textHeight));
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
+			row++;
 		}
 		
 		if (e.getOwner() != 0)
-			font.draw(batch, "Owner: " + e.getOwner(),
-				textX, y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (5 * textHeight));
+		{
+			font.draw(batch, "Owner: " + e.getOwner(), textX,
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
+			row++;
+		}
+		
+		if (e.getAttributes().size > 0)
+		{
+			for (Attribute a : e.getAttributes())
+			{
+				font.draw(batch, a.toUIString(), textX,
+					y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
+				row++;
+			}
+		}
 		
 		// TODO: Handle other types of PeaceEntities
 	}
