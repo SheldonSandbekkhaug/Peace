@@ -71,8 +71,10 @@ public class Peace extends Game {
 		case NEXT_TURN: // End turn and go to next Player
 			commonData.nextTurn();
 			break;
-		case TO_MARKET:
-			// Add an Entity to the Market
+		case WINNER: // A Player won the game
+			// TODO: End the game.
+			break;
+		case TO_MARKET: // Add an Entity to the Market
 			e = commonData.availableForMarket.get(pm.message);
 			// TODO: generalize for other Entity types
 			if (pm.srcTileID != -1)

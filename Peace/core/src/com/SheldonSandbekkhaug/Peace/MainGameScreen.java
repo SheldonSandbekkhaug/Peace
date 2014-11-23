@@ -451,11 +451,11 @@ public class MainGameScreen implements Screen {
 			int y = 0;
 			switch(loc.id)
 			{
-				case NORTHEAST: // Northeast location
+				case NORTHEAST:
 					x = eastX;
 					y = northY;
 					break;
-				case NORTHWEST: // Northwest location
+				case NORTHWEST:
 					x = westX;
 					y = northY;
 					break;

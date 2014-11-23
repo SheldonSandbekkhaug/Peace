@@ -314,4 +314,37 @@ public class CommonData {
 		else
 			activePlayer++;
 	}
+	
+	/* Checks if any Player has won and returns the playerID of the winner.
+	 * Returns -1 if no Player has won.
+	 * 
+	 * The win condition: A Player controls an Entity on the center Tile in
+	 * the five major Locations.
+	 */
+	public int checkVictoryCondition()
+	{
+		int winnerID = -1;
+		int CENTER = 8;
+		
+		// Check the first Location
+		Tile victoryTile = locations.get(0).getTiles()[CENTER];
+		if (victoryTile.getE() != null)
+		{
+			winnerID = victoryTile.getE().getOwner();
+		}
+		else
+		{
+			return -1;
+		}
+		
+		// The other Locations must be controlled by the same playerID
+		for (int i = 1; i < locations.size(); i++)
+		{
+			victoryTile = locations.get(i).getTiles()[CENTER];
+			if (victoryTile.getE() == null || victoryTile.getE().getOwner() != winnerID)
+				return -1;
+		}
+	
+		return winnerID;
+	}
 }

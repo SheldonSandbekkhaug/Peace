@@ -83,7 +83,18 @@ public class PeaceGameServer extends ApplicationAdapter {
 			newGame(pm.message, lobby);
 			break;
 		case NEXT_TURN:
-			commonData.nextTurn();
+			int winnerID = commonData.checkVictoryCondition();
+			if (winnerID != -1)
+			{
+				PacketMessage declareWinner = new PacketMessage();
+				declareWinner.type = EventType.WINNER;
+				declareWinner.playerID = winnerID;
+				network.broadcastToPlayers(declareWinner);
+			}
+			else
+			{
+				commonData.nextTurn();
+			}
 			break;
 		case LEAVE:
 			network.disconnected(pm.playerID);

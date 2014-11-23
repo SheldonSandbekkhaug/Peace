@@ -64,4 +64,20 @@
         <cost>8</cost>
         <img>man_40x40.png</img>
     </unit>
+    	<unit>
+        <id>SOLDIER_9</id>
+        <name>Soldier 9</name>
+        <strength>8</strength>
+        <hp>9</hp>
+        <cost>9</cost>
+        <img>man_40x40.png</img>
+    </unit>
+    <unit>
+        <id>SOLDIER_10</id>
+        <name>Soldier 10</name>
+        <strength>8</strength>
+        <hp>10</hp>
+        <cost>10</cost>
+        <img>man_40x40.png</img>
+    </unit>
 </catalog>
