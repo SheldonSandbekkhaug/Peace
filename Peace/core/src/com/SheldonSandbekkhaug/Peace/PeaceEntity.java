@@ -109,8 +109,15 @@ public class PeaceEntity {
 		this.attributes = attributes;
 	}
 	
+	/* Add the given attribute to this PeaceEntity. */
 	public void addAttribute(Attribute a)
 	{
 		attributes.add(a);
+	}
+	
+	/* Return true if this PeaceEntity has this attribute, false otherwise. */
+	public boolean hasAttribute(Attribute a)
+	{
+		return attributes.contains(a, false);
 	}
 }

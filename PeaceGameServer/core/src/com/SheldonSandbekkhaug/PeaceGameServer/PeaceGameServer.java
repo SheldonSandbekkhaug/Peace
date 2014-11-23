@@ -10,6 +10,7 @@ import java.util.Random;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.SheldonSandbekkhaug.Peace.Attribute;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
@@ -301,7 +302,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		defender.setCurrHP(defender.getCurrHP() - attacker.getStrength());
 		
 		// Subtract HP from the attacker
-		if (defender instanceof Unit)
+		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER))
 		{
 			Unit defenderUnit = (Unit)defender;
 			attacker.setCurrHP(

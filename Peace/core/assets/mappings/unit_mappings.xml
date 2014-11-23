@@ -73,12 +73,13 @@
         <cost>9</cost>
         <img>man_40x40.png</img>
     </unit>
-    <unit>
-        <id>SOLDIER_10</id>
-        <name>Soldier 10</name>
-        <strength>8</strength>
-        <hp>10</hp>
-        <cost>10</cost>
+	<unit>
+        <id>RAIDER_1</id>
+        <name>Raider 1</name>
+        <strength>2</strength>
+        <hp>5</hp>
+        <cost>1</cost>
         <img>man_40x40.png</img>
+        <attribute>RAIDER</attribute>
     </unit>
 </catalog>

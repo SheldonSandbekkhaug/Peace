@@ -1,7 +1,8 @@
 package com.SheldonSandbekkhaug.Peace;
 
 public enum Attribute {
-	NORMAL;
+	NORMAL,
+	RAIDER;
 	
 	/* Return a nicely-formatted String for this attribute. */
 	public String toUIString()
@@ -10,6 +11,8 @@ public enum Attribute {
 		{
 			case NORMAL:
 				return "Normal";
+			case RAIDER:
+				return "Raider";
 			default:
 				return "Default Attribute";
 		}
