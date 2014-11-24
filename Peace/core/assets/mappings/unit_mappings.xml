@@ -9,6 +9,24 @@
         <img>GLASS_CANNON_1.png</img>
         <attribute>NORMAL</attribute>
     </unit>
+	<unit>
+        <id>RAIDER_1</id>
+        <name>Raider 1</name>
+        <strength>2</strength>
+        <hp>5</hp>
+        <cost>1</cost>
+        <img>RAIDER_1.png</img>
+        <attribute>RAIDER</attribute>
+    </unit>
+    <unit>
+        <id>SNIPER_1</id>
+        <name>Sniper 1</name>
+        <strength>1</strength>
+        <hp>3</hp>
+        <cost>5</cost>
+        <img>SNIPER_1.png</img>
+        <attribute>FIRST_STRIKE</attribute>
+    </unit>
     <unit>
         <id>SOLDIER_1</id>
         <name>Soldier 1</name>
@@ -81,15 +99,6 @@
         <hp>9</hp>
         <cost>9</cost>
         <img>man_40x40.png</img>
-    </unit>
-	<unit>
-        <id>RAIDER_1</id>
-        <name>Raider 1</name>
-        <strength>2</strength>
-        <hp>5</hp>
-        <cost>1</cost>
-        <img>RAIDER_1.png</img>
-        <attribute>RAIDER</attribute>
     </unit>
 	<unit>
         <id>TANK_1</id>

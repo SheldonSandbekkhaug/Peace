@@ -2,6 +2,7 @@ package com.SheldonSandbekkhaug.Peace;
 
 public enum Attribute {
 	ARMORED,
+	FIRST_STRIKE,
 	NORMAL,
 	RAIDER;
 	
@@ -12,6 +13,8 @@ public enum Attribute {
 		{
 		case ARMORED:
 			return "Armored";
+		case FIRST_STRIKE:
+			return "First Strike";
 		case NORMAL:
 			return "Normal";
 		case RAIDER:

@@ -298,6 +298,27 @@ public class PeaceGameServer extends ApplicationAdapter {
 		Unit attacker = (Unit)commonData.getTile(srcTileID).getE();
 		PeaceEntity defender = commonData.getTile(targetTileID).getE();
 		
+		// Resolve first strike before normal combat
+		boolean attackerFirstStrike = 
+			attacker.hasAttribute(Attribute.FIRST_STRIKE);
+		boolean defenderFirstStrike =
+			defender.hasAttribute(Attribute.FIRST_STRIKE);
+		
+		if (attackerFirstStrike)
+		{
+			constDamageEntity(1, defender, true);
+		}
+		if (defenderFirstStrike)
+		{
+			constDamageEntity(1, attacker, true);
+		}
+		
+		// If either of these Entities died, return
+		if ((attackerFirstStrike || defenderFirstStrike) &&
+			(checkAndHandleDeath(attacker, srcTileID) || 
+			checkAndHandleDeath(defender, targetTileID)))
+				return;
+		
 		// Subtract HP from the defender
 		damageEntity(attacker, defender);
 		
@@ -307,10 +328,10 @@ public class PeaceGameServer extends ApplicationAdapter {
 			Unit defenderUnit = (Unit)defender;
 			
 			damageEntity(defenderUnit, attacker);
-			checkForDeath(attacker, srcTileID);
+			checkAndHandleDeath(attacker, srcTileID);
 		}
 		
-		checkForDeath(defender, targetTileID);
+		checkAndHandleDeath(defender, targetTileID);
 	}
 	
 	/* e1 damages e2 */
@@ -327,23 +348,45 @@ public class PeaceGameServer extends ApplicationAdapter {
 		e2.setCurrHP(e2.getCurrHP() - dmg);
 	}
 	
+	/* Reduce the target's current HP by the amount specified by damage. 
+	 * If effects is true, take other attributes into account.
+	 */
+	private void constDamageEntity(int damage, PeaceEntity target, boolean effects)
+	{
+		Unit dummy = new Unit();
+		dummy.setStrength(damage);
+		if (effects == true)
+		{
+			damageEntity(dummy, target);
+		}
+		else
+		{
+			target.setCurrHP(target.getCurrHP() - damage);
+		}
+	}
+	
 	/* Check if the given Entity has 0 HP remaining or less.
 	 * If so, destroy it. If not, do nothing.
 	 * tileID: The tileID that this Entity occupies.
+	 * 
+	 * Return false if e's current HP is > 0.
+	 * Return true otherwise.
 	 */
-	private void checkForDeath(PeaceEntity e, int tileID)
+	private boolean checkAndHandleDeath(PeaceEntity e, int tileID)
 	{
 		if (e.getCurrHP() > 0)
 		{
 			// Attacker is still alive
 			broadcastUpdateEntity(tileID, "currHP", 
 				e.getCurrHP());
+			return false;
 		}
 		else
 		{
 			// Attacker is dead, remove attacker
 			broadcastRemoveEntity(tileID);
 			commonData.destroyEntity(tileID);
+			return true;
 		}
 	}
 	
