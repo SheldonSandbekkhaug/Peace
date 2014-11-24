@@ -30,7 +30,6 @@ public class CommonData {
 	{
 		skin = "default_1.0";
 		players = new ArrayList<Player>();
-		players.add(new Player("Neutral", Player.NEUTRAL));
 		activePlayer = 1;
 		
 		availableForMarket = new HashMap<String, PeaceEntity>();
@@ -316,10 +315,10 @@ public class CommonData {
 	/* Change whose turn it is. */
 	public void nextTurn()
 	{
-		if (activePlayer >= players.size())
-			activePlayer = 1; // 0 is not a user
-		else
+		if (activePlayer <= players.size() - 2)
 			activePlayer++;
+		else
+			activePlayer = 1; // 0 is not a user
 	}
 	
 	/* Checks if any Player has won and returns the playerID of the winner.

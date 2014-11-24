@@ -103,6 +103,14 @@ public class MainGameScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		camera.update();
 		
+		// TODO: Move this functionality to a menu
+		if (game.startRequested == false)
+		{
+			if (Gdx.input.isKeyPressed(Keys.S)) {
+				game.requestStartGame(); // Request to start the game
+			}
+		}
+		
 		batch.begin();
 		
 		game.processEvents();
@@ -135,11 +143,13 @@ public class MainGameScreen implements Screen {
 				game.commonData.players.get(game.playerID).getMoney();
 			
 			font.draw(batch, "Funds: " + playerMoneyAmt, 100, 100);
+			font.draw(batch,
+					"Player " + game.commonData.getActivePlayer() + "'s turn",
+					100, 80);
 			
 			handleMouseInput();
 			handleKeyInput();
 		}
-		
 		batch.end();
 	}
 	
@@ -369,7 +379,6 @@ public class MainGameScreen implements Screen {
 		// TODO: change key mappings. Use mouse controls too.
 		if (Gdx.input.isKeyPressed(Keys.A)) {
             camera.zoom += 0.02;
-            System.out.println("zoom: " + camera.zoom);
         }
         if (Gdx.input.isKeyPressed(Keys.Q)) {
             camera.zoom -= 0.02;

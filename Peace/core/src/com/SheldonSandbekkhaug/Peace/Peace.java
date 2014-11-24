@@ -7,7 +7,7 @@ public class Peace extends Game {
 	CommonData commonData;
 	private PeaceNetworkClient network;
 	int playerID; // The user's playerID
-	
+	boolean startRequested = false; // Requested to start the game
 	
 	@Override
 	public void create () {		
@@ -56,14 +56,7 @@ public class Peace extends Game {
 		case JOIN: // Successfully added to the server's game
 			// Now we know our player ID
 			playerID = pm.playerID;
-			
-			// Start the game with the specified skin
-			PacketMessage reply = new PacketMessage(commonData.skin);
-			reply.type = EventType.START;
-			network.sendToServer(reply, playerID);
-			
-			// TODO: wait for some other condition to start the game
-			System.out.println("Client asked to start the game");
+			System.out.println("Received playerID: " + playerID); // TODO: remove
 			break;
 		case SETUP_DONE: // Server is done setting up
 			commonData.running = true;
@@ -110,6 +103,22 @@ public class Peace extends Game {
 			break;
 		default:
 			break;
+		}
+	}
+	
+	/* Request the server to start the game. */
+	public void requestStartGame()
+	{
+		if (startRequested == false)
+		{
+			// Start the game with the specified skin
+			PacketMessage pm = new PacketMessage(commonData.skin);
+			pm.type = EventType.START;
+			network.sendToServer(pm, playerID);
+			
+			// TODO: wait for some other condition to start the game
+			System.out.println("Client asked to start the game");
+			startRequested = true;
 		}
 	}
 	
@@ -167,9 +176,13 @@ public class Peace extends Game {
 	/* Tell the server this Player is done with this turn. */
 	public void requestEndTurn()
 	{
-		PacketMessage pm = new PacketMessage();
-		pm.type = EventType.NEXT_TURN;
-		network.sendToServer(pm, playerID);
+		// User can only end their own turn
+		if (commonData.getActivePlayer() == playerID)
+		{
+			PacketMessage pm = new PacketMessage();
+			pm.type = EventType.NEXT_TURN;
+			network.sendToServer(pm, playerID);
+		}
 	}
 
 	@Override

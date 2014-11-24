@@ -95,6 +95,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 			else
 			{
 				commonData.nextTurn();
+				PacketMessage nextTurn = new PacketMessage();
+				nextTurn.type = EventType.NEXT_TURN;
+				network.broadcastToPlayers(nextTurn);
 			}
 			break;
 		case LEAVE:
@@ -130,9 +133,10 @@ public class PeaceGameServer extends ApplicationAdapter {
 	{	
 		Tile.resetLastTileID();
 		commonData = new CommonData(false); // Creates Unit table and applies Skin
+		//commonData.players.add(new Player("Neutral", Player.NEUTRAL));
 		
 		// Add Players to the game
-		int i = 1;
+		int i = 0;
 		for (String name : playerNames)
 		{
 			commonData.players.add(new Player(name, i));
