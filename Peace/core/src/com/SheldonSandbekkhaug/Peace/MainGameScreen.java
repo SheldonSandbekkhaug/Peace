@@ -227,6 +227,13 @@ public class MainGameScreen implements Screen {
 	/* Try to release the selected PeaceEntity into the specified Tile. */
 	private void releaseSelectedEntityOverTile(Tile cursorOnTile)
 	{
+		// Don't move to the Tile that the Entity came from
+		if (cursorOnTile == selectedEntityTile)
+		{
+			selectedEntityTile.setE(selectedEntity);
+			return;
+		}
+		
 		// Examine the target PeaceEntity
 		PeaceEntity targetEntity = cursorOnTile.getE();
 		
