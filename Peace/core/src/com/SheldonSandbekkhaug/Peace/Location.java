@@ -66,8 +66,8 @@ public class Location {
 				batch.draw(tile.getE().getImg(), tileX, tileY);
 				
 				// Draw HP. These coordinates specify top-left corner
-				float hpX = tileX + Tile.TILE_SIZE - (Tile.TILE_SIZE / 3);
 				String label = "" + tile.getE().getCurrHP();
+				float hpX = tileX + Tile.TILE_SIZE - font.getBounds(label).height;
 				float hpY = tileY + font.getBounds(label).height;
 				font.draw(batch, label, hpX, hpY);
 				
