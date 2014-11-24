@@ -123,9 +123,8 @@ public class MainGameScreen implements Screen {
 			for (int i = 0; i < game.commonData.getMarketSize(); i++)
 			{
 				Tile marketTile = game.commonData.getMarketTile(i);
-				if (marketTile.getE() != null)
-					batch.draw(marketTile.getE().getImg(),
-						marketTile.rect.x, marketTile.rect.y);
+				marketTile.draw(batch, Location.font,
+					marketTile.rect.x, marketTile.rect.y);
 			}
 		}
 		

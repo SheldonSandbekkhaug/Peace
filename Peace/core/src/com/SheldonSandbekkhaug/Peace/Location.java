@@ -59,26 +59,9 @@ public class Location {
 		for (int i = 0; i < tiles.length; i++)
 		{
 			Tile tile = tiles[i];
-			if (tile.getE() != null)
-			{
-				float tileX = rect.x + indexToXOffset(i);
-				float tileY = rect.y + indexToYOffset(i);
-				batch.draw(tile.getE().getImg(), tileX, tileY);
-				
-				// Draw HP. These coordinates specify top-left corner
-				String label = "" + tile.getE().getCurrHP();
-				float hpX = tileX + Tile.TILE_SIZE - font.getBounds(label).height;
-				float hpY = tileY + font.getBounds(label).height;
-				font.draw(batch, label, hpX, hpY);
-				
-				// Draw Strength if E is a Unit
-				if (tile.getE() instanceof Unit)
-				{
-					Unit u = (Unit)tile.getE();
-					float strengthX = tileX;
-					font.draw(batch, "" + u.getStrength(), strengthX, hpY);
-				}
-			}
+			float tileX = rect.x + indexToXOffset(i);
+			float tileY = rect.y + indexToYOffset(i);
+			tile.draw(batch, font, tileX, tileY);
 		}
 	}
 	

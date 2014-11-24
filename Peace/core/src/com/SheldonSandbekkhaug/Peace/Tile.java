@@ -1,5 +1,7 @@
 package com.SheldonSandbekkhaug.Peace;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Tile {
@@ -15,6 +17,31 @@ public class Tile {
 		marketTile = false;
 		tileID = lastTileID + 1;
 		lastTileID = tileID;
+	}
+	
+	/* Draw the Tile (and its contents) at using x, y as its bottom-left
+	 * corner.
+	 */
+	public void draw(SpriteBatch batch, BitmapFont font, float x, float y)
+	{
+		if (e != null)
+		{
+			batch.draw(e.getImg(), x, y);
+			
+			// Draw HP. These coordinates specify top-left corner
+			String label = "" + e.getCurrHP();
+			float hpX = x + Tile.TILE_SIZE - font.getBounds(label).height;
+			float hpY = y + font.getBounds(label).height;
+			font.draw(batch, label, hpX, hpY);
+			
+			// Draw Strength if E is a Unit
+			if (e instanceof Unit)
+			{
+				Unit u = (Unit)e;
+				float strengthX = x;
+				font.draw(batch, "" + u.getStrength(), strengthX, hpY);
+			}
+		}
 	}
 	
 	/* Set the last tile ID to 0. */
