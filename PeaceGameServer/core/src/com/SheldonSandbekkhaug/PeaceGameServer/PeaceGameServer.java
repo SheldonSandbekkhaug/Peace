@@ -307,33 +307,10 @@ public class PeaceGameServer extends ApplicationAdapter {
 			Unit defenderUnit = (Unit)defender;
 			
 			damageEntity(defenderUnit, attacker);
-			
-			if (attacker.getCurrHP() > 0)
-			{
-				// Attacker is still alive
-				broadcastUpdateEntity(srcTileID, "currHP", 
-					attacker.getCurrHP());
-			}
-			else
-			{
-				// Attacker is dead, remove attacker
-				broadcastRemoveEntity(srcTileID);
-				commonData.destroyEntity(srcTileID);
-			}
+			checkForDeath(attacker, srcTileID);
 		}
 		
-		if (defender.getCurrHP() > 0)
-		{
-			// Update defender HP
-			broadcastUpdateEntity(targetTileID, "currHP", 
-				defender.getCurrHP());
-		}
-		else
-		{
-			// Destroy the defender
-			broadcastRemoveEntity(targetTileID);
-			commonData.destroyEntity(targetTileID);
-		}
+		checkForDeath(defender, targetTileID);
 	}
 	
 	/* e1 damages e2 */
@@ -348,6 +325,26 @@ public class PeaceGameServer extends ApplicationAdapter {
 		}
 		
 		e2.setCurrHP(e2.getCurrHP() - dmg);
+	}
+	
+	/* Check if the given Entity has 0 HP remaining or less.
+	 * If so, destroy it. If not, do nothing.
+	 * tileID: The tileID that this Entity occupies.
+	 */
+	private void checkForDeath(PeaceEntity e, int tileID)
+	{
+		if (e.getCurrHP() > 0)
+		{
+			// Attacker is still alive
+			broadcastUpdateEntity(tileID, "currHP", 
+				e.getCurrHP());
+		}
+		else
+		{
+			// Attacker is dead, remove attacker
+			broadcastRemoveEntity(tileID);
+			commonData.destroyEntity(tileID);
+		}
 	}
 	
 	/* Broadcast an update to a PeaceEntity property. */
