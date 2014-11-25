@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
     <unit>
+        <id>HEAVY_1</id>
+        <name>Heavy Weapons Crew</name>
+        <strength>2</strength>
+        <hp>4</hp>
+        <cost>9</cost>
+        <img>HEAVY_1.png</img>
+        <attribute>PIERCING</attribute>
+    </unit>
+    <unit>
         <id>GLASS_CANNON_1</id>
         <name>Glass Cannon</name>
         <strength>5</strength>

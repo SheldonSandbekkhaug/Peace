@@ -346,6 +346,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 		// Reduce damage taken by 1 if armored
 		if (e2.hasAttribute(Attribute.ARMORED))
 		{
+			// PIERCING Entities deal extra damage to ARMORED targets
+			if (e1.hasAttribute(Attribute.PIERCING))
+				dmg += 1;
 			dmg = (dmg <= 0) ? 0 : dmg - 1;
 		}
 		

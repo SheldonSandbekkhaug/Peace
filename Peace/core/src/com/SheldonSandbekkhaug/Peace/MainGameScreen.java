@@ -343,6 +343,11 @@ public class MainGameScreen implements Screen {
 	 */
 	public boolean tryToPickUpEntity(Tile tile)
 	{
+		// Must be user's turn to pick up an Entity
+		if (game.commonData.getActivePlayer() != game.playerID)
+			return false;
+		
+		// Entity must not be null
 		if (tile == null || tile.getE() == null)
 			return false;
 		

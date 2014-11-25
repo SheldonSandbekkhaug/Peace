@@ -4,6 +4,7 @@ public enum Attribute {
 	ARMORED,
 	FIRST_STRIKE,
 	NORMAL,
+	PIERCING,
 	RAIDER;
 	
 	/* Return a nicely-formatted String for this attribute. */
@@ -17,6 +18,8 @@ public enum Attribute {
 			return "First Strike";
 		case NORMAL:
 			return "Normal";
+		case PIERCING:
+			return "Piercing";
 		case RAIDER:
 			return "Raider";
 		default:
