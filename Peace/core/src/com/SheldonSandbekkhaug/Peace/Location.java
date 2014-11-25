@@ -27,6 +27,16 @@ public class Location {
 	public static final int TILES_PER_ROW = 3;
 	public static final int TILES_PER_COL = 3;
 	
+	public static final int E = 0;
+	public static final int NE = 1;
+	public static final int N = 2;
+	public static final int NW = 3;
+	public static final int W = 4;
+	public static final int SW = 5;
+	public static final int S = 6;
+	public static final int SE = 7;
+	public static final int CENTER = 8;
+	
 	public Location(LocationID id)
 	{
 		this.id = id;

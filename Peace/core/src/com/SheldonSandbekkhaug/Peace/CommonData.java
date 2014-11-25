@@ -66,7 +66,6 @@ public class CommonData {
 	 * If renderData is true, initialize data needed for rendering.
 	 * Else, only initialize model data.
 	 */
-	@SuppressWarnings("unchecked") // For cloning units HashMap
 	public void loadUnits(boolean renderData)
 	{
 		XMLHandler reader = new XMLHandler(this);
@@ -79,29 +78,20 @@ public class CommonData {
 		
 		// TODO: remove test Units
 		// Create Units for testing and place them in a Location
-		for (int i = 1; i < 5; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			Unit testUnit = units.get("SOLDIER_" + i);
 			testUnit.owner = 0;
-			Location testLoc = locations.get(0);
-			Tile t = testLoc.tiles[i];
+			Location testLoc = locations.get(i);
+			Tile t = testLoc.tiles[Location.CENTER];
 			t.setE(testUnit);
 		}
-		
-		// Testing new PeaceEntities
-		Unit tank = units.get("TANK_1");
-		tank.owner = 0;
-		Location testLoc = locations.get(1);
-		Tile t = testLoc.tiles[0];
-		t.setE(tank);
 		
 		// Add Units to the Market availability HashMap
 		for (String id : units.keySet())
 		{
 			availableForMarket.put(id, units.get(id));
 		}
-		
-		availableForMarket = (HashMap<String, PeaceEntity>)units.clone();
 	}
 	
 	/* Initialize the market */
@@ -315,6 +305,9 @@ public class CommonData {
 	/* Change whose turn it is. */
 	public void nextTurn()
 	{
+		// TODO: calculate income properly. This is a test value.
+		players.get(activePlayer).money += 2;
+		
 		if (activePlayer <= players.size() - 2)
 			activePlayer++;
 		else
@@ -329,28 +322,25 @@ public class CommonData {
 	 */
 	public int checkVictoryCondition()
 	{
-		int winnerID = -1;
-		int CENTER = 8;
-		
-		// Check the first Location
-		Tile victoryTile = locations.get(0).getTiles()[CENTER];
-		if (victoryTile.getE() != null)
-		{
-			winnerID = victoryTile.getE().getOwner();
-		}
-		else
-		{
-			return -1;
-		}
-		
-		// The other Locations must be controlled by the same playerID
+		int[] centersControlled = new int[players.size()];
+
+		// Check which players controls each Location
 		for (int i = 1; i < locations.size(); i++)
 		{
-			victoryTile = locations.get(i).getTiles()[CENTER];
-			if (victoryTile.getE() == null || victoryTile.getE().getOwner() != winnerID)
-				return -1;
+			Tile victoryTile = locations.get(i).getTiles()[Location.CENTER];
+			if (victoryTile.getE() != null)
+				centersControlled[victoryTile.getE().getOwner()]++;
+		}
+		
+		for (int i : centersControlled)
+		{
+			if (i != Player.NEUTRAL && centersControlled[i] >= 3)
+			{
+				// NEUTRAL cannot win the game
+				return i;
+			}
 		}
 	
-		return winnerID;
+		return -1;
 	}
 }

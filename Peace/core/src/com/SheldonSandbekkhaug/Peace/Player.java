@@ -11,7 +11,7 @@ public class Player {
 	public Player()
 	{
 		super();
-		money = 1000;
+		money = 5;
 	}
 
 	public Player(String name, int pid)
