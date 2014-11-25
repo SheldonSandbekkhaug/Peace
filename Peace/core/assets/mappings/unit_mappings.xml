@@ -34,6 +34,7 @@
         <hp>3</hp>
         <cost>5</cost>
         <img>SNIPER_1.png</img>
+        <attribute>DEFENDER</attribute>
         <attribute>FIRST_STRIKE</attribute>
     </unit>
     <unit>

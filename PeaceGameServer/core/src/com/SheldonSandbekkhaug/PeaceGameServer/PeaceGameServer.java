@@ -28,6 +28,10 @@ public class PeaceGameServer extends ApplicationAdapter {
 	ArrayList<String> lobby; 
 	Random gen;
 	
+	// Describes PeaceEntities that initiate combat or react to combat
+	private static final boolean INITIATOR = true;
+	private static final boolean REACTOR = false;
+	
 	@Override
 	public void create () {
 		int PORT = 27960;
@@ -310,11 +314,11 @@ public class PeaceGameServer extends ApplicationAdapter {
 		
 		if (attackerFirstStrike)
 		{
-			constDamageEntity(1, defender, true);
+			constDamageEntity(1, defender, true, REACTOR);
 		}
 		if (defenderFirstStrike)
 		{
-			constDamageEntity(1, attacker, true);
+			constDamageEntity(1, attacker, true, INITIATOR);
 		}
 		
 		// If either of these Entities died, return
@@ -324,24 +328,40 @@ public class PeaceGameServer extends ApplicationAdapter {
 				return;
 		
 		// Subtract HP from the defender
-		damageEntity(attacker, defender);
+		damageEntity(attacker, defender, true);
 		
 		// Subtract HP from the attacker if applicable
 		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER))
 		{
 			Unit defenderUnit = (Unit)defender;
 			
-			damageEntity(defenderUnit, attacker);
+			damageEntity(defenderUnit, attacker, false);
 			checkAndHandleDeath(attacker, srcTileID);
 		}
 		
 		checkAndHandleDeath(defender, targetTileID);
 	}
 	
-	/* e1 damages e2 */
-	private void damageEntity(Unit e1, PeaceEntity e2)
+	/* A single step in combat sequence; e1 damages e2.
+	 * If e1initiated is true, e1 is the initiator and e2 is the reactor.
+	 * If e1initiated is false, e1 is the reactor and e1 is the initiator.
+	 * (This is only relevant for attacker-only and defender-only abilities.)
+	 */
+	private void damageEntity(Unit e1, PeaceEntity e2, boolean e1initiated)
 	{
 		int dmg = e1.getStrength();
+		
+		PeaceEntity reactor = e2;
+		if (!e1initiated)
+		{
+			reactor = e1;
+		}
+		
+		// Entities with the DEFENDER attribute deal extra damage when attacked
+		if (reactor.hasAttribute(Attribute.DEFENDER))
+		{
+			dmg += 1;
+		}
 		
 		// Reduce damage taken by 1 if armored
 		if (e2.hasAttribute(Attribute.ARMORED))
@@ -357,14 +377,17 @@ public class PeaceGameServer extends ApplicationAdapter {
 	
 	/* Reduce the target's current HP by the amount specified by damage. 
 	 * If effects is true, take other attributes into account.
+	 * If targetInitiated is INITIATOR, the given Entity initiated combat
+	 * If targetInitiated is REACTOR, the given Entity is reacting to an attack
 	 */
-	private void constDamageEntity(int damage, PeaceEntity target, boolean effects)
+	private void constDamageEntity(int damage, PeaceEntity target,
+			boolean effects, boolean targetInitiated)
 	{
 		Unit dummy = new Unit();
 		dummy.setStrength(damage);
 		if (effects == true)
 		{
-			damageEntity(dummy, target);
+			damageEntity(dummy, target, targetInitiated);
 		}
 		else
 		{
