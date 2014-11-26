@@ -14,7 +14,7 @@
         <name>Glass Cannon</name>
         <strength>5</strength>
         <hp>3</hp>
-        <cost>15</cost>
+        <cost>7</cost>
         <img>GLASS_CANNON_1.png</img>
         <attribute>NORMAL</attribute>
     </unit>
@@ -99,15 +99,15 @@
     <unit>
         <id>SOLDIER_6</id>
         <name>Soldier 6</name>
-        <strength>1</strength>
-        <hp>3</hp>
+        <strength>3</strength>
+        <hp>6</hp>
         <cost>6</cost>
         <img>man_40x40.png</img>
     </unit>
 	<unit>
         <id>SOLDIER_7</id>
         <name>Soldier 7</name>
-        <strength>1</strength>
+        <strength>3</strength>
         <hp>7</hp>
         <cost>7</cost>
         <img>man_40x40.png</img>
@@ -115,15 +115,15 @@
 	<unit>
         <id>SOLDIER_8</id>
         <name>Soldier 8</name>
-        <strength>8</strength>
-        <hp>3</hp>
+        <strength>3</strength>
+        <hp>8</hp>
         <cost>8</cost>
         <img>man_40x40.png</img>
     </unit>
     	<unit>
         <id>SOLDIER_9</id>
         <name>Soldier 9</name>
-        <strength>8</strength>
+        <strength>4</strength>
         <hp>9</hp>
         <cost>9</cost>
         <img>man_40x40.png</img>
@@ -142,7 +142,7 @@
         <name>Turtle</name>
         <strength>1</strength>
         <hp>10</hp>
-        <cost>10</cost>
+        <cost>8</cost>
         <img>TURTLE_1.png</img>
         <attribute>NORMAL</attribute>
     </unit>

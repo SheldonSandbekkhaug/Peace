@@ -1,5 +1,6 @@
 package com.SheldonSandbekkhaug.Peace;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,6 +12,7 @@ public class Tile {
 	PeaceEntity e; // The PeaceEntity occupying this tile
 	Rectangle rect;
 	boolean marketTile; // True if this Tile is part of the Market
+	static Texture[] playerBanners;
 
 	public Tile()
 	{
@@ -40,6 +42,15 @@ public class Tile {
 				Unit u = (Unit)e;
 				float strengthX = x;
 				font.draw(batch, "" + u.getStrength(), strengthX, hpY);
+			}
+			
+			// Draw Player Banner
+			if (e.getOwner() != Player.NEUTRAL)
+			{
+				Texture banner = playerBanners[e.getOwner()];
+				float bannerX = x + TILE_SIZE - banner.getWidth();
+				float bannerY = y + TILE_SIZE - banner.getHeight();
+				batch.draw(banner, bannerX, bannerY);
 			}
 		}
 	}

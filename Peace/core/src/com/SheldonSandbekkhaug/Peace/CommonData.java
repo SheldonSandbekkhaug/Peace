@@ -19,6 +19,10 @@ public class CommonData {
 	public ArrayList<Player> players; // Indexed by playerID
 	private int activePlayer; // playerID for whose turn it is
 	
+	/*The maximum number of players Peace can support at this time, 
+	  including the neutral player */
+	public static final int MAX_PLAYERS = 3;
+	
 	public boolean running = false; // True if the game is running
 	
 	/*

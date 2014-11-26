@@ -137,18 +137,22 @@ public class PeaceGameServer extends ApplicationAdapter {
 	{	
 		Tile.resetLastTileID();
 		commonData = new CommonData(false); // Creates Unit table and applies Skin
-		//commonData.players.add(new Player("Neutral", Player.NEUTRAL));
 		
 		// Add Players to the game
 		int i = 0;
 		for (String name : playerNames)
 		{
-			commonData.players.add(new Player(name, i));
+			Player p = new Player(name, i);
 			
 			PacketMessage pm = new PacketMessage(name);
 			pm.type = EventType.ADD_PLAYER;
 			pm.playerID = i;
 			network.broadcastToPlayers(pm);
+			
+			p.setMoney(p.getMoney() + i);
+			broadcastUpdatePlayerMoney(p.getMoney(), i);
+			
+			commonData.players.add(p);
 			
 			i++;
 		}
@@ -203,12 +207,8 @@ public class PeaceGameServer extends ApplicationAdapter {
 		p.setMoney(p.getMoney() - e.getCost());
 		
 		// Tell all players that P spent money
-		PacketMessage moneyUpdate = new PacketMessage("money");
-		moneyUpdate.type = EventType.PLAYER_UPDATE;
-		moneyUpdate.playerID = playerID;
-		moneyUpdate.number = p.getMoney();
-		network.broadcastToPlayers(moneyUpdate);
-		
+		broadcastUpdatePlayerMoney(p.getMoney(), playerID);
+
 		// Move the PeaceEntity from the market to its destination
 		commonData.moveEntity(t.getTileID(), destTileID);
 		
@@ -439,5 +439,15 @@ public class PeaceGameServer extends ApplicationAdapter {
 		removeEntity.type = EventType.REMOVE_ENTITY;
 		removeEntity.srcTileID = tileID;
 		network.broadcastToPlayers(removeEntity);
+	}
+	
+	/* Broadcast a change in a Player's funds. */
+	private void broadcastUpdatePlayerMoney(int newVal, int playerID)
+	{
+		PacketMessage moneyUpdate = new PacketMessage("money");
+		moneyUpdate.type = EventType.PLAYER_UPDATE;
+		moneyUpdate.playerID = playerID;
+		moneyUpdate.number = newVal;
+		network.broadcastToPlayers(moneyUpdate);
 	}
 }

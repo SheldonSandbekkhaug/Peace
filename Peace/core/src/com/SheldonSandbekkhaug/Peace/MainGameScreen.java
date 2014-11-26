@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -45,7 +46,9 @@ public class MainGameScreen implements Screen {
 	public static final int MARKET_HEIGHT = (int)(WORLD_HEIGHT * (6.0 / 10.0));
 	public static final int MARKET_X_POS = WINDOW_WIDTH - X_BUFFER - MARKET_WIDTH;
 	public static final int MARKET_Y_POS = (WINDOW_HEIGHT - MARKET_HEIGHT) / 2;
-	public static Texture marketBackground; // Market background texture
+	private static Texture marketBackground; // Market background texture
+	private static Texture coin;
+	private static BitmapFont coinFont;
 	
 	// Size of Entity information panels
 	public static final int ENTITY_INFO_WIDTH = WORLD_WIDTH / 8;
@@ -85,14 +88,30 @@ public class MainGameScreen implements Screen {
         locationFont.scale(0.05f);
         Location.font = locationFont;
         
+        // Font for coin digits
+        coinFont = new BitmapFont();
+        coinFont.setColor(Color.BLACK);
+        coinFont.scale(0.05f);
+        
         // Create textures
         marketBackground = new Texture(Gdx.files.internal(
 			game.commonData.skin + "/misc/market_background.png"));
         
         infoBackground = new Texture(Gdx.files.internal(
-            	game.commonData.skin + "/misc/info_background.png"));  
+            	game.commonData.skin + "/misc/info_background.png"));
         infoBackgroundBorder = new Texture(Gdx.files.internal(
-            	game.commonData.skin + "/misc/info_background_border.png"));  
+            	game.commonData.skin + "/misc/info_background_border.png"));
+        
+    	coin = new Texture(Gdx.files.internal(
+    			game.commonData.skin + "/misc/coin.png"));
+    	
+    	// Player Banner Textures
+    	Tile.playerBanners = new Texture[CommonData.MAX_PLAYERS];
+    	for (int i = 1; i < CommonData.MAX_PLAYERS; i++)
+    	{
+    		Tile.playerBanners[i] = new Texture(Gdx.files.internal(
+    				game.commonData.skin + "/misc/banner_" + i + ".png"));
+    	}
     }
 	
 	@Override
@@ -133,6 +152,26 @@ public class MainGameScreen implements Screen {
 				Tile marketTile = game.commonData.getMarketTile(i);
 				marketTile.draw(batch, Location.font,
 					marketTile.rect.x, marketTile.rect.y);
+				
+				// Draw coin icon and Entity cost
+				if (marketTile.getE() != null)
+				{
+					float coinX = marketTile.rect.x - Tile.TILE_SIZE / 5;
+					float coinY = marketTile.rect.y + (Tile.TILE_SIZE / 10) * 8;
+					
+					batch.draw(coin, coinX, coinY);
+					
+					String coinString = "" + marketTile.getE().getCost();
+					TextBounds labelBounds = coinFont.getBounds(coinString);
+					
+					// Align label to coin image
+					float labelX = coinX +
+							(coin.getWidth() - labelBounds.width) / 2;
+					float labelY = coinY + labelBounds.height +
+							(coin.getHeight() - labelBounds.height) / 2;
+					
+					coinFont.draw(batch, coinString, labelX, labelY);
+				}
 			}
 		}
 		
