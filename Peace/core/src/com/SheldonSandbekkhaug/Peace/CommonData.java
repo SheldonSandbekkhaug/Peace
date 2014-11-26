@@ -308,10 +308,10 @@ public class CommonData {
 		// TODO: calculate income properly. This is a test value.
 		players.get(activePlayer).money += 2;
 		
-		if (activePlayer <= players.size() - 2)
-			activePlayer++;
-		else
-			activePlayer = 1; // 0 is not a user
+		activePlayer++;
+		
+		if (activePlayer >= players.size())
+			activePlayer = 1;		
 	}
 	
 	/* Checks if any Player has won and returns the playerID of the winner.
@@ -332,7 +332,7 @@ public class CommonData {
 				centersControlled[victoryTile.getE().getOwner()]++;
 		}
 		
-		for (int i : centersControlled)
+		for (int i = 0; i < centersControlled.length; i++)
 		{
 			if (i != Player.NEUTRAL && centersControlled[i] >= 3)
 			{
