@@ -523,8 +523,11 @@ public class MainGameScreen implements Screen {
 	 */
 	private void setLocationPositions(ArrayList<Location> locations)
 	{
-		int locationWidth = 3 * Tile.TILE_SIZE;
+		// 3 Tiles in each dimension, plus buffers between Tiles and edges
+		float locationWidth = (3 * Tile.TILE_SIZE) + 
+				(Location.INTERNAL_BUFFER * 4);
 		
+		// Bottom-right corner of Locations at these relative positions
 		int eastX = WORLD_WIDTH - LOCATION_X_BUFFER_SIZE - 
 				MARKET_WIDTH - 
 				(Tile.TILE_SIZE * Location.TILES_PER_ROW);

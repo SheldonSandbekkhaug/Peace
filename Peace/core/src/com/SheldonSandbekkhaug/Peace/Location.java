@@ -37,6 +37,9 @@ public class Location {
 	public static final int SE = 7;
 	public static final int CENTER = 8;
 	
+	// Space between Tiles
+	public static final int INTERNAL_BUFFER = Tile.TILE_SIZE / 3;
+	
 	public Location(LocationID id)
 	{
 		this.id = id;
@@ -78,22 +81,22 @@ public class Location {
 	/*
 	 * Maps an index in the Tile array to a x offset used for drawing.
 	 */
-	public static int indexToXOffset(int index)
+	public static float indexToXOffset(int index)
 	{
 		switch(index)
 		{
 			case 0: 
 			case 1:
 			case 7:
-				return Tile.TILE_SIZE * 2;
+				return (Tile.TILE_SIZE * 2) + (INTERNAL_BUFFER * 3);
 			case 2:
 			case 8:
 			case 6:
-				return Tile.TILE_SIZE * 1;
+				return (Tile.TILE_SIZE) + (INTERNAL_BUFFER * 2);
 			case 3:
 			case 4:
 			case 5:
-				return 0;
+				return INTERNAL_BUFFER;
 			default:
 				// ERROR
 				System.out.println("Invalid index in indexToXOffsets: " + index);
@@ -104,22 +107,22 @@ public class Location {
 	/*
 	 * Maps an index in the Tile array to a y offset used for drawing.
 	 */
-	public static int indexToYOffset(int index)
+	public static float indexToYOffset(int index)
 	{
 		switch(index)
 		{
 			case 1: 
 			case 2:
 			case 3:
-				return Tile.TILE_SIZE * 2;
+				return (Tile.TILE_SIZE * 2) + (INTERNAL_BUFFER * 3);
 			case 4:
 			case 8:
 			case 0:
-				return Tile.TILE_SIZE * 1;
+				return (Tile.TILE_SIZE) + (INTERNAL_BUFFER * 2);
 			case 5:
 			case 6:
 			case 7:
-				return 0;
+				return INTERNAL_BUFFER;
 			default:
 				// ERROR
 				System.out.println("Invalid index in indexToYOffsets: " + index);

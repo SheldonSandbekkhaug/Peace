@@ -344,7 +344,8 @@ public class CommonData {
 			if (i != Player.NEUTRAL && centersControlled[i] >= 3)
 			{
 				// NEUTRAL cannot win the game
-				return i;
+				// This has been commented to allow flexible playtesting
+				//return i; // TODO: uncomment
 			}
 		}
 	

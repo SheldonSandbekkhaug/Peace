@@ -120,7 +120,7 @@
         <name>Soldier 5</name>
         <strength>2</strength>
         <hp>4</hp>
-        <cost>5</cost>
+        <cost>3</cost>
         <img>man_40x40.png</img>
     </unit>
     <unit>

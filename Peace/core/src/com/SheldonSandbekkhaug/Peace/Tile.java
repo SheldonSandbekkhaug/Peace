@@ -2,6 +2,7 @@ package com.SheldonSandbekkhaug.Peace;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -31,25 +32,31 @@ public class Tile {
 			batch.draw(e.getImg(), x, y);
 			
 			// Draw HP. These coordinates specify top-left corner
-			String label = "" + e.getCurrHP();
-			float hpX = x + Tile.TILE_SIZE - font.getBounds(label).height;
-			float hpY = y + font.getBounds(label).height;
-			font.draw(batch, label, hpX, hpY);
+			String hpLabel = "" + e.getCurrHP();
+			float hpX = x + Tile.TILE_SIZE - font.getBounds(hpLabel).width / 2;
+			float hpY = y + font.getBounds(hpLabel).height;
+			font.draw(batch, hpLabel, hpX, hpY);
 			
 			// Draw Strength if E is a Unit
 			if (e instanceof Unit)
 			{
 				Unit u = (Unit)e;
-				float strengthX = x;
-				font.draw(batch, "" + u.getStrength(), strengthX, hpY);
+				
+				String strLabel = "" + u.getStrength();
+				TextBounds labelBounds = font.getBounds(strLabel);
+				
+				float strengthX = x - labelBounds.width / 2;
+				float strengthY = hpY;
+				
+				font.draw(batch, strLabel, strengthX, strengthY);
 			}
 			
 			// Draw Player Banner
 			if (e.getOwner() != Player.NEUTRAL)
 			{
 				Texture banner = playerBanners[e.getOwner()];
-				float bannerX = x + TILE_SIZE - banner.getWidth();
-				float bannerY = y + TILE_SIZE - banner.getHeight();
+				float bannerX = x + TILE_SIZE - banner.getWidth() / 2;
+				float bannerY = y + TILE_SIZE - banner.getHeight() / 2;
 				batch.draw(banner, bannerX, bannerY);
 			}
 		}
