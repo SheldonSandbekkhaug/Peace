@@ -84,7 +84,7 @@ public class CommonData {
 		// Create Units for testing and place them in a Location
 		for (int i = 0; i < 5; i++)
 		{
-			Unit testUnit = units.get("SOLDIER_" + i);
+			Unit testUnit = units.get("SOLDIER_0").clone();
 			testUnit.owner = 0;
 			Location testLoc = locations.get(i);
 			Tile t = testLoc.tiles[Location.CENTER];
@@ -310,7 +310,8 @@ public class CommonData {
 	public void nextTurn()
 	{
 		// TODO: calculate income properly. This is a test value.
-		players.get(activePlayer).money += 2;
+		// TODO: calculate income on server side only, then broadcast changes
+		players.get(activePlayer).money += 3;
 		
 		activePlayer++;
 		
@@ -322,18 +323,20 @@ public class CommonData {
 	 * Returns -1 if no Player has won.
 	 * 
 	 * The win condition: A Player controls an Entity on the center Tile in
-	 * the five major Locations.
+	 * three out of the five major Locations.
 	 */
 	public int checkVictoryCondition()
 	{
 		int[] centersControlled = new int[players.size()];
 
 		// Check which players controls each Location
-		for (int i = 1; i < locations.size(); i++)
+		for (int i = 0; i < locations.size(); i++)
 		{
 			Tile victoryTile = locations.get(i).getTiles()[Location.CENTER];
 			if (victoryTile.getE() != null)
+			{
 				centersControlled[victoryTile.getE().getOwner()]++;
+			}
 		}
 		
 		for (int i = 0; i < centersControlled.length; i++)
