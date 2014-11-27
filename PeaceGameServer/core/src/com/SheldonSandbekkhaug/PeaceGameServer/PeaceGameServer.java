@@ -98,10 +98,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 			}
 			else
 			{
-				commonData.nextTurn();
-				PacketMessage nextTurn = new PacketMessage();
-				nextTurn.type = EventType.NEXT_TURN;
-				network.broadcastToPlayers(nextTurn);
+				handleNextTurn();
 			}
 			break;
 		case LEAVE:
@@ -114,18 +111,18 @@ public class PeaceGameServer extends ApplicationAdapter {
 			clearLobby(lobby);
 			break;
 		case FROM_MARKET: // A Player bought an Entity
-			if (pm.playerID == commonData.getActivePlayer())
+			if (pm.playerID == commonData.getActivePlayerID())
 				buyEntity(pm.playerID, pm.message, pm.targetTileID);
 			break;
 		case MOVE: // A Player moved an Entity
-			if (pm.playerID == commonData.getActivePlayer())
+			if (pm.playerID == commonData.getActivePlayerID())
 			{
 				broadcastMoveEntity(pm.srcTileID, pm.targetTileID);
 				commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			}
 			break;
 		case ATTACK: // A Player ordered an Entity to attack
-			if (pm.playerID == commonData.getActivePlayer())
+			if (pm.playerID == commonData.getActivePlayerID())
 				attackEntity(pm.srcTileID, pm.targetTileID);
 		default:
 			break;
@@ -316,7 +313,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		{
 			constDamageEntity(1, defender, true, REACTOR);
 		}
-		if (defenderFirstStrike)
+		if (defenderFirstStrike && !attacker.hasAttribute(Attribute.RAIDER))
 		{
 			constDamageEntity(1, attacker, true, INITIATOR);
 		}
@@ -449,5 +446,28 @@ public class PeaceGameServer extends ApplicationAdapter {
 		moneyUpdate.playerID = playerID;
 		moneyUpdate.number = newVal;
 		network.broadcastToPlayers(moneyUpdate);
+	}
+	
+	/* Calculate income for the active player, then call
+	 * commonData.nextTurn()
+	 * */
+	private void handleNextTurn()
+	{
+		int income = 2; // Base income of 2
+		
+		// Income based on victory centers controlled
+		income += commonData.getNumCentersControlled(
+				commonData.getActivePlayerID());
+		commonData.getActivePlayer().setMoney(
+				commonData.getActivePlayer().getMoney() + income);
+		
+		// Broadcast update
+		broadcastUpdatePlayerMoney(commonData.getActivePlayer().getMoney(),
+				commonData.getActivePlayerID());
+		
+		commonData.nextTurn();
+		PacketMessage nextTurn = new PacketMessage();
+		nextTurn.type = EventType.NEXT_TURN;
+		network.broadcastToPlayers(nextTurn);
 	}
 }
