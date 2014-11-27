@@ -61,7 +61,7 @@ public class XMLHandler {
 		}
 	}
 
-	/* Read Unit mappings from an XML file .
+	/* Read Unit mappings from an XML file.
 	 * Unit mappings are XML objects that describe units properties,
 	 * such as strength and hit points.
 	 * 
@@ -86,7 +86,7 @@ public class XMLHandler {
 				readUnitProperties(unitElement, u, renderData, 
 					mappings_filepath);
 				
-				units.put(u.id, u);
+				units.put(u.getID(), u);
 			}
 		}
 		
@@ -124,7 +124,7 @@ public class XMLHandler {
 		}
 	}
 	
-	/* Read Structure mappings from an XML file .
+	/* Read Structure mappings from an XML file.
 	 * Structure mappings are XML objects that describe units properties.
 	 * 
 	 * If renderData is false, read data used for rendering.
@@ -149,7 +149,7 @@ public class XMLHandler {
 				readStructureProperties(sElement, s, renderData, 
 					mappings_filepath);
 				
-				structures.put(s.id, s);
+				structures.put(s.getID(), s);
 			}
 		}
 		
@@ -216,6 +216,11 @@ public class XMLHandler {
 			e.setCurrHP(e.getMaxHP());
 			return true;
 		}
+		else if (property.getName().equals("market"))
+		{
+			e.setForMarket(Boolean.parseBoolean(property.getText()));
+			return true;
+		}
 		else if (property.getName().equals("img"))
 		{
 			// Don't need to load renderData on server
@@ -245,28 +250,73 @@ public class XMLHandler {
 	
 	/*
 	 * Reads information for a skin and modifies the units accordingly.
-	 * Skins are like unit mappings, but they set the appearance (
+	 * Skins are like unit mappings, but they set the appearance
 	 * (names, images, and sounds) of units.
+	 * String skin - the name of the skin to use.
 	 */
-	public HashMap<String, Unit> applySkin(HashMap<String, Unit> units, String skin)
-	{		
+	public void applyUnitSkin(HashMap<String, Unit> units, String skin)
+	{
+		String filepath = skin + "/data/units.xml";
+		applySkin(units, filepath);
+		/*
 		String mappings_filepath = skin + "/data/units.xml";
 		Element skinCatalog = read(mappings_filepath);
 		
 		if (skinCatalog.getName().equals("catalog"))
 		{
-			// Iterate through all Unit skins in the catalog
+			// Iterate through all data in the catalog
 			for (int i = 0; i < skinCatalog.getChildCount(); i++)
 			{
-				Element unitElement = skinCatalog.getChild(i);
+				Element entityElement = skinCatalog.getChild(i);
 				
-				Unit u = units.get(unitElement.getChildByName("id").getText());
+				PeaceEntity e = units.get(entityElement.getChildByName("id").getText());
 				
-				// Get all skinned properties for this Unit
-				readUnitProperties(unitElement, u, false, mappings_filepath);
+				applySkinToEntity(e, entityElement, mappings_filepath);
+			}
+		}*/
+	}
+	
+	/* Same as applyUnitSkin, but for Structures. */
+	public void applyStructureSkin(HashMap<String, Structure> structures, String skin)
+	{
+		String filepath = skin + "/data/structures.xml";
+		applySkin(structures, filepath);
+	}
+	
+	/* Read the XML file at mappings_filepath and update Entity data
+	 * accordingly.
+	 * Modifies the given HashMap in-place.
+	 */
+	private void applySkin(@SuppressWarnings("rawtypes") HashMap entities,
+			String mappings_filepath)
+	{
+		Element skinCatalog = read(mappings_filepath);
+		
+		if (skinCatalog.getName().equals("catalog"))
+		{
+			// Iterate through all data in the catalog
+			for (int i = 0; i < skinCatalog.getChildCount(); i++)
+			{
+				Element entityElement = skinCatalog.getChild(i);
+				
+				PeaceEntity e = (PeaceEntity) entities.get(
+						entityElement.getChildByName("id").getText());
+				
+				applySkinToEntity(e, entityElement, mappings_filepath);
 			}
 		}
-		
-		return units;
+	}
+	
+	/* Read the properties of the element into the given PeaceEntity
+	 * filepath is the path to the skin data file being used. It is used for
+	 * error reporting.
+	 */
+	private void applySkinToEntity(PeaceEntity e, Element element,
+			String filepath)
+	{
+		if (e instanceof Unit)
+			readUnitProperties(element, (Unit)e, true, filepath);
+		else if (e instanceof Structure)
+			readStructureProperties(element, (Structure)e, true, filepath);
 	}
 }

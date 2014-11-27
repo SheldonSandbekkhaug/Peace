@@ -75,22 +75,29 @@ public class CommonData {
 	{
 		XMLHandler reader = new XMLHandler(this);
 		
-		// Create Units based on default data
+		// Create default Units, then apply the active skin
 		units = reader.readUnitMappings(renderData);
-		
-		// Read all the Units in the active skin
-		units = reader.applySkin(units, skin);
+		reader.applyUnitSkin(units, skin);
 		
 		// Add Units to the Market availability HashMap
 		for (String id : units.keySet())
 		{
-			availableForMarket.put(id, units.get(id));
+			if (units.get(id).isForMarket())
+				availableForMarket.put(id, units.get(id));
 		}
 		
-		// Create Structures based on the default data
+		// Create default Structures, then apply the active skin
 		structures = reader.readStructureMappings(renderData);
+		reader.applyStructureSkin(structures, skin);
 		
-		// TODO: apply skin to Structures
+		// Add Structures to the Market availability HashMap
+		for (String id : structures.keySet())
+		{
+			if (structures.get(id).isForMarket())
+			{
+				availableForMarket.put(id, structures.get(id));
+			}
+		}
 	}
 	
 	/* 

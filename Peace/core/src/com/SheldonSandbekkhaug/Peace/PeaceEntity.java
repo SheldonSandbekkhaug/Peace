@@ -5,17 +5,19 @@ import com.badlogic.gdx.utils.Array;
 
 /* A Unit or Structure */
 public class PeaceEntity {
-	String id;
+	private String id;
 	String name;
 	int cost;
 	int currHP, maxHP;
 	int owner; // playerID, 0 by default
 	Texture img;
+	boolean forMarket; // True if this Entity can be bought at the Market
 	Array<Attribute> attributes;
 	// NOTE: must adjust clone() method after adding/removing properties
 	
 	public PeaceEntity()
 	{
+		forMarket = true;
 		owner = Player.NEUTRAL;
 		attributes = new Array<Attribute>(4);
 	}
@@ -119,5 +121,13 @@ public class PeaceEntity {
 	public boolean hasAttribute(Attribute a)
 	{
 		return attributes.contains(a, false);
+	}
+
+	public boolean isForMarket() {
+		return forMarket;
+	}
+
+	public void setForMarket(boolean forMarket) {
+		this.forMarket = forMarket;
 	}
 }
