@@ -488,6 +488,8 @@ public class MainGameScreen implements Screen {
 	 */
 	private void showEntityData(PeaceEntity e, float x, float y)
 	{
+		x = x - 10; // Create gap between Tile and info panel
+		
 		batch.draw(infoBackgroundBorder,
 				x - ENTITY_INFO_WIDTH - ENTITY_INFO_BORDER_THICKNESS,
 				y - ENTITY_INFO_HEIGHT + Tile.TILE_SIZE - ENTITY_INFO_BORDER_THICKNESS, 
@@ -507,22 +509,25 @@ public class MainGameScreen implements Screen {
 		
 		int row = 2; // For positioning text
 		
+		// Draw the cost of the Entity
+		font.draw(batch, "Cost: " + e.getCost(), textX,
+				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
+		row++;
+		
 		// If it's a unit, draw the strength and HP
 		if (e instanceof Unit)
 		{
-			Unit u = (Unit)e;
-			font.draw(batch, "Str: " + u.getStrength(),	textX,
-				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
-			row++;
-			font.draw(batch, "HP: " + u.getCurrHP() + "/" + u.getMaxHP(),
-				textX,
-				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
-			row++;
-			font.draw(batch, "Cost: " + u.getCost(), textX,
+			// Nothing to do here yet
+		}
+		else if (e instanceof Structure) // Draw Structure-specific info
+		{
+			Structure s = (Structure)e;
+			font.draw(batch, "Income: " + s.getIncome(), textX, 
 				y + Tile.TILE_SIZE - ENTITY_INFO_Y_BUFFER - (row * textHeight));
 			row++;
 		}
 		
+		// Draw the owner
 		if (e.getOwner() != 0)
 		{
 			font.draw(batch, "Owner: " + e.getOwner(), textX,
@@ -530,6 +535,7 @@ public class MainGameScreen implements Screen {
 			row++;
 		}
 		
+		// Draw the attributes
 		if (e.getAttributes().size > 0)
 		{
 			for (Attribute a : e.getAttributes())
@@ -539,8 +545,6 @@ public class MainGameScreen implements Screen {
 				row++;
 			}
 		}
-		
-		// TODO: Handle other types of PeaceEntities
 	}
 	
 	/* Modifies locations in-place to have the correct positions for this
