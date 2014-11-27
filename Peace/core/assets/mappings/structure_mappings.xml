@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
     <structure>
+        <id>FARM_1</id>
+        <name>Farm 1</name>
+        <hp>20</hp>
+        <income>1</income>
+        <cost>4</cost>
+        <img>FARM_1.png</img>
+	</structure>
+	<structure>
+        <id>FARM_2</id>
+        <name>Farm 2</name>
+        <hp>30</hp>
+        <income>2</income>
+        <cost>8</cost>
+        <img>FARM_1.png</img>
+	</structure>
+	<structure>
+        <id>FARM_3</id>
+        <name>Farm 3</name>
+        <hp>40</hp>
+        <income>3</income>
+        <cost>12</cost>
+        <img>FARM_1.png</img>
+	</structure>
+	<structure>
         <id>HEADQUARTERS</id>
         <name>Headquarters</name>
         <hp>100</hp>
+        <income>2</income>
         <cost>1</cost>
         <img>HEADQUARTERS.png</img>
-        <income>2</income>
         <market>FALSE</market>
     </structure>
 </catalog>

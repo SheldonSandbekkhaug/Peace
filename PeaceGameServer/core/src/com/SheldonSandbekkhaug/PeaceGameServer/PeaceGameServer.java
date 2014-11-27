@@ -16,6 +16,7 @@ import com.SheldonSandbekkhaug.Peace.EventType;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
 import com.SheldonSandbekkhaug.Peace.PeaceEntity;
 import com.SheldonSandbekkhaug.Peace.Player;
+import com.SheldonSandbekkhaug.Peace.Structure;
 import com.SheldonSandbekkhaug.Peace.Tile;
 import com.SheldonSandbekkhaug.Peace.Unit;
 
@@ -454,17 +455,28 @@ public class PeaceGameServer extends ApplicationAdapter {
 	 * */
 	private void handleNextTurn()
 	{
+		Player activePlayer = commonData.getActivePlayer();
 		int income = 2; // Base income of 2
 		
 		// Income based on victory centers controlled
 		income += commonData.getNumCentersControlled(
-				commonData.getActivePlayerID());
-		commonData.getActivePlayer().setMoney(
-				commonData.getActivePlayer().getMoney() + income);
+				activePlayer.getPlayerID());
+		
+		// Income based on PeaceEntities controlled
+		for (PeaceEntity e : activePlayer.getEntities())
+		{
+			if (e instanceof Structure)
+			{
+				Structure s = (Structure)e;
+				income += s.getIncome();
+			}
+		}
+		
+		activePlayer.setMoney(activePlayer.getMoney() + income);
 		
 		// Broadcast update
-		broadcastUpdatePlayerMoney(commonData.getActivePlayer().getMoney(),
-				commonData.getActivePlayerID());
+		broadcastUpdatePlayerMoney(activePlayer.getMoney(),
+				activePlayer.getPlayerID());
 		
 		commonData.nextTurn();
 		PacketMessage nextTurn = new PacketMessage();
