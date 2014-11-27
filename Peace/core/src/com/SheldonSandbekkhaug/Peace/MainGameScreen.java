@@ -163,7 +163,7 @@ public class MainGameScreen implements Screen {
 					Player currentPlayer = 
 							game.commonData.players.get(game.playerID);
 					int playerMoney = currentPlayer.getMoney();
-					if (playerMoney > marketTile.getE().getCost())
+					if (playerMoney >= marketTile.getE().getCost())
 					{
 						batch.draw(translucent_green_rect,
 								marketTile.rect.x, marketTile.rect.y);
