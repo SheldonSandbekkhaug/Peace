@@ -41,7 +41,7 @@ public class MainGameScreen implements Screen {
 	public static final int LOCATION_X_BUFFER_SIZE = 40;
 	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
-	private static Texture translucent_yellow_rect;
+	private static Texture translucent_green_rect;
 	
 	// Market size and position
 	public static final int MARKET_WIDTH = WORLD_WIDTH / 10;
@@ -84,8 +84,8 @@ public class MainGameScreen implements Screen {
         font = new BitmapFont(); // Defaults to Arial
         font.setColor(Color.BLACK);
         
-        translucent_yellow_rect = new Texture(Gdx.files.internal(
-    			game.commonData.skin + "/misc/translucent_yellow_rect.png"));
+        translucent_green_rect = new Texture(Gdx.files.internal(
+    			game.commonData.skin + "/misc/translucent_green_rect.png"));
         
         // Font for things drawn by Locations
         BitmapFont locationFont = new BitmapFont();
@@ -155,12 +155,28 @@ public class MainGameScreen implements Screen {
 			for (int i = 0; i < game.commonData.getMarketSize(); i++)
 			{
 				Tile marketTile = game.commonData.getMarketTile(i);
+				
+				// Highlight Entities that the active player can afford
+				if (marketTile.getE() != null && 
+						game.commonData.getActivePlayer() == game.playerID)
+				{
+					Player currentPlayer = 
+							game.commonData.players.get(game.playerID);
+					int playerMoney = currentPlayer.getMoney();
+					if (playerMoney > marketTile.getE().getCost())
+					{
+						batch.draw(translucent_green_rect,
+								marketTile.rect.x, marketTile.rect.y);
+					}
+				}
+				
+				// Draw the usual Tile things
 				marketTile.draw(batch, Location.font,
 					marketTile.rect.x, marketTile.rect.y);
 				
 				// Draw coin icon and Entity cost
 				if (marketTile.getE() != null)
-				{
+				{		
 					float coinX = marketTile.rect.x - Tile.TILE_SIZE / 5;
 					float coinY = marketTile.rect.y + (Tile.TILE_SIZE / 10) * 8;
 					
@@ -252,8 +268,8 @@ public class MainGameScreen implements Screen {
 			{
 				/* Draw an indicator showing the selected Entity can be 
 				   released here */
-				if (cursorOnTile != null)
-					batch.draw(translucent_yellow_rect,
+				if (cursorOnTile != null && cursorOnTile.getE() == null)
+					batch.draw(translucent_green_rect,
 							cursorOnTile.rect.x, cursorOnTile.rect.y, 40, 40);
 				
 				// Going from screen coordinates to game coordinates
