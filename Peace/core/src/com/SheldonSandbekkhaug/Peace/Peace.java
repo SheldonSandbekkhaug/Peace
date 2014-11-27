@@ -177,7 +177,7 @@ public class Peace extends Game {
 	public void requestEndTurn()
 	{
 		// User can only end their own turn
-		if (commonData.getActivePlayer() == playerID)
+		if (commonData.getActivePlayerID() == playerID)
 		{
 			PacketMessage pm = new PacketMessage();
 			pm.type = EventType.NEXT_TURN;

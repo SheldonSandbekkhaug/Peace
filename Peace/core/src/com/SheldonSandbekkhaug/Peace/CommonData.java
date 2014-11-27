@@ -17,7 +17,7 @@ public class CommonData {
 	public HashMap<String, PeaceEntity> availableForMarket;
 	private ArrayList<Tile> market;
 	public ArrayList<Player> players; // Indexed by playerID
-	private int activePlayer; // playerID for whose turn it is
+	private int activePlayerID; // playerID for whose turn it is
 	
 	/*The maximum number of players Peace can support at this time, 
 	  including the neutral player */
@@ -34,7 +34,7 @@ public class CommonData {
 	{
 		skin = "default_1.0";
 		players = new ArrayList<Player>();
-		activePlayer = 1;
+		activePlayerID = 1;
 		
 		availableForMarket = new HashMap<String, PeaceEntity>();
 		
@@ -301,22 +301,23 @@ public class CommonData {
 		t.setE(null);
 	}
 	
-	public int getActivePlayer()
+	public Player getActivePlayer()
 	{
-		return activePlayer;
+		return players.get(activePlayerID);
+	}
+	
+	public int getActivePlayerID()
+	{
+		return activePlayerID;
 	}
 	
 	/* Change whose turn it is. */
 	public void nextTurn()
 	{
-		// TODO: calculate income properly. This is a test value.
-		// TODO: calculate income on server side only, then broadcast changes
-		players.get(activePlayer).money += 3;
+		activePlayerID++;
 		
-		activePlayer++;
-		
-		if (activePlayer >= players.size())
-			activePlayer = 1;		
+		if (activePlayerID >= players.size())
+			activePlayerID = 1;
 	}
 	
 	/* Checks if any Player has won and returns the playerID of the winner.
@@ -350,5 +351,23 @@ public class CommonData {
 		}
 	
 		return -1;
+	}
+	
+	/* Get the number of victory centers controlled by the given player ID. */
+	public int getNumCentersControlled(int playerID)
+	{
+		int sum = 0;
+		
+		// Check if playerID controls each Location
+		for (int i = 0; i < locations.size(); i++)
+		{
+			Tile t = locations.get(i).getTiles()[Location.CENTER];
+			if (t.getE() != null && t.getE().getOwner() == playerID)
+			{
+				sum++;
+			}
+		}
+		
+		return sum;
 	}
 }

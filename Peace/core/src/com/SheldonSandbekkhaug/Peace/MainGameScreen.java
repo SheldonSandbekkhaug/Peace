@@ -158,7 +158,7 @@ public class MainGameScreen implements Screen {
 				
 				// Highlight Entities that the active player can afford
 				if (marketTile.getE() != null && 
-						game.commonData.getActivePlayer() == game.playerID)
+						game.commonData.getActivePlayerID() == game.playerID)
 				{
 					Player currentPlayer = 
 							game.commonData.players.get(game.playerID);
@@ -204,7 +204,7 @@ public class MainGameScreen implements Screen {
 			
 			font.draw(batch, "Funds: " + playerMoneyAmt, 100, 100);
 			font.draw(batch,
-					"Player " + game.commonData.getActivePlayer() + "'s turn",
+					"Player " + game.commonData.getActivePlayerID() + "'s turn",
 					100, 80);
 			
 			handleMouseInput();
@@ -267,10 +267,11 @@ public class MainGameScreen implements Screen {
 			if (selectedEntity != null)
 			{
 				/* Draw an indicator showing the selected Entity can be 
-				   released here */
+				   released here safely */
 				if (cursorOnTile != null && cursorOnTile.getE() == null)
 					batch.draw(translucent_green_rect,
 							cursorOnTile.rect.x, cursorOnTile.rect.y, 40, 40);
+				// TODO: draw a red indicator over hostile units?
 				
 				// Going from screen coordinates to game coordinates
 				Vector3 selectedEntityPos = new Vector3(
@@ -410,7 +411,7 @@ public class MainGameScreen implements Screen {
 	public boolean tryToPickUpEntity(Tile tile)
 	{
 		// Must be user's turn to pick up an Entity
-		if (game.commonData.getActivePlayer() != game.playerID)
+		if (game.commonData.getActivePlayerID() != game.playerID)
 			return false;
 		
 		// Entity must not be null

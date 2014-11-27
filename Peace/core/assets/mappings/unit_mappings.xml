@@ -19,10 +19,28 @@
         <attribute>NORMAL</attribute>
     </unit>
     <unit>
+        <id>GUERILLA_1</id>
+        <name>Guerilla</name>
+        <strength>1</strength>
+        <hp>4</hp>
+        <cost>3</cost>
+        <img>GUERILLA_1.png</img>
+        <attribute>RAIDER</attribute>
+    </unit>
+    <unit>
+        <id>GUERILLA_2</id>
+        <name>Elite Guerilla</name>
+        <strength>3</strength>
+        <hp>5</hp>
+        <cost>5</cost>
+        <img>GUERILLA_1.png</img>
+        <attribute>RAIDER</attribute>
+    </unit>
+    <unit>
         <id>MEDIUM_1</id>
         <name>Medium Unit 1</name>
         <strength>2</strength>
-        <hp>5</hp>
+        <hp>6</hp>
         <cost>4</cost>
         <img>man_40x40.png</img>
         <attribute>NORMAL</attribute>
@@ -59,7 +77,7 @@
         <name>Sharpshooter 1</name>
         <strength>1</strength>
         <hp>6</hp>
-        <cost>7</cost>
+        <cost>5</cost>
         <img>SNIPER_1.png</img>
         <attribute>FIRST_STRIKE</attribute>
     </unit>
@@ -68,7 +86,7 @@
         <name>Sniper 1</name>
         <strength>1</strength>
         <hp>3</hp>
-        <cost>5</cost>
+        <cost>3</cost>
         <img>SNIPER_1.png</img>
         <attribute>DEFENDER</attribute>
         <attribute>FIRST_STRIKE</attribute>
@@ -169,7 +187,7 @@
         <name>Tank 2</name>
         <strength>4</strength>
         <hp>5</hp>
-        <cost>14</cost>
+        <cost>9</cost>
         <img>TANK_1.png</img>
         <attribute>ARMORED</attribute>
     </unit>
@@ -178,7 +196,7 @@
         <name>Tank 3</name>
         <strength>5</strength>
         <hp>6</hp>
-        <cost>18</cost>
+        <cost>11</cost>
         <img>TANK_1.png</img>
         <attribute>ARMORED</attribute>
     </unit>
@@ -187,7 +205,7 @@
         <name>Turtle</name>
         <strength>1</strength>
         <hp>10</hp>
-        <cost>8</cost>
+        <cost>5</cost>
         <img>TURTLE_1.png</img>
         <attribute>NORMAL</attribute>
     </unit>
