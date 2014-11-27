@@ -199,6 +199,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		Tile t = commonData.getTileFromMarket(entityID);
 		PeaceEntity e = t.getE();
 		e.setOwner(playerID);
+		p.getEntities().add(e);
 
 		// Subtract the cost of the Entity from the Player's funds
 		p.setMoney(p.getMoney() - e.getCost());

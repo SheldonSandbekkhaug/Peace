@@ -298,6 +298,12 @@ public class CommonData {
 	public void destroyEntity(int tileID)
 	{
 		Tile t = getTile(tileID);
+		
+		// Remove this Entity from its owner's array
+		Player owner = players.get(t.getE().getOwner());
+		owner.getEntities().removeValue(t.getE(), true);
+		
+		// Remove the Entity from the game world
 		t.setE(null);
 	}
 	

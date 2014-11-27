@@ -80,6 +80,9 @@ public class Peace extends Game {
 		case FROM_MARKET: // A Player bought something
 			Tile src = commonData.getTile(pm.srcTileID);
 			src.getE().setOwner(pm.playerID);
+			Player buyer = commonData.players.get(pm.playerID);
+			buyer.getEntities().add(src.getE());
+			
 			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			break;
 		case ADD_PLAYER: // Add a Player to the game

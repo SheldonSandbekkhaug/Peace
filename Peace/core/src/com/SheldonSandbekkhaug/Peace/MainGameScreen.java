@@ -443,7 +443,7 @@ public class MainGameScreen implements Screen {
 		{
 			// End this Player's turn.
 			System.out.println("It is now Player " + 
-					game.commonData.getActivePlayer() + "'s turn. " +
+					game.commonData.getActivePlayerID() + "'s turn. " +
 					"You are Player " + game.playerID);
 			game.requestEndTurn();
 		}
