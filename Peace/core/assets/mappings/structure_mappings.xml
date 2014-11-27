@@ -33,4 +33,31 @@
         <img>HEADQUARTERS.png</img>
         <market>FALSE</market>
     </structure>
+    <structure>
+        <id>MINE_1</id>
+        <name>Mine 1</name>
+        <hp>20</hp>
+        <income>1</income>
+        <cost>4</cost>
+        <img>MINE_1.png</img>
+        <attribute>MINE</attribute>
+	</structure>
+	<structure>
+        <id>MINE_2</id>
+        <name>Mine 2</name>
+        <hp>30</hp>
+        <income>2</income>
+        <cost>8</cost>
+        <img>MINE_1.png</img>
+        <attribute>MINE</attribute>
+	</structure>
+	<structure>
+        <id>MINE_3</id>
+        <name>Mine 1</name>
+        <hp>40</hp>
+        <income>3</income>
+        <cost>12</cost>
+        <img>MINE_1.png</img>
+        <attribute>MINE</attribute>
+	</structure>
 </catalog>

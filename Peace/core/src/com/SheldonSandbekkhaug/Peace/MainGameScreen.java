@@ -419,8 +419,8 @@ public class MainGameScreen implements Screen {
 			return false;
 		
 		boolean isOwned = game.playerID == tile.getE().getOwner();
-		if (tile != null && tile.getE() != null &&
-				(isOwned || tile.isMarketTile()))
+		boolean isStructure = tile.getE() instanceof Structure;
+		if ((isOwned && !isStructure) || tile.isMarketTile())
 		{
 			if (Gdx.input.isTouched() && selectedEntity == null)
 			{

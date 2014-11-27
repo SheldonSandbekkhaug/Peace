@@ -4,4 +4,16 @@
         <id>HEADQUARTERS</id>
         <name>Custom HQ Name</name>
     </unit>
+    <unit>
+        <id>MINE_1</id>
+        <name>Copper Mine</name>
+    </unit>
+    <unit>
+        <id>MINE_2</id>
+        <name>Iron Mine</name>
+    </unit>
+    <unit>
+        <id>MINE_3</id>
+        <name>Gold Mine</name>
+    </unit>
 </catalog>
