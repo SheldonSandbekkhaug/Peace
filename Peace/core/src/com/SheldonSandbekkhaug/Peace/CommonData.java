@@ -12,6 +12,7 @@ public class CommonData {
 	
 	public ArrayList<Location> locations;
 	public HashMap<String, Unit> units; // All Units in the game
+	public HashMap<String, Structure> structures; //All Structures in the game
 	
 	// PeaceEntities available to be added to the Market
 	public HashMap<String, PeaceEntity> availableForMarket;
@@ -39,8 +40,10 @@ public class CommonData {
 		availableForMarket = new HashMap<String, PeaceEntity>();
 		
 		createLocations(renderData);
-		loadUnits(renderData);
+		loadEntities(renderData);
 		initializeMarket();
+		
+		defaultTestSetup(); // TODO: remove?
 	}
 	
 	/*
@@ -65,12 +68,10 @@ public class CommonData {
 		}
 	}
 	
-	/* 
-	 * Load Units from XML data files 
+	/* Read all PeaceEntities from XML files.
 	 * If renderData is true, initialize data needed for rendering.
-	 * Else, only initialize model data.
-	 */
-	public void loadUnits(boolean renderData)
+	 * Else, ignore data needed for rendering. */
+	private void loadEntities(boolean renderData)
 	{
 		XMLHandler reader = new XMLHandler(this);
 		
@@ -80,6 +81,23 @@ public class CommonData {
 		// Read all the Units in the active skin
 		units = reader.applySkin(units, skin);
 		
+		// Add Units to the Market availability HashMap
+		for (String id : units.keySet())
+		{
+			availableForMarket.put(id, units.get(id));
+		}
+		
+		// Create Structures based on the default data
+		structures = reader.readStructureMappings(renderData);
+		
+		// TODO: apply skin to Structures
+	}
+	
+	/* 
+	 * Put units in the game for testing purposes.
+	 */
+	public void defaultTestSetup()
+	{
 		// TODO: remove test Units
 		// Create Units for testing and place them in a Location
 		for (int i = 0; i < 5; i++)
@@ -91,11 +109,10 @@ public class CommonData {
 			t.setE(testUnit);
 		}
 		
-		// Add Units to the Market availability HashMap
-		for (String id : units.keySet())
-		{
-			availableForMarket.put(id, units.get(id));
-		}
+		// TODO: remove
+		Structure hq = structures.get("HEADQUARTERS");
+		Tile t = locations.get(0).getTiles()[1];
+		t.setE(hq);
 	}
 	
 	/* Initialize the market */

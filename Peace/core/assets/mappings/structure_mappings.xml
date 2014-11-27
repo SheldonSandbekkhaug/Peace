@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <structure>
+        <id>HEADQUARTERS</id>
+        <name>Headquarters</name>
+        <hp>100</hp>
+        <cost>1</cost>
+        <img>HEADQUARTERS.png</img>
+        <income>2</income>
+    </unit>
+</catalog>

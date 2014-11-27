@@ -106,53 +106,141 @@ public class XMLHandler {
 		{
 			Element property = unitElement.getChild(j);
 			
-			if (property.getName().equals("cost"))
+			if (!readEntityProperty(property, u, renderData))
 			{
-				u.setCost(Integer.parseInt(property.getText()));
-			}
-			else if (property.getName().equals("id"))
-			{
-				u.setID(property.getText());
-			}
-			else if (property.getName().equals("name"))
-			{
-				u.setName(property.getText());
-			}
-			else if (property.getName().equals("strength"))
-			{
-				u.setStrength(Integer.parseInt(property.getText()));
-			}
-			else if (property.getName().equals("hp"))
-			{
-				u.setMaxHP(Integer.parseInt(property.getText()));
-				u.setCurrHP(u.getMaxHP());
-			}
-			else if (property.getName().equals("img"))
-			{
-				// Don't need to load renderData on server
-				if (renderData == true)
+				// Properties specific to Unit objects
+				if (property.getName().equals("strength"))
 				{
-					// Load the unit's image
-					Texture t = new Texture(
-						Gdx.files.internal(
-							commonData.skin +
-							"/unit_pictures/" +
-							property.getText()));
-					u.setImg(t);
+					u.setStrength(Integer.parseInt(property.getText()));
+				}
+				else
+				{
+					// ERROR
+					System.out.println("Unidentified property in " + 
+						mappings_filepath + ": " + property.getName());
+					System.exit(1);
 				}
 			}
-			else if (property.getName().equals("attribute"))
+		}
+	}
+	
+	/* Read Structure mappings from an XML file .
+	 * Structure mappings are XML objects that describe units properties.
+	 * 
+	 * If renderData is false, read data used for rendering.
+	 * If renderData is true, ignore data used for rendering.
+	 */
+	public HashMap<String, Structure> readStructureMappings(boolean renderData)
+	{
+		String mappings_filepath = "mappings/structure_mappings.xml";
+		Element structureCatalog = read(mappings_filepath);
+		
+		HashMap<String, Structure> structures =
+				new HashMap<String, Structure>();
+		
+		if (structureCatalog.getName().equals("catalog"))
+		{
+			// Iterate through all Units in the catalog
+			for (int i = 0; i < structureCatalog.getChildCount(); i++)
 			{
-				u.addAttribute(Attribute.valueOf(property.getText()));
-			}
-			else
-			{
-				// ERROR
-				System.out.println("Unidentified property in " + 
-					mappings_filepath + ": " + property.getName());
-				System.exit(1);
+				Element sElement = structureCatalog.getChild(i);
+				Structure s = new Structure();
+				s.setOwner(Player.NEUTRAL);
+				readStructureProperties(sElement, s, renderData, 
+					mappings_filepath);
+				
+				structures.put(s.id, s);
 			}
 		}
+		
+		return structures;
+	}
+	
+	/* Modifies Structure s in-place to have the properties in the given
+	 * Element.
+	 * If renderData is false, ignore data needed for rendering.
+	 * mappings_filepath is the filepath to the file that is being read. This
+	 * is used for error reporting.
+	 */
+	private void readStructureProperties(Element sElement, Structure s, 
+			boolean renderData, String mappings_filepath)
+	{
+		// Get all properties for this Structure
+		for (int j = 0; j < sElement.getChildCount(); j++)
+		{
+			Element property = sElement.getChild(j);
+			
+			if (!readEntityProperty(property, s, renderData))
+			{
+				// Properties specific to Structure objects
+				if (property.getName().equals("income"))
+				{
+					s.setIncome(Integer.parseInt(property.getText()));
+				}
+				else
+				{
+					// ERROR
+					System.out.println("Unidentified property in " + 
+						mappings_filepath + ": " + property.getName());
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
+	/* Read the property of this element into PeaceEntity e, if possible.
+	 * Return true if a property was used, false otherwise.
+	 * If renderData is false, ignore data needed for rendering.
+	 * */
+	private boolean readEntityProperty(Element property, PeaceEntity e,
+			boolean renderData)
+	{
+		if (property.getName().equals("cost"))
+		{
+			e.setCost(Integer.parseInt(property.getText()));
+			return true;
+		}
+		else if (property.getName().equals("id"))
+		{
+			e.setID(property.getText());
+			return true;
+		}
+		else if (property.getName().equals("name"))
+		{
+			e.setName(property.getText());
+			return true;
+		}
+		else if (property.getName().equals("hp"))
+		{
+			e.setMaxHP(Integer.parseInt(property.getText()));
+			e.setCurrHP(e.getMaxHP());
+			return true;
+		}
+		else if (property.getName().equals("img"))
+		{
+			// Don't need to load renderData on server
+			if (renderData == true)
+			{
+				String entityClass = "unit";
+				if (e instanceof Structure)
+					entityClass = "structure";
+				
+				String filepath = commonData.skin + "/"
+					+ entityClass + "_pictures/" + property.getText();
+				
+				// Load the unit's image
+				Texture t = new Texture(Gdx.files.internal(filepath));
+				e.setImg(t);
+			}
+			return true;
+		}
+		else if (property.getName().equals("attribute"))
+		{
+			e.addAttribute(Attribute.valueOf(property.getText()));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/*

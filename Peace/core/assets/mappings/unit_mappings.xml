@@ -5,7 +5,7 @@
         <name>Heavy Weapons Crew</name>
         <strength>2</strength>
         <hp>4</hp>
-        <cost>6</cost>
+        <cost>3</cost>
         <img>HEAVY_1.png</img>
         <attribute>PIERCING</attribute>
     </unit>
