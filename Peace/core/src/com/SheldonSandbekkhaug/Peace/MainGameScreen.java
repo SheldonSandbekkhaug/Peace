@@ -41,6 +41,8 @@ public class MainGameScreen implements Screen {
 	public static final int LOCATION_X_BUFFER_SIZE = 40;
 	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
+	private static Texture translucent_yellow_rect;
+	
 	// Market size and position
 	public static final int MARKET_WIDTH = WORLD_WIDTH / 10;
 	public static final int MARKET_HEIGHT = (int)(WORLD_HEIGHT * (6.0 / 10.0));
@@ -81,6 +83,9 @@ public class MainGameScreen implements Screen {
         batch = new SpriteBatch();
         font = new BitmapFont(); // Defaults to Arial
         font.setColor(Color.BLACK);
+        
+        translucent_yellow_rect = new Texture(Gdx.files.internal(
+    			game.commonData.skin + "/misc/translucent_yellow_rect.png"));
         
         // Font for things drawn by Locations
         BitmapFont locationFont = new BitmapFont();
@@ -245,6 +250,12 @@ public class MainGameScreen implements Screen {
 			// Draw the selected Entity centered on the cursor
 			if (selectedEntity != null)
 			{
+				/* Draw an indicator showing the selected Entity can be 
+				   released here */
+				if (cursorOnTile != null)
+					batch.draw(translucent_yellow_rect,
+							cursorOnTile.rect.x, cursorOnTile.rect.y, 40, 40);
+				
 				// Going from screen coordinates to game coordinates
 				Vector3 selectedEntityPos = new Vector3(
 					Gdx.input.getX() - Tile.TILE_SIZE / 2,
