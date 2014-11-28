@@ -148,7 +148,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 			pm.playerID = i;
 			network.broadcastToPlayers(pm);
 			
-			p.setMoney(p.getMoney() + i);
+			p.setMoney(p.getMoney() + i * 2);
 			broadcastUpdatePlayerMoney(p.getMoney(), i);
 			
 			commonData.players.add(p);

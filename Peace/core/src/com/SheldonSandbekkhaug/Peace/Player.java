@@ -14,7 +14,7 @@ public class Player {
 	public Player()
 	{
 		super();
-		money = 5;
+		money = 3;
 		entities = new Array<PeaceEntity>();
 	}
 
