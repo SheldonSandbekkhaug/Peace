@@ -50,6 +50,7 @@ public class Location {
 		for (int i = 0; i < tiles.length; i++)
 		{
 			tiles[i] = new Tile();
+			tiles[i].setLocation(this);
 		}
 	}
 	

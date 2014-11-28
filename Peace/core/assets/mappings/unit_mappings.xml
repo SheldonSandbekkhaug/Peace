@@ -72,6 +72,15 @@
         <img>LONE_WANDERER.png</img>
     </unit>
     <unit>
+        <id>MEDIC_1</id>
+        <name>Medic 1</name>
+        <strength>0</strength>
+        <hp>1</hp>
+        <cost>2</cost>
+        <img>MEDIC_1.png</img>
+        <attribute>HEAL_ON_ENTER</attribute>
+    </unit>
+    <unit>
         <id>MEDIUM_1</id>
         <name>Medium Unit 1</name>
         <strength>2</strength>

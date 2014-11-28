@@ -223,6 +223,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 		marketUpdate.targetTileID = destTileID;
 		network.broadcastToPlayers(marketUpdate);
 		
+		// Update affected Entities
+		triggerOnEnterEffects(destTileID);
+		
 		// Select a random PeaceEntity from the availability HashMap
 		String newEntityKey = randomSelection(commonData.availableForMarket);
 		PeaceEntity newEntity = 
@@ -239,9 +242,6 @@ public class PeaceGameServer extends ApplicationAdapter {
 		marketAdd.type = EventType.TO_MARKET;
 		marketAdd.srcTileID = t.getTileID();
 		network.broadcastToPlayers(marketAdd);
-		
-		// Update affected Entities
-		triggerOnEnterEffects(destTileID);
 	}
 	
 	/* Select a random key from HashMap */
@@ -462,17 +462,38 @@ public class PeaceGameServer extends ApplicationAdapter {
 		Tile t = commonData.getTile(tileID);
 		PeaceEntity e = t.getE();
 		
-		if (e.hasAttribute(Attribute.FORGE))
+		for (Attribute a : e.getAttributes())
 		{
-			Structure forge = (Structure)e;
-			forge.setIncome(forge.getIncome() +
-					commonData.countAttributes(Attribute.MINE));
-			broadcastUpdateEntity(tileID, "income", forge.getIncome());
-		}
-		if (e.hasAttribute(Attribute.MINE))
-		{
+			if (a == Attribute.FORGE)
+			{
+				Structure forge = (Structure)e;
+				forge.setIncome(forge.getIncome() +
+						commonData.countAttributes(Attribute.MINE));
+				broadcastUpdateEntity(tileID, "income", forge.getIncome());
+			}
+			else if (a == Attribute.HEAL_ON_ENTER)
+			{
+				// Heal all friendly Units 1 HP
+				Location loc = t.getLocation();
+				System.out.println("loc: " + loc.getName()); // TODO: remove
+				for (Tile tile : loc.getTiles())
+				{
+					PeaceEntity target = tile.getE();
+					if (target instanceof Unit &&
+							target.getOwner() == e.getOwner())
+					{
+						System.out.println("Healing " + e.getName()); // TODO: remove
+						target.setCurrHP(target.getCurrHP() + 1);
+						broadcastUpdateEntity(tile.getTileID(), "currHP",
+								target.getCurrHP());
+					}
+				}
+			}
+			else if (a == Attribute.MINE)
+			{
 			// Forges gain +1 income for every mine
 			updateIncomeByAttribute(Attribute.FORGE, 1);
+			}
 		}
 	}
 	

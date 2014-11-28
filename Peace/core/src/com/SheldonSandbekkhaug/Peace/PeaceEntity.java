@@ -8,7 +8,7 @@ public class PeaceEntity {
 	private String id;
 	String name;
 	int cost;
-	int currHP, maxHP;
+	int currHP, maxHP; // Current HP, max HP
 	int owner; // playerID, 0 by default
 	Texture img;
 	boolean forMarket; // True if this Entity can be bought at the Market
@@ -36,8 +36,8 @@ public class PeaceEntity {
 		setID(src.id);
 		setName(src.name);
 		setCost(src.cost);
+		setMaxHP(src.maxHP); // Must be set before currHP
 		setCurrHP(src.currHP);
-		setMaxHP(src.maxHP);
 		setOwner(src.owner);
 		setImg(src.img);
 		
@@ -75,8 +75,16 @@ public class PeaceEntity {
 		return currHP;
 	}
 
+	/* Set this PeaceEntity's HP to the new value.
+	 * If the new value is greater than its max value, set the currHP to the
+	 * max value.
+	 */
 	public void setCurrHP(int currHP) {
 		this.currHP = currHP;
+		
+		// Can't go over the maximum
+		if (this.currHP > this.maxHP)
+			this.currHP = this.maxHP;
 	}
 
 	public int getMaxHP() {

@@ -8,11 +8,12 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Tile {
 	public static final int TILE_SIZE = 40; // TODO: Adjust tile size based of world size
-	int tileID;
+	private int tileID;
 	private static int lastTileID = 0;
+	private Location location; // The Location holding this Tile
 	PeaceEntity e; // The PeaceEntity occupying this tile
 	Rectangle rect;
-	boolean marketTile; // True if this Tile is part of the Market
+	private boolean marketTile; // True if this Tile is part of the Market
 	static Texture[] playerBanners;
 
 	public Tile()
@@ -72,6 +73,14 @@ public class Tile {
 		return tileID;
 	}
 	
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
 	public PeaceEntity getE() {
 		return e;
 	}

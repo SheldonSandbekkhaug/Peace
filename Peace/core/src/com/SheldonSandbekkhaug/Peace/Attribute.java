@@ -4,6 +4,7 @@ public enum Attribute {
 	ARMORED,
 	DEFENDER,
 	FIRST_STRIKE, FORGE,
+	HEAL_ON_ENTER,
 	NORMAL,
 	MINE,
 	PIERCING,
@@ -22,6 +23,8 @@ public enum Attribute {
 			return "First Strike";
 		case FORGE:
 			return "FORGE";
+		case HEAL_ON_ENTER:
+			return "Heal on enter";
 		case MINE:
 			return "Mine";
 		case NORMAL:
