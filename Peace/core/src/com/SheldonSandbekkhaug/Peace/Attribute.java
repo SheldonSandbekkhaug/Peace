@@ -3,7 +3,10 @@ package com.SheldonSandbekkhaug.Peace;
 public enum Attribute {
 	ARMORED,
 	DEFENDER,
-	FIRST_STRIKE, FORGE,
+	IMMOBILIZE_ON_ATTACK,
+	IMMOBILIZED,
+	FIRST_STRIKE,
+	FORGE,
 	HEAL_ON_ENTER,
 	NORMAL,
 	MINE,
@@ -19,6 +22,10 @@ public enum Attribute {
 			return "Armored";
 		case DEFENDER:
 			return "Defender";
+		case IMMOBILIZE_ON_ATTACK:
+			return "Immobilize on attack";
+		case IMMOBILIZED:
+			return "Immobilized";
 		case FIRST_STRIKE:
 			return "First Strike";
 		case FORGE:
@@ -36,5 +43,21 @@ public enum Attribute {
 		default:
 			return "Default Attribute";
 		}
+	}
+	
+	/* Don't rely on this. Use this for PacketMessage communication only.
+	 * Converts an Attribute to an integer.
+	 */
+	public int getOrdinal()
+	{
+		return this.ordinal();
+	}
+	
+	/* Don't rely on this. Use this for PacketMessage communication only.
+	 * Converts an integer to an Attribute.
+	 */
+	public static Attribute fromOrdinal(int i)
+	{
+		return values()[i];
 	}
 }

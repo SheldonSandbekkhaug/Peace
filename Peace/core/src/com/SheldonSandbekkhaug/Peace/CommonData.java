@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 
 /* The common data used as the game model/game data */
 public class CommonData {
@@ -100,9 +101,7 @@ public class CommonData {
 		}
 	}
 	
-	/* 
-	 * Put units in the game for testing purposes.
-	 */
+	/* Put units in the game for testing purposes. */
 	public void defaultTestSetup()
 	{
 		// TODO: remove test Units
@@ -412,5 +411,27 @@ public class CommonData {
 		}
 		
 		return sum;
+	}
+	
+	/* Return an Array with the tileIDs of all Entities that have Attribute a.
+	 * If pid is not -1, only add Entities that have the same playerID as pid.
+	 */
+	public Array<Integer> tileIDsWithAttribute(Attribute a, int pid)
+	{
+		Array<Integer> tileIDs = new Array<Integer>(8);
+		
+		for (Location loc : locations)
+		{
+			for (Tile t : loc.getTiles())
+			{
+				if (t.getE() != null && t.getE().hasAttribute(a))
+				{
+					if (pid == -1 || t.getE().getOwner() == pid)
+						tileIDs.add(t.getTileID());
+				}
+			}
+		}
+		
+		return tileIDs;
 	}
 }

@@ -414,8 +414,9 @@ public class MainGameScreen implements Screen {
 		if (game.commonData.getActivePlayerID() != game.playerID)
 			return false;
 		
-		// Entity must not be null
-		if (tile == null || tile.getE() == null)
+		// Entity must not be null and not IMMOBILIZED
+		if (tile == null || tile.getE() == null ||
+				tile.getE().hasAttribute(Attribute.IMMOBILIZED))
 			return false;
 		
 		boolean isOwned = game.playerID == tile.getE().getOwner();

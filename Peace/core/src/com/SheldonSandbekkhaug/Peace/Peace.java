@@ -101,6 +101,9 @@ public class Peace extends Game {
 		case UPDATE_ENTITY: // Change an Entity's property
 			processUpdateEntity(pm);
 			break;
+		case UPDATE_ENTITY_ATTRIBUTE: // Add or remove an Attribute
+			processUpdateEntityAttribute(pm);
+			break;
 		case REMOVE_ENTITY: // Destroy a PeaceEntity from the world
 			commonData.destroyEntity(pm.srcTileID);
 			break;
@@ -167,7 +170,7 @@ public class Peace extends Game {
 	}
 	
 	/* Process a PacketMessage of type UPDATE_ENTITY. */
-	public void processUpdateEntity(PacketMessage pm)
+	private void processUpdateEntity(PacketMessage pm)
 	{
 		Tile t = commonData.getTile(pm.srcTileID);
 		PeaceEntity e = t.getE();
@@ -178,6 +181,27 @@ public class Peace extends Game {
 		{
 			Structure s = (Structure)e;
 			s.setIncome(pm.number);
+		}
+	}
+	
+	/* Add or remove an Attribute from an Entity.
+	 * EventType: UPDATE_ENTITY_ATTRIBUTE
+	 */
+	private void processUpdateEntityAttribute(PacketMessage pm)
+	{
+		PeaceEntity e = commonData.getTile(pm.srcTileID).getE();
+		Attribute a = Attribute.fromOrdinal(pm.targetTileID);
+		if (pm.number == PacketMessage.ADD)
+		{
+			e.addAttribute(a);
+		}
+		else if (pm.number == PacketMessage.REMOVE)
+		{
+			e.getAttributes().removeValue(a, true);
+		}
+		else
+		{
+			System.out.println("Bad pm.number in UPDATE_ENTITY_ATTRIBUTE. Ignoring.");
 		}
 	}
 	

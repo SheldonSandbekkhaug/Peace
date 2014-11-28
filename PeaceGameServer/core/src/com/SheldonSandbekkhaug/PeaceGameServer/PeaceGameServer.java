@@ -10,6 +10,7 @@ import java.util.Random;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Array;
 import com.SheldonSandbekkhaug.Peace.Attribute;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
@@ -333,12 +334,22 @@ public class PeaceGameServer extends ApplicationAdapter {
 		damageEntity(attacker, defender, true);
 		
 		// Subtract HP from the attacker if applicable
-		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER))
+		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER) &&
+				!defender.hasAttribute(Attribute.IMMOBILIZED))
 		{
 			Unit defenderUnit = (Unit)defender;
 			
 			damageEntity(defenderUnit, attacker, false);
 			checkAndHandleDeath(attacker, srcTileID);
+		}
+		
+		// Apply IMMOBILIZED if the attacker immobilizes during attacks
+		if (attacker.hasAttribute(Attribute.IMMOBILIZE_ON_ATTACK) &&
+				defender instanceof Unit)
+		{
+			defender.addAttribute(Attribute.IMMOBILIZED);
+			broadcastUpdateEntityAttribute(targetTileID, Attribute.IMMOBILIZED,
+				PacketMessage.ADD);
 		}
 		
 		checkAndHandleDeath(defender, targetTileID);
@@ -435,6 +446,22 @@ public class PeaceGameServer extends ApplicationAdapter {
 		network.broadcastToPlayers(pm);
 	}
 	
+	/* Broadcast an event announcing that the Entity at tileID added or
+	 * removed the given Attribute.
+	 * 
+	 * addOrRemove should be Attribute.ADD or Attribute.REMOVE
+	 */
+	private void broadcastUpdateEntityAttribute(int tileID, Attribute a, int addOrRemove)
+	{
+		PacketMessage pm = new PacketMessage();
+		pm.type = EventType.UPDATE_ENTITY_ATTRIBUTE;
+		pm.srcTileID = tileID;
+		pm.targetTileID = a.getOrdinal();
+		pm.number = addOrRemove;
+		
+		network.broadcastToPlayers(pm);
+	}
+	
 	/* Broadcast that the Entity at tileID is removed. */
 	private void broadcastRemoveEntity(int tileID)
 	{
@@ -475,14 +502,12 @@ public class PeaceGameServer extends ApplicationAdapter {
 			{
 				// Heal all friendly Units 1 HP
 				Location loc = t.getLocation();
-				System.out.println("loc: " + loc.getName()); // TODO: remove
 				for (Tile tile : loc.getTiles())
 				{
 					PeaceEntity target = tile.getE();
 					if (target instanceof Unit &&
 							target.getOwner() == e.getOwner())
 					{
-						System.out.println("Healing " + e.getName()); // TODO: remove
 						target.setCurrHP(target.getCurrHP() + 1);
 						broadcastUpdateEntity(tile.getTileID(), "currHP",
 								target.getCurrHP());
@@ -512,6 +537,23 @@ public class PeaceGameServer extends ApplicationAdapter {
 		}
 	}
 	
+	/* Handle all Attributes that trigger at the end of this player's turn. */
+	private void triggerOnEndTurnEffects(Player p)
+	{
+		// Remove IMMOBILIZED
+		Array<Integer> immobilized = commonData.tileIDsWithAttribute(
+				Attribute.IMMOBILIZED, p.getPlayerID());
+		for (Integer i : immobilized)
+		{
+			System.out.println("Got tileID: " + i); // TODO: remove
+			PeaceEntity e = commonData.getTile(i).getE();
+			e.getAttributes().removeValue(Attribute.IMMOBILIZED, true);
+			
+			broadcastUpdateEntityAttribute(i, Attribute.IMMOBILIZED,
+					PacketMessage.REMOVE);
+		}
+	}
+	
 	/* Scan all entities owned by Players. If the Entity has the given
 	 * Attribute, change the Entity's income by the given amount.
 	 */
@@ -537,8 +579,11 @@ public class PeaceGameServer extends ApplicationAdapter {
 	 * commonData.nextTurn()
 	 */
 	private void handleNextTurn()
-	{
+	{		
 		Player activePlayer = commonData.getActivePlayer();
+		
+		triggerOnEndTurnEffects(activePlayer);
+		
 		int income = 2; // Base income of 2
 		
 		// Income based on victory centers controlled

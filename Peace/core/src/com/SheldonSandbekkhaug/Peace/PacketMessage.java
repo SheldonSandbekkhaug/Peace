@@ -10,6 +10,10 @@ public class PacketMessage {
 	public int srcTileID;
 	public int targetTileID;
 	
+	// For messages that add/remove Attributes
+	public static final int ADD = 1;
+	public static final int REMOVE = -1;
+	
 	public PacketMessage()
 	{
 		

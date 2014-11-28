@@ -258,8 +258,9 @@
         <name>Tough Guy</name>
         <strength>1</strength>
         <hp>6</hp>
-        <cost>4</cost>
+        <cost>5</cost>
         <img>TOUGH_GUY.png</img>
+        <attribute>IMMOBILIZE_ON_ATTACK</attribute>
     </unit>
     <unit>
         <id>TURTLE_1</id>
