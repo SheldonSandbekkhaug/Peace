@@ -20,6 +20,8 @@ public enum Attribute {
 			return "Defender";
 		case FIRST_STRIKE:
 			return "First Strike";
+		case FORGE:
+			return "FORGE";
 		case MINE:
 			return "Mine";
 		case NORMAL:
