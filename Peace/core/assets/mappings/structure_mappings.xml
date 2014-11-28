@@ -25,6 +25,15 @@
         <img>FARM_1.png</img>
 	</structure>
 	<structure>
+        <id>FORGE_1</id>
+        <name>Forge</name>
+        <hp>20</hp>
+        <income>1</income>
+        <cost>6</cost>
+        <img>FORGE_1.png</img>
+        <attribute>FORGE</attribute>
+	</structure>
+	<structure>
         <id>HEADQUARTERS</id>
         <name>Headquarters</name>
         <hp>100</hp>

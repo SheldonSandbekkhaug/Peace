@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.SheldonSandbekkhaug.Peace.Attribute;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
+import com.SheldonSandbekkhaug.Peace.Location;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
 import com.SheldonSandbekkhaug.Peace.PeaceEntity;
 import com.SheldonSandbekkhaug.Peace.Player;
@@ -172,7 +173,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 	private void initializeMarket()
 	{
 		int MARKET_SIZE = 5;
-		
+
 		for (int i = 0; i < MARKET_SIZE; i++)
 		{
 			String key = randomSelection(commonData.availableForMarket);
@@ -196,7 +197,6 @@ public class PeaceGameServer extends ApplicationAdapter {
 	{
 		Player p = commonData.players.get(playerID);
 		
-		// TODO: check other EntityBanks for certain entities
 		Tile t = commonData.getTileFromMarket(entityID);
 		PeaceEntity e = t.getE();
 		e.setOwner(playerID);
@@ -239,6 +239,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 		marketAdd.type = EventType.TO_MARKET;
 		marketAdd.srcTileID = t.getTileID();
 		network.broadcastToPlayers(marketAdd);
+		
+		// Update affected Entities
+		triggerOnEnterEffects(destTileID);
 	}
 	
 	/* Select a random key from HashMap */
@@ -413,6 +416,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		else
 		{
 			// Attacker is dead, remove attacker
+			triggerOnDeathEffects(tileID);
 			broadcastRemoveEntity(tileID);
 			commonData.destroyEntity(tileID);
 			return true;
@@ -450,9 +454,67 @@ public class PeaceGameServer extends ApplicationAdapter {
 		network.broadcastToPlayers(moneyUpdate);
 	}
 	
+	/* Update all Entities that are affected by the entrance of the Entity at 
+	 * tileID into play.
+	 */
+	private void triggerOnEnterEffects(int tileID)
+	{
+		Tile t = commonData.getTile(tileID);
+		PeaceEntity e = t.getE();
+		
+		if (e.hasAttribute(Attribute.FORGE))
+		{
+			Structure forge = (Structure)e;
+			forge.setIncome(forge.getIncome() +
+					commonData.countAttributes(Attribute.MINE));
+			broadcastUpdateEntity(tileID, "income", forge.getIncome());
+		}
+		if (e.hasAttribute(Attribute.MINE))
+		{
+			// Forges gain +1 income for every mine
+			updateIncomeByAttribute(Attribute.FORGE, 1);
+		}
+	}
+	
+	/* Update all Entities that are affected by the death of the Entity at
+	 * tileID into play.
+	 */
+	private void triggerOnDeathEffects(int tileID)
+	{
+		Tile t = commonData.getTile(tileID);
+		PeaceEntity e = t.getE();
+		
+		if (e.hasAttribute(Attribute.MINE))
+		{
+			// Forges gain +1 income for every mine
+			updateIncomeByAttribute(Attribute.FORGE, -1);
+		}
+	}
+	
+	/* Scan all entities owned by Players. If the Entity has the given
+	 * Attribute, change the Entity's income by the given amount.
+	 */
+	private void updateIncomeByAttribute(Attribute a, int change)
+	{
+		for (Location loc : commonData.locations)
+		{
+			for (Tile t : loc.getTiles())
+			{
+				PeaceEntity e = t.getE();
+				if (e instanceof Structure && e.hasAttribute(a))
+				{
+					Structure s = (Structure)e;
+					s.setIncome(s.getIncome() + change);
+					broadcastUpdateEntity(t.getTileID(), "income",
+							s.getIncome());
+				}
+			}
+		}
+	}
+	
 	/* Calculate income for the active player, then call
 	 * commonData.nextTurn()
-	 * */
+	 */
 	private void handleNextTurn()
 	{
 		Player activePlayer = commonData.getActivePlayer();

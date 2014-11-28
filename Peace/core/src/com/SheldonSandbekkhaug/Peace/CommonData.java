@@ -115,11 +115,6 @@ public class CommonData {
 			Tile t = testLoc.tiles[Location.CENTER];
 			t.setE(testUnit);
 		}
-		
-		// TODO: remove
-		Structure hq = structures.get("HEADQUARTERS");
-		Tile t = locations.get(0).getTiles()[1];
-		t.setE(hq);
 	}
 	
 	/* Initialize the market */
@@ -395,6 +390,24 @@ public class CommonData {
 			if (t.getE() != null && t.getE().getOwner() == playerID)
 			{
 				sum++;
+			}
+		}
+		
+		return sum;
+	}
+	
+	/* Count the number of Entities with the given attribute owned by
+	 * Players.
+	 */
+	public int countAttributes(Attribute a)
+	{
+		int sum = 0;
+		for (Player p : players)
+		{
+			for (PeaceEntity e : p.getEntities())
+			{
+				if (e.hasAttribute(a))
+					sum++;
 			}
 		}
 		

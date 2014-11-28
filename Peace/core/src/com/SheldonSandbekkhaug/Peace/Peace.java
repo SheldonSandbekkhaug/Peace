@@ -174,6 +174,11 @@ public class Peace extends Game {
 		
 		if (pm.message.equals("currHP"))
 			e.setCurrHP(pm.number);
+		else if (pm.message.equals("income"))
+		{
+			Structure s = (Structure)e;
+			s.setIncome(pm.number);
+		}
 	}
 	
 	/* Tell the server this Player is done with this turn. */

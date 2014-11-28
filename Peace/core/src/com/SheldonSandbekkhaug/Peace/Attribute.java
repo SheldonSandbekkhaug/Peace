@@ -3,7 +3,7 @@ package com.SheldonSandbekkhaug.Peace;
 public enum Attribute {
 	ARMORED,
 	DEFENDER,
-	FIRST_STRIKE,
+	FIRST_STRIKE, FORGE,
 	NORMAL,
 	MINE,
 	PIERCING,

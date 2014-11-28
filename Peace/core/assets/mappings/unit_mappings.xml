@@ -64,6 +64,14 @@
         <attribute>RAIDER</attribute>
     </unit>
     <unit>
+        <id>LONE_WANDERER</id>
+        <name>Lone Wanderer</name>
+        <strength>8</strength>
+        <hp>8</hp>
+        <cost>10</cost>
+        <img>LONE_WANDERER.png</img>
+    </unit>
+    <unit>
         <id>MEDIUM_1</id>
         <name>Medium Unit 1</name>
         <strength>2</strength>
