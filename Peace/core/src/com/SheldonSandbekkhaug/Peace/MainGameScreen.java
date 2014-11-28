@@ -38,7 +38,7 @@ public class MainGameScreen implements Screen {
 	public static final int WORLD_HEIGHT = WINDOW_HEIGHT - Y_BUFFER * 2;
 	
 	// Space between a Location and other objects
-	public static final int LOCATION_X_BUFFER_SIZE = 40;
+	public static final int LOCATION_X_BUFFER_SIZE = 80;
 	public static final int LOCATION_Y_BUFFER_SIZE = 40;
 	
 	private static Texture translucent_green_rect;
@@ -490,17 +490,20 @@ public class MainGameScreen implements Screen {
 	{
 		x = x - 10; // Create gap between Tile and info panel
 		
+		TextBounds nameLabelBounds = font.getBounds(e.getName());
+		float panelWidth = Math.max(ENTITY_INFO_WIDTH, nameLabelBounds.width);
+		
 		batch.draw(infoBackgroundBorder,
-				x - ENTITY_INFO_WIDTH - ENTITY_INFO_BORDER_THICKNESS,
+				x - panelWidth - ENTITY_INFO_BORDER_THICKNESS,
 				y - ENTITY_INFO_HEIGHT + Tile.TILE_SIZE - ENTITY_INFO_BORDER_THICKNESS, 
-				ENTITY_INFO_WIDTH + ENTITY_INFO_BORDER_THICKNESS * 2,
+				panelWidth + ENTITY_INFO_BORDER_THICKNESS * 2,
 				ENTITY_INFO_HEIGHT + ENTITY_INFO_BORDER_THICKNESS * 2);
 		batch.draw(infoBackground,
-				x - ENTITY_INFO_WIDTH, y - ENTITY_INFO_HEIGHT + Tile.TILE_SIZE, 
-				ENTITY_INFO_WIDTH, ENTITY_INFO_HEIGHT);
+				x - panelWidth, y - ENTITY_INFO_HEIGHT + Tile.TILE_SIZE, 
+				panelWidth, ENTITY_INFO_HEIGHT);
 		font.setColor(Color.BLACK);
 		
-		float textX = x - ENTITY_INFO_WIDTH + ENTITY_INFO_X_BUFFER;
+		float textX = x - panelWidth + ENTITY_INFO_X_BUFFER;
 		float textHeight = 16;
 		
 		// Draw the Entity's name

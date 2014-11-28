@@ -56,10 +56,19 @@
     </unit>
     <unit>
         <id>HEAVY_1</id>
-        <name>Heavy Weapons Crew</name>
+        <name>Heavy Weapons Crew 1</name>
         <strength>2</strength>
         <hp>4</hp>
         <cost>3</cost>
+        <img>HEAVY_1.png</img>
+        <attribute>PIERCING</attribute>
+    </unit>
+    <unit>
+        <id>HEAVY_2</id>
+        <name>Heavy Weapons Crew 2</name>
+        <strength>3</strength>
+        <hp>5</hp>
+        <cost>5</cost>
         <img>HEAVY_1.png</img>
         <attribute>PIERCING</attribute>
     </unit>
