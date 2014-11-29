@@ -117,6 +117,12 @@ public class MainGameScreen implements Screen {
     		Tile.playerBanners[i] = new Texture(Gdx.files.internal(
     				game.commonData.skin + "/misc/banner_" + i + ".png"));
     	}
+    	
+    	// Action point textures
+    	Tile.hasActionsIcon = new Texture(Gdx.files.internal(
+				game.commonData.skin + "/misc/has_actions_icon.png"));
+    	Tile.noActionsIcon = new Texture(Gdx.files.internal(
+				game.commonData.skin + "/misc/no_actions_icon.png"));
     }
 	
 	@Override

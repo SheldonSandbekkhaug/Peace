@@ -15,6 +15,8 @@ public class Tile {
 	Rectangle rect;
 	private boolean marketTile; // True if this Tile is part of the Market
 	static Texture[] playerBanners;
+	static Texture hasActionsIcon; // Displayed if Entity has actions left
+	static Texture noActionsIcon; // Displayed if Entity has no actiosn left
 
 	public Tile()
 	{
@@ -59,6 +61,22 @@ public class Tile {
 				float bannerX = x + TILE_SIZE - banner.getWidth() / 2;
 				float bannerY = y + TILE_SIZE - banner.getHeight() / 2;
 				batch.draw(banner, bannerX, bannerY);
+				
+				// Draw action point icons
+				if (e instanceof Unit) // Structures are passive
+				{
+					float iconX = rect.x;
+					float iconY = rect.y + TILE_SIZE -
+							hasActionsIcon.getHeight();
+					if (e.getCurrActions() > 0)
+					{
+						batch.draw(hasActionsIcon, iconX, iconY);
+					}
+					else
+					{
+						batch.draw(noActionsIcon,  iconX, iconY);
+					}
+				}
 			}
 		}
 	}
