@@ -201,7 +201,6 @@ public class PeaceGameServer extends ApplicationAdapter {
 		Tile t = commonData.getTileFromMarket(entityID);
 		PeaceEntity e = t.getE();
 		e.setOwner(playerID);
-		p.getEntities().add(e);
 
 		// Subtract the cost of the Entity from the Player's funds
 		p.setMoney(p.getMoney() - e.getCost());
@@ -223,6 +222,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 		marketUpdate.srcTileID = t.getTileID();
 		marketUpdate.targetTileID = destTileID;
 		network.broadcastToPlayers(marketUpdate);
+		
+		// Note that it cost 1 action to move an Entity
+		broadcastUpdateEntity(destTileID, "currActions", e.getCurrActions());
 		
 		// Update affected Entities
 		triggerOnEnterEffects(destTileID);
@@ -308,6 +310,11 @@ public class PeaceGameServer extends ApplicationAdapter {
 	{
 		Unit attacker = (Unit)commonData.getTile(srcTileID).getE();
 		PeaceEntity defender = commonData.getTile(targetTileID).getE();
+		
+		// Cost 1 action to attack
+		attacker.setCurrActions(attacker.getCurrActions() - 1);
+		broadcastUpdateEntity(srcTileID, "currActions",
+				attacker.getCurrActions());
 		
 		// Resolve first strike before normal combat
 		boolean attackerFirstStrike = 
@@ -552,6 +559,14 @@ public class PeaceGameServer extends ApplicationAdapter {
 			broadcastUpdateEntityAttribute(i, Attribute.IMMOBILIZED,
 					PacketMessage.REMOVE);
 		}
+		
+		// Reset actions to full
+		for (Integer i : p.getEntities().keySet())
+		{
+			PeaceEntity e = p.getEntities().get(i);
+			e.setCurrActions(e.getMaxActions());
+			broadcastUpdateEntity(i, "currActions", e.getCurrActions());
+		}
 	}
 	
 	/* Scan all entities owned by Players. If the Entity has the given
@@ -591,7 +606,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 				activePlayer.getPlayerID());
 		
 		// Income based on PeaceEntities controlled
-		for (PeaceEntity e : activePlayer.getEntities())
+		for (PeaceEntity e : activePlayer.getEntities().values())
 		{
 			if (e instanceof Structure)
 			{

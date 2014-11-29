@@ -9,6 +9,7 @@ public class PeaceEntity {
 	String name;
 	int cost;
 	int currHP, maxHP; // Current HP, max HP
+	int currActions, maxActions; // Number of actions available per turn
 	int owner; // playerID, 0 by default
 	Texture img;
 	boolean forMarket; // True if this Entity can be bought at the Market
@@ -18,6 +19,8 @@ public class PeaceEntity {
 	public PeaceEntity()
 	{
 		forMarket = true;
+		maxActions = 1; // Default
+		currActions = maxActions;
 		owner = Player.NEUTRAL;
 		attributes = new Array<Attribute>(4);
 	}
@@ -37,6 +40,8 @@ public class PeaceEntity {
 		setName(src.name);
 		setCost(src.cost);
 		setMaxHP(src.maxHP); // Must be set before currHP
+		setMaxActions(src.maxActions);
+		setCurrActions(src.currActions);
 		setCurrHP(src.currHP);
 		setOwner(src.owner);
 		setImg(src.img);
@@ -93,6 +98,26 @@ public class PeaceEntity {
 
 	public void setMaxHP(int maxHP) {
 		this.maxHP = maxHP;
+	}
+
+	public int getCurrActions() {
+		return currActions;
+	}
+
+	public void setCurrActions(int currActions) {
+		this.currActions = currActions;
+		
+		// Can't go over the maximum
+		if (this.currActions > this.maxActions)
+			this.currActions = this.maxActions;
+	}
+
+	public int getMaxActions() {
+		return maxActions;
+	}
+
+	public void setMaxActions(int maxActions) {
+		this.maxActions = maxActions;
 	}
 
 	public int getOwner() {

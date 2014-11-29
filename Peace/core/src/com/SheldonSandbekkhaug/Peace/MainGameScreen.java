@@ -338,16 +338,17 @@ public class MainGameScreen implements Screen {
 			// Move to empty tile or attack?
 			if (targetEntity == null) // Normal move
 			{
-				System.out.println("Normal move"); // TODO: remove
 				// Undo state changes and allow server to handle logic
 				selectedEntityTile.setE(selectedEntity);
-				game.requestMoveEntity(selectedEntityTile.getTileID(),
-					cursorOnTile.getTileID());
+				
+				// Movement cost an action
+				if (selectedEntity.getCurrActions() > 0)
+					game.requestMoveEntity(selectedEntityTile.getTileID(),
+						cursorOnTile.getTileID());
 			}
 			else if (targetEntity.getOwner() == selectedEntity.getOwner())
 			{
 				// Invalid move, return to original location
-				System.out.println("Invalid move"); // TODO: remove
 				selectedEntityTile.setE(selectedEntity);
 			}
 			else if (targetEntity.getOwner() != selectedEntity.getOwner() &&
@@ -360,8 +361,9 @@ public class MainGameScreen implements Screen {
 				boolean inSameLocation = game.commonData.sameLocation(
 					selectedEntityTile, cursorOnTile);
 				
-				// Attacker must have strength > 0
-				if (u.getStrength() > 0 && inSameLocation)
+				// Attacker must have strength > 0 and an action available
+				if (u.getStrength() > 0 && inSameLocation &&
+						u.getCurrActions() > 0)
 				{
 					game.requestAttackEntity(selectedEntityTile.getTileID(),
 						cursorOnTile.getTileID());

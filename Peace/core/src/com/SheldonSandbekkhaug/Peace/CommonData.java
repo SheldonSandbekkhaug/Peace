@@ -285,6 +285,15 @@ public class CommonData {
 		dest.setE(src.getE());
 		src.setE(null);
 		
+		// Moving cost 1 action
+		PeaceEntity e = dest.getE();
+		e.setCurrActions(e.getCurrActions() - 1);
+		
+		// Update the player's Entities HashMap
+		Player owner = players.get(e.getOwner());
+		owner.getEntities().remove(srcTileID);
+		owner.getEntities().put(destTileID, e);
+		
 		return true;
 	}
 	
@@ -319,7 +328,7 @@ public class CommonData {
 		
 		// Remove this Entity from its owner's array
 		Player owner = players.get(t.getE().getOwner());
-		owner.getEntities().removeValue(t.getE(), true);
+		owner.getEntities().remove(tileID);
 		
 		// Remove the Entity from the game world
 		t.setE(null);
@@ -403,7 +412,7 @@ public class CommonData {
 		int sum = 0;
 		for (Player p : players)
 		{
-			for (PeaceEntity e : p.getEntities())
+			for (PeaceEntity e : p.getEntities().values())
 			{
 				if (e.hasAttribute(a))
 					sum++;

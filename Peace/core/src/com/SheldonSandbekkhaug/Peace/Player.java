@@ -1,13 +1,13 @@
 package com.SheldonSandbekkhaug.Peace;
 
-import com.badlogic.gdx.utils.Array;
+import java.util.HashMap;
 
 public class Player {
 	private int playerID;
 	String name;
 	int money;
-	int vp; // Victory points
-	private Array<PeaceEntity> entities; // PeaceEntities owned by this Player
+	int vp; // Victory points TODO: do we need this?
+	private HashMap<Integer, PeaceEntity> entities; // <TileID, Entity>
 	
 	public static final int NEUTRAL = 0;
 	
@@ -15,7 +15,7 @@ public class Player {
 	{
 		super();
 		money = 3;
-		entities = new Array<PeaceEntity>();
+		entities = new HashMap<Integer, PeaceEntity>();
 	}
 
 	public Player(String name, int pid)
@@ -53,7 +53,7 @@ public class Player {
 		this.vp = vp;
 	}
 
-	public Array<PeaceEntity> getEntities() {
+	public HashMap<Integer, PeaceEntity> getEntities() {
 		return entities;
 	}
 }

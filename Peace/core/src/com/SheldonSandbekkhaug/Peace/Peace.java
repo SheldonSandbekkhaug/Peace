@@ -81,7 +81,7 @@ public class Peace extends Game {
 			Tile src = commonData.getTile(pm.srcTileID);
 			src.getE().setOwner(pm.playerID);
 			Player buyer = commonData.players.get(pm.playerID);
-			buyer.getEntities().add(src.getE());
+			buyer.getEntities().put(pm.targetTileID, src.getE());
 			
 			commonData.moveEntity(pm.srcTileID, pm.targetTileID);
 			break;
@@ -177,6 +177,8 @@ public class Peace extends Game {
 		
 		if (pm.message.equals("currHP"))
 			e.setCurrHP(pm.number);
+		else if (pm.message.equals("currActions"))
+			e.setCurrActions(pm.number);
 		else if (pm.message.equals("income"))
 		{
 			Structure s = (Structure)e;
