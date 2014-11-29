@@ -573,18 +573,17 @@ public class PeaceGameServer extends ApplicationAdapter {
 	 * Attribute, change the Entity's income by the given amount.
 	 */
 	private void updateIncomeByAttribute(Attribute a, int change)
-	{
-		for (Location loc : commonData.locations)
+	{		
+		for (Player p : commonData.players)
 		{
-			for (Tile t : loc.getTiles())
+			for (Integer tileID : p.getEntities().keySet())
 			{
-				PeaceEntity e = t.getE();
+				PeaceEntity e = p.getEntities().get(tileID);
 				if (e instanceof Structure && e.hasAttribute(a))
 				{
 					Structure s = (Structure)e;
 					s.setIncome(s.getIncome() + change);
-					broadcastUpdateEntity(t.getTileID(), "income",
-							s.getIncome());
+					broadcastUpdateEntity(tileID, "income",	s.getIncome());
 				}
 			}
 		}
