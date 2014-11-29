@@ -32,14 +32,14 @@ public class MainGameScreen implements Screen {
 	
 	// Distance between window edge and game world
 	public static final int X_BUFFER = 20;
-	public static final int Y_BUFFER = 80;
+	public static final int Y_BUFFER = 100;
 	
 	public static final int WORLD_WIDTH = WINDOW_WIDTH - X_BUFFER * 2;
 	public static final int WORLD_HEIGHT = WINDOW_HEIGHT - Y_BUFFER * 2;
 	
 	// Space between a Location and other objects
-	public static final int LOCATION_X_BUFFER_SIZE = 80;
-	public static final int LOCATION_Y_BUFFER_SIZE = 40;
+	public static final int LOCATION_X_BUFFER_SIZE = 160;
+	public static final int LOCATION_Y_BUFFER_SIZE = 20;
 	
 	private static Texture translucent_green_rect;
 	

@@ -231,7 +231,7 @@
         <name>Tank</name>
         <strength>3</strength>
         <hp>4</hp>
-        <cost>8</cost>
+        <cost>7</cost>
         <img>TANK_1.png</img>
         <attribute>ARMORED</attribute>
     </unit>
@@ -240,7 +240,7 @@
         <name>Tank 2</name>
         <strength>4</strength>
         <hp>5</hp>
-        <cost>9</cost>
+        <cost>8</cost>
         <img>TANK_1.png</img>
         <attribute>ARMORED</attribute>
     </unit>
@@ -249,7 +249,7 @@
         <name>Tank 3</name>
         <strength>5</strength>
         <hp>6</hp>
-        <cost>11</cost>
+        <cost>10</cost>
         <img>TANK_1.png</img>
         <attribute>ARMORED</attribute>
     </unit>

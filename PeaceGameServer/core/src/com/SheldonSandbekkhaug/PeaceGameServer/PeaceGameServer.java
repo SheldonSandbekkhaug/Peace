@@ -359,7 +359,13 @@ public class PeaceGameServer extends ApplicationAdapter {
 				PacketMessage.ADD);
 		}
 		
-		checkAndHandleDeath(defender, targetTileID);
+		if(checkAndHandleDeath(defender, targetTileID) &&
+				attacker.getCurrHP() > 0)
+		{
+			// If the defender died, move the attacker to the defender's Tile
+			broadcastMoveEntity(srcTileID, targetTileID);
+			commonData.moveEntity(srcTileID, targetTileID);
+		}
 	}
 	
 	/* A single step in combat sequence; e1 damages e2.
