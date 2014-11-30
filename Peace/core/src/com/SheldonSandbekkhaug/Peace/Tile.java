@@ -27,8 +27,10 @@ public class Tile {
 	
 	/* Draw the Tile (and its contents) at using x, y as its bottom-left
 	 * corner.
+	 * pid: the playerID of the user.
 	 */
-	public void draw(SpriteBatch batch, BitmapFont font, float x, float y)
+	public void draw(SpriteBatch batch, BitmapFont font, float x, float y,
+			int pid)
 	{
 		if (e != null)
 		{
@@ -63,7 +65,7 @@ public class Tile {
 				batch.draw(banner, bannerX, bannerY);
 				
 				// Draw action point icons
-				if (e instanceof Unit) // Structures are passive
+				if (e.getOwner() == pid && e instanceof Unit) // Structures are passive
 				{
 					float iconX = rect.x;
 					float iconY = rect.y + TILE_SIZE -

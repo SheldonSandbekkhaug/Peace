@@ -148,7 +148,7 @@ public class MainGameScreen implements Screen {
 		// Draw locations
 		for (Location l : game.commonData.locations)
 		{
-			l.draw(batch);
+			l.draw(batch, game.playerID);
 		}
 		
 		// Draw the market
@@ -178,7 +178,7 @@ public class MainGameScreen implements Screen {
 				
 				// Draw the usual Tile things
 				marketTile.draw(batch, Location.font,
-					marketTile.rect.x, marketTile.rect.y);
+					marketTile.rect.x, marketTile.rect.y, game.playerID);
 				
 				// Draw coin icon and Entity cost
 				if (marketTile.getE() != null)

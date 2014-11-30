@@ -64,8 +64,9 @@ public class Location {
 	/* 
 	 * Draw a rectangle outlining the boundaries of this location, as well
 	 * as the Tiles and their Entities.
+	 * pid: the playerID of the user
 	 */
-	public void draw(SpriteBatch batch)
+	public void draw(SpriteBatch batch, int pid)
 	{
 		batch.draw(img, rect.x, rect.y, rect.width, rect.height);
 		
@@ -75,7 +76,7 @@ public class Location {
 			Tile tile = tiles[i];
 			float tileX = rect.x + indexToXOffset(i);
 			float tileY = rect.y + indexToYOffset(i);
-			tile.draw(batch, font, tileX, tileY);
+			tile.draw(batch, font, tileX, tileY, pid);
 		}
 	}
 	
