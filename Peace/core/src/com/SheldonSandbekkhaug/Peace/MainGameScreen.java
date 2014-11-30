@@ -676,6 +676,10 @@ public class MainGameScreen implements Screen {
 	@Override
 	public void dispose() {
 		game.dispose();
+		batch.dispose();
+		font.dispose();
+		coinFont.dispose();
+		Location.font.dispose();
 	}
 
 }

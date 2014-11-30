@@ -15,7 +15,8 @@ public class Peace extends Game {
 		
 		connectToServer("localhost");
 		
-		this.setScreen(new MainGameScreen(this));
+		//this.setScreen(new MainGameScreen(this)); // Jump directly to game
+		this.setScreen(new LobbyScreen(this)); // Lobby Screen first
 	}
 	
 	/* Connect to a game server */
