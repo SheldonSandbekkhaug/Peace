@@ -10,19 +10,24 @@ public class Peace extends Game {
 	boolean startRequested = false; // Requested to start the game
 	
 	@Override
-	public void create () {		
-		commonData = new CommonData(true);
-		
-		connectToServer("localhost");
-		
+	public void create () {
 		//this.setScreen(new MainGameScreen(this)); // Jump directly to game
 		this.setScreen(new LobbyScreen(this)); // Lobby Screen first
 	}
 	
+	/* Start a new game.
+	 * ipAddr is the IP address of the server to connect to.
+	 */
+	public void newGame(String ipAddr)
+	{
+		commonData = new CommonData(true);
+		connectToServer(ipAddr);
+	}
+	
 	/* Connect to a game server */
-	public boolean connectToServer(String ipAddr)
-	{	
-		// TODO: Dynamically set network information
+	public void connectToServer(String ipAddr)
+	{
+		System.out.println("Connecting to server...");
 		int PORT = 27960;
 		network = new PeaceNetworkClient();
 		network.connect(5000, ipAddr, PORT);
@@ -32,9 +37,6 @@ public class Peace extends Game {
 		PacketMessage pm = new PacketMessage(playerName); // Player name
 		pm.type = EventType.JOIN;
 		network.sendToServer(pm, -1);
-		
-		// TODO: return false if join was unsuccessful
-		return true;
 	}
 	
 	/* Process game events */

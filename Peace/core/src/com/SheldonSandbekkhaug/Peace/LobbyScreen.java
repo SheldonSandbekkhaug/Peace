@@ -50,7 +50,7 @@ public class LobbyScreen implements Screen {
         table.addActor(welcomeLabel);
         
         // Create server IP address TextField
-        serverIPField = new TextField("127.168.0.1", skin);
+        serverIPField = new TextField("127.0.0.1", skin);
         serverIPField.setBounds(100, 200, 400, 100);
         table.add(serverIPField);
         
@@ -96,7 +96,10 @@ public class LobbyScreen implements Screen {
 		String serverIP = serverIPField.getText();
         System.out.println("server IP: " + serverIP);
         
-        // TODO: use the server IP text to get an IP for Peace
+        // Use the server IP to connect to the server
+        game.newGame(serverIP);
+        
+        // TODO: error handling
         
 		game.setScreen(new MainGameScreen(game));
         dispose();
