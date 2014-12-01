@@ -2,7 +2,11 @@ package com.SheldonSandbekkhaug.PeaceGameServer;
 
 import static java.lang.System.out;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Random;
@@ -37,6 +41,34 @@ public class PeaceGameServer extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		// Display this computer's IP address			
+		try {
+			Enumeration<NetworkInterface> interfaces;
+			interfaces = NetworkInterface.getNetworkInterfaces();
+			
+			for (Enumeration<NetworkInterface> e = interfaces; e.hasMoreElements();)
+			{
+				NetworkInterface ni = (NetworkInterface)e.nextElement();
+				Enumeration<InetAddress> inetAddresses = ni.getInetAddresses();
+				
+				for (Enumeration<InetAddress> addr = inetAddresses; addr.hasMoreElements();)
+				{
+					InetAddress ip = (InetAddress)addr.nextElement();
+					if (!ip.isLoopbackAddress())
+					{
+						out.printf("Display name: %s\n", ni.getDisplayName());
+						out.printf("Name: %s\n", ni.getName());
+						System.out.println(ip.getHostAddress());
+					}
+				}
+				
+				out.printf("\n");
+			}
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		int PORT = 27960;
 		network = new PeaceNetworkServer(PORT);
 		lobby = new ArrayList<String>();
