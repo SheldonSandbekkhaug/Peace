@@ -128,6 +128,22 @@
         <attribute>PIERCING</attribute>
     </unit>
     <unit>
+        <id>REBEL_1</id>
+        <name>Rebel 1</name>
+        <strength>2</strength>
+        <hp>1</hp>
+        <cost>1</cost>
+        <img>REBEL_1.png</img>
+    </unit>
+    <unit>
+        <id>REBEL_2</id>
+        <name>Rebel 2</name>
+        <strength>1</strength>
+        <hp>3</hp>
+        <cost>2</cost>
+        <img>REBEL_1.png</img>
+    </unit>
+    <unit>
         <id>SCOUT_1</id>
         <name>Scout 1</name>
         <strength>2</strength>
@@ -179,7 +195,7 @@
         <strength>1</strength>
         <hp>1</hp>
         <cost>1</cost>
-        <img>DEFAULT_SOLDIER.png</img>
+        <img>REBEL_1.png</img>
         <attribute>NORMAL</attribute>
     </unit>
     <unit>
@@ -196,7 +212,7 @@
         <strength>3</strength>
         <hp>3</hp>
         <cost>3</cost>
-        <img>DEFAULT_SOLDIER.png</img>
+        <img>REBEL_1.png</img>
     </unit>
 	<unit>
         <id>SOLDIER_4</id>
@@ -204,7 +220,7 @@
         <strength>4</strength>
         <hp>4</hp>
         <cost>4</cost>
-        <img>DEFAULT_SOLDIER.png</img>
+        <img>REBEL_1.png</img>
     </unit>
     <unit>
         <id>SOLDIER_5</id>

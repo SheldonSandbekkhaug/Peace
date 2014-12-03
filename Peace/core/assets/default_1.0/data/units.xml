@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
     <unit>
-        <id>SOLDIER_1</id>
-        <name>Custom Soldier 1</name>
+        <id>REBEL_1</id>
+        <name>Rebel</name>
+    </unit>
+    <unit>
+        <id>SOLDIER_2</id>
+        <name>Soldier</name>
+    </unit>
+    <unit>
+        <id>REBEL_2</id>
+        <name>Veteran Rebel</name>
     </unit>
 </catalog>
