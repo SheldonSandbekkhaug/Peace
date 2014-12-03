@@ -363,18 +363,32 @@ public class PeaceGameServer extends ApplicationAdapter {
 			constDamageEntity(1, attacker, true, INITIATOR);
 		}
 		
-		// If either of these Entities died, return
+		// Check if either of the Entities died
+		boolean defenderDiedDuringFirstStrike =
+				checkAndHandleDeath(defender, targetTileID);
+		boolean attackerDiedDuringFirstStrike =
+				checkAndHandleDeath(attacker, srcTileID);
 		if ((attackerFirstStrike || defenderFirstStrike) &&
-			(checkAndHandleDeath(attacker, srcTileID) || 
-			checkAndHandleDeath(defender, targetTileID)))
+			(defenderDiedDuringFirstStrike || attackerDiedDuringFirstStrike))
+		{
+			if(defenderDiedDuringFirstStrike &&	attacker.getCurrHP() > 0)
+			{
+				// Move the attacker to the defender's Tile
+				broadcastMoveEntity(srcTileID, targetTileID);
+				commonData.moveEntity(srcTileID, targetTileID);
 				return;
+			}
+			else
+			{
+				return;
+			}
+		}
 		
 		// Subtract HP from the defender
 		damageEntity(attacker, defender, true);
 		
 		// Subtract HP from the attacker if applicable
-		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER) &&
-				!defender.hasAttribute(Attribute.IMMOBILIZED))
+		if (defender instanceof Unit && !attacker.hasAttribute(Attribute.RAIDER))
 		{
 			Unit defenderUnit = (Unit)defender;
 			
@@ -464,14 +478,14 @@ public class PeaceGameServer extends ApplicationAdapter {
 	{
 		if (e.getCurrHP() > 0)
 		{
-			// Attacker is still alive
+			// Entity is still alive
 			broadcastUpdateEntity(tileID, "currHP", 
 				e.getCurrHP());
 			return false;
 		}
 		else
 		{
-			// Attacker is dead, remove attacker
+			// Entity is dead, remove attacker
 			triggerOnDeathEffects(tileID);
 			broadcastRemoveEntity(tileID);
 			commonData.destroyEntity(tileID);
