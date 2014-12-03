@@ -23,7 +23,7 @@ public class CommonData {
 	
 	/*The maximum number of players Peace can support at this time, 
 	  including the neutral player */
-	public static final int MAX_PLAYERS = 3;
+	public static final int MAX_PLAYERS = 5;
 	
 	public boolean running = false; // True if the game is running
 	
