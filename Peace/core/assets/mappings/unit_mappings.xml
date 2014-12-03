@@ -95,7 +95,7 @@
         <strength>2</strength>
         <hp>6</hp>
         <cost>4</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
         <attribute>NORMAL</attribute>
     </unit>
 	<unit>
@@ -170,7 +170,7 @@
         <strength>2</strength>
         <hp>2</hp>
         <cost>2</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
         <attribute>NORMAL</attribute>
     </unit>
     <unit>
@@ -179,7 +179,7 @@
         <strength>1</strength>
         <hp>1</hp>
         <cost>1</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
         <attribute>NORMAL</attribute>
     </unit>
     <unit>
@@ -188,7 +188,7 @@
         <strength>2</strength>
         <hp>2</hp>
         <cost>2</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
     <unit>
         <id>SOLDIER_3</id>
@@ -196,7 +196,7 @@
         <strength>3</strength>
         <hp>3</hp>
         <cost>3</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
 	<unit>
         <id>SOLDIER_4</id>
@@ -204,7 +204,7 @@
         <strength>4</strength>
         <hp>4</hp>
         <cost>4</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
     <unit>
         <id>SOLDIER_5</id>
@@ -212,7 +212,7 @@
         <strength>5</strength>
         <hp>5</hp>
         <cost>5</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
     <unit>
         <id>SOLDIER_6</id>
@@ -220,7 +220,7 @@
         <strength>3</strength>
         <hp>6</hp>
         <cost>6</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
 	<unit>
         <id>SOLDIER_7</id>
@@ -228,7 +228,7 @@
         <strength>3</strength>
         <hp>7</hp>
         <cost>7</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
 	<unit>
         <id>SOLDIER_8</id>
@@ -236,7 +236,7 @@
         <strength>3</strength>
         <hp>8</hp>
         <cost>8</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
     	<unit>
         <id>SOLDIER_9</id>
@@ -244,7 +244,7 @@
         <strength>4</strength>
         <hp>9</hp>
         <cost>9</cost>
-        <img>man_40x40.png</img>
+        <img>DEFAULT_SOLDIER.png</img>
     </unit>
 	<unit>
         <id>TANK_1</id>
