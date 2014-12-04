@@ -55,7 +55,7 @@ public class LobbyScreen implements Screen {
         table.add(serverIPField);
         
         // Create the start Button
-        TextButton startGameButton = new TextButton("Start game", skin);
+        TextButton startGameButton = new TextButton("Connect to Server", skin);
         startGameButton.setX(400);
         startGameButton.setY(400);
         startGameButton.setWidth(120);

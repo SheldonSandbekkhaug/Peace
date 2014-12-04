@@ -23,7 +23,7 @@
         <name>Glass Cannon</name>
         <strength>5</strength>
         <hp>3</hp>
-        <cost>7</cost>
+        <cost>4</cost>
         <img>GLASS_CANNON_1.png</img>
         <attribute>NORMAL</attribute>
     </unit>
