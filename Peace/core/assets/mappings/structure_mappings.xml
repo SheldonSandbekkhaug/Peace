@@ -5,7 +5,7 @@
         <name>Farm 1</name>
         <hp>10</hp>
         <income>1</income>
-        <cost>4</cost>
+        <cost>5</cost>
         <img>FARM_1.png</img>
 	</structure>
 	<structure>
@@ -13,7 +13,7 @@
         <name>Farm 2</name>
         <hp>10</hp>
         <income>2</income>
-        <cost>8</cost>
+        <cost>9</cost>
         <img>FARM_1.png</img>
 	</structure>
 	<structure>
@@ -21,7 +21,7 @@
         <name>Farm 3</name>
         <hp>10</hp>
         <income>3</income>
-        <cost>12</cost>
+        <cost>14</cost>
         <img>FARM_1.png</img>
 	</structure>
 	<structure>
@@ -29,7 +29,7 @@
         <name>Forge</name>
         <hp>10</hp>
         <income>1</income>
-        <cost>6</cost>
+        <cost>7</cost>
         <img>FORGE_1.png</img>
         <attribute>FORGE</attribute>
 	</structure>
@@ -47,7 +47,7 @@
         <name>Mine 1</name>
         <hp>10</hp>
         <income>1</income>
-        <cost>4</cost>
+        <cost>5</cost>
         <img>MINE_1.png</img>
         <attribute>MINE</attribute>
 	</structure>
@@ -56,7 +56,7 @@
         <name>Mine 2</name>
         <hp>10</hp>
         <income>2</income>
-        <cost>8</cost>
+        <cost>9</cost>
         <img>MINE_1.png</img>
         <attribute>MINE</attribute>
 	</structure>
@@ -65,7 +65,7 @@
         <name>Mine 1</name>
         <hp>10</hp>
         <income>3</income>
-        <cost>12</cost>
+        <cost>14</cost>
         <img>MINE_1.png</img>
         <attribute>MINE</attribute>
 	</structure>

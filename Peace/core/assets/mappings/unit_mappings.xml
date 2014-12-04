@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
     <unit>
+        <id>ASSASSIN_1</id>
+        <name>Assassin 1</name>
+        <strength>2</strength>
+        <hp>1</hp>
+        <cost>1</cost>
+        <img>ASSASSIN_1.png</img>
+    </unit>
+    <unit>
+        <id>ASSASSIN_2</id>
+        <name>Assassin 2</name>
+        <strength>4</strength>
+        <hp>1</hp>
+        <cost>2</cost>
+        <img>ASSASSIN_1.png</img>
+    </unit>
+    <unit>
         <id>BLASTMASTER_1</id>
         <name>Blastmaster 1</name>
         <strength>4</strength>
@@ -130,8 +146,8 @@
     <unit>
         <id>REBEL_1</id>
         <name>Rebel 1</name>
-        <strength>2</strength>
-        <hp>1</hp>
+        <strength>1</strength>
+        <hp>2</hp>
         <cost>1</cost>
         <img>REBEL_1.png</img>
     </unit>
