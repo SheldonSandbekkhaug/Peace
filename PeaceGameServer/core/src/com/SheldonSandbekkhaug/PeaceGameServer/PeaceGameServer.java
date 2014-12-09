@@ -139,7 +139,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 		case LEAVE:
 			network.disconnected(pm.playerID);
 			lobby.remove(pm.message);
-			commonData.players.remove(pm.playerID);
+			
+			if (commonData != null)
+				commonData.players.remove(pm.playerID);
 			break;
 		case STOP:
 			commonData = null;
@@ -166,8 +168,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 	
 	/* Initialize a new game according to the given skin. */
 	public void newGame(String skin, ArrayList<String> playerNames)
-	{	
-		Tile.resetLastTileID();
+	{
 		commonData = new CommonData(false); // Creates Unit table and applies Skin
 		
 		// Add Players to the game

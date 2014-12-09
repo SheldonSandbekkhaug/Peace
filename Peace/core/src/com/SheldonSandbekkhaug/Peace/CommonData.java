@@ -40,6 +40,7 @@ public class CommonData {
 		
 		availableForMarket = new HashMap<String, PeaceEntity>();
 		
+		Tile.resetLastTileID();
 		createLocations(renderData);
 		loadEntities(renderData);
 		initializeMarket();
@@ -378,8 +379,7 @@ public class CommonData {
 			if (i != Player.NEUTRAL && centersControlled[i] >= 3)
 			{
 				// NEUTRAL cannot win the game
-				// This has been commented to allow flexible playtesting
-				//return i; // TODO: uncomment
+				return i;
 			}
 		}
 	

@@ -68,7 +68,19 @@ public class Peace extends Game {
 			commonData.nextTurn();
 			break;
 		case WINNER: // A Player won the game
-			// TODO: End the game.
+			// Return to Lobby. TODO: more sophisticated behavior
+			this.setScreen(new LobbyScreen(this));
+			startRequested = false;
+			
+			// Leave the server
+			PacketMessage leaveMessage = new PacketMessage();
+			leaveMessage.type = EventType.LEAVE;
+			network.sendToServer(leaveMessage, playerID);
+			
+			// Stop the game on the server
+			PacketMessage stopMessage = new PacketMessage();
+			stopMessage.type = EventType.STOP;
+			network.sendToServer(stopMessage, playerID);
 			break;
 		case TO_MARKET: // Add an Entity to the Market
 			e = commonData.availableForMarket.get(pm.message);
