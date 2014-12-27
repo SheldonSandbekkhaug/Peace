@@ -54,19 +54,40 @@ public class LobbyScreen implements Screen {
         serverIPField.setBounds(100, 200, 400, 100);
         table.add(serverIPField);
         
-        // Create the start Button
-        TextButton startGameButton = new TextButton("Connect to Server", skin);
+        // Create the "Start Game" button
+        final TextButton startGameButton = new TextButton("Start Game", skin);
         startGameButton.setX(400);
         startGameButton.setY(400);
         startGameButton.setWidth(120);
         startGameButton.setHeight(80);
         table.add(startGameButton);
+        startGameButton.setVisible(false); // Invisible until a lobby is joined
         
         startGameButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				// Start Peace
 		        startGame();
+			}
+        });
+        
+        // Create the "Connect to Server" button
+        final TextButton connectButton = new TextButton("Connect to Server", skin);
+        connectButton.setX(400);
+        connectButton.setY(400);
+        connectButton.setWidth(120);
+        connectButton.setHeight(80);
+        table.add(connectButton);
+        
+        connectButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				// TODO: Show list of other players in lobby
+				
+				// Show the start button and hide other buttons and fields
+				startGameButton.setVisible(true);
+				serverIPField.setVisible(false);
+				connectButton.setVisible(false);
 			}
         });
         
