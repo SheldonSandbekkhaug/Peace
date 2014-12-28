@@ -22,7 +22,8 @@ public class LobbyScreen implements Screen {
 	private TextField serverIPField;
 	private Stage stage;
 	private Skin skin;
-	private Table table;
+	private Table mainTable;
+	private Table playerListTable;
 	
 	public LobbyScreen(final Peace gam) {
         game = gam;
@@ -36,40 +37,41 @@ public class LobbyScreen implements Screen {
         skin = new Skin(Gdx.files.internal("menu_skin/uiskin.json"));
         skin.addRegions(atlas);
         
-        // Create the main table
-        table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-        table.setSkin(skin);
+        // Create menu for the user
+        createUITables();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, MainGameScreen.WINDOW_WIDTH, MainGameScreen.WINDOW_HEIGHT);
+    }
+	
+	/* Creates the menu tables (buttons, labels, etc.)
+	 * mainTable holds the server IP field, welcome label, and connection
+	 * button. The main table is removed from view when the user successfully
+	 * connects to a server.
+	 * 
+	 * The playerListTable holds labels for player names and the start
+	 * button. The player list table is invisible until the user successfully 
+	 * connects to a server.
+	 */
+	private void createUITables()
+	{
+		// Create the main Table
+        mainTable = new Table();
+        mainTable.setFillParent(true);
+        stage.addActor(mainTable);
+        mainTable.setSkin(skin);
+        
+        // Create server IP address TextField
+        serverIPField = new TextField("127.0.0.1", skin);
+        serverIPField.setBounds(100, 200, 400, 100);
+        mainTable.add(serverIPField);
         
         // Create welcome label
         String welcomeMessage = "Welcome to Peace. Enter the server IP address.";
         Label welcomeLabel = new Label(welcomeMessage, skin);
         welcomeLabel.setX(MainGameScreen.WINDOW_WIDTH / 2 - welcomeLabel.getWidth() / 2);
     	welcomeLabel.setY(MainGameScreen.WINDOW_WIDTH / 2 - welcomeLabel.getHeight() / 2);
-        table.addActor(welcomeLabel);
-        
-        // Create server IP address TextField
-        serverIPField = new TextField("127.0.0.1", skin);
-        serverIPField.setBounds(100, 200, 400, 100);
-        table.add(serverIPField);
-        
-        // Create the "Start Game" button
-        final TextButton startGameButton = new TextButton("Start Game", skin);
-        startGameButton.setX(400);
-        startGameButton.setY(400);
-        startGameButton.setWidth(120);
-        startGameButton.setHeight(80);
-        table.add(startGameButton);
-        startGameButton.setVisible(false); // Invisible until a lobby is joined
-        
-        startGameButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				// Start Peace
-		        startGame();
-			}
-        });
+        mainTable.addActor(welcomeLabel);
         
         // Create the "Connect to Server" button
         final TextButton connectButton = new TextButton("Connect to Server", skin);
@@ -77,7 +79,32 @@ public class LobbyScreen implements Screen {
         connectButton.setY(400);
         connectButton.setWidth(120);
         connectButton.setHeight(80);
-        table.add(connectButton);
+        mainTable.add(connectButton);
+		
+		// Create the player list Table
+        playerListTable = new Table();
+        playerListTable.setFillParent(true);
+        stage.addActor(playerListTable);
+        playerListTable.setSkin(skin);
+        playerListTable.setVisible(false);
+        
+        // Create the "Start Game" button
+        final TextButton startGameButton = new TextButton("Start Game", skin);
+        startGameButton.setX(400);
+        startGameButton.setY(400);
+        startGameButton.setWidth(120);
+        startGameButton.setHeight(80);
+        playerListTable.add(startGameButton);
+        startGameButton.setVisible(false);
+        
+        // Create player name Labels for the player list Table
+        String defaultName = "<empty>";
+        for (int i = 0; i < CommonData.MAX_USERS; i ++)
+        {
+        	playerListTable.row();
+        	Label l = new Label(defaultName, skin);
+        	playerListTable.add(l);
+        }
         
         connectButton.addListener(new ChangeListener() {
 			@Override
@@ -86,14 +113,20 @@ public class LobbyScreen implements Screen {
 				
 				// Show the start button and hide other buttons and fields
 				startGameButton.setVisible(true);
+				playerListTable.setVisible(true);
 				serverIPField.setVisible(false);
 				connectButton.setVisible(false);
 			}
         });
         
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, MainGameScreen.WINDOW_WIDTH, MainGameScreen.WINDOW_HEIGHT);
-    }
+        startGameButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				// Start Peace
+		        startGame();
+			}
+        });
+	}
 
 	@Override
 	public void render(float delta) {
