@@ -29,6 +29,10 @@ public class CommonData {
 	public static final int MAX_USERS = MAX_PLAYERS - 1;
 	
 	public boolean running = false; // True if the game is running
+	private int turnsLeft; // Turns remaining before the game ends
+	
+	// Default number of turns in a game
+	private static final int DEFAULT_TURNS_PER_PLAYER = 15;
 	
 	/*
 	 * Create the commonData object.
@@ -49,6 +53,13 @@ public class CommonData {
 		initializeMarket();
 		
 		defaultTestSetup(); // TODO: remove?
+	}
+	
+	/* Called when the game actually starts. */
+	public void startGame()
+	{
+		running = true;
+		turnsLeft = DEFAULT_TURNS_PER_PLAYER * (players.size() - 1);
 	}
 	
 	/*
@@ -355,6 +366,13 @@ public class CommonData {
 		
 		if (activePlayerID >= players.size())
 			activePlayerID = 1;
+		
+		turnsLeft--;
+	}
+	
+	public int getTurnsLeft()
+	{
+		return turnsLeft;
 	}
 	
 	/* Checks if any Player has won and returns the playerID of the winner.
@@ -363,7 +381,7 @@ public class CommonData {
 	 * The win condition: A Player controls an Entity on the center Tile in
 	 * three out of the five major Locations.
 	 */
-	public int checkVictoryCondition()
+	public int checkNormalVictoryCondition()
 	{
 		int[] centersControlled = new int[players.size()];
 
@@ -445,5 +463,42 @@ public class CommonData {
 		}
 		
 		return tileIDs;
+	}
+	
+	/* Return the playerID of the winner, calculated under Time Victory.
+	 * Under these conditions, the winner is the player who has the most
+	 * money plus the value of all his/her PeaceEntities.
+	 * 
+	 * Currently, the lower playerID breaks ties.
+	 * TODO: Different way for breaking ties?
+	 */
+	public int getTimeVictor()
+	{
+		int scores[] = new int[players.size()];
+		for (int i = 1; i < scores.length; i++)
+		{
+			Player p = players.get(i);
+			
+			// Get base money
+			scores[i] = p.getMoney();
+			
+			// Add cost of all controlled Entities
+			for (Integer key : p.getEntities().keySet())
+			{
+				scores[i] += p.getEntities().get(key).getCost();
+			}
+		}
+		
+		// Get the index of the highest score. That player ID is the winner.
+		int maxIndex = 1; // Index of the highest-scoring player
+		for (int i = 1; i < scores.length; i++)
+		{
+			if (scores[i] > scores[maxIndex])
+			{
+				maxIndex = i;
+			}
+		}
+		
+		return maxIndex;
 	}
 }

@@ -123,7 +123,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 			newGame(pm.message, lobby);
 			break;
 		case NEXT_TURN:
-			int winnerID = commonData.checkVictoryCondition();
+			int winnerID = commonData.checkNormalVictoryCondition();
 			if (winnerID != -1)
 			{
 				PacketMessage declareWinner = new PacketMessage();
@@ -134,6 +134,18 @@ public class PeaceGameServer extends ApplicationAdapter {
 			else
 			{
 				handleNextTurn();
+				
+				/* If the game hasn't ended when there are 0 turns left,
+				   determine a winner. */
+				if (commonData.getTurnsLeft() <= 0)
+				{
+					winnerID = commonData.getTimeVictor();
+					
+					PacketMessage declareWinner = new PacketMessage();
+					declareWinner.type = EventType.WINNER;
+					declareWinner.playerID = winnerID;
+					network.broadcastToPlayers(declareWinner);
+				}
 			}
 			break;
 		case LEAVE:
@@ -192,7 +204,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 		
 		initializeMarket();
 		
-		commonData.running = true;
+		commonData.startGame();
 		
 		PacketMessage setupDone = new PacketMessage();
 		setupDone.type = EventType.SETUP_DONE;
@@ -605,7 +617,6 @@ public class PeaceGameServer extends ApplicationAdapter {
 				Attribute.IMMOBILIZED, p.getPlayerID());
 		for (Integer i : immobilized)
 		{
-			System.out.println("Got tileID: " + i); // TODO: remove
 			PeaceEntity e = commonData.getTile(i).getE();
 			e.getAttributes().removeValue(Attribute.IMMOBILIZED, true);
 			

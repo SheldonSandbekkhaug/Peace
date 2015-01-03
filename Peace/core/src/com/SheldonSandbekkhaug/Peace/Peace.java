@@ -62,7 +62,7 @@ public class Peace extends Game {
 			System.out.println("Received playerID: " + playerID); // TODO: remove
 			break;
 		case SETUP_DONE: // Server is done setting up
-			commonData.running = true;
+			commonData.startGame();
 			break;
 		case NEXT_TURN: // End turn and go to next Player
 			commonData.nextTurn();

@@ -212,6 +212,9 @@ public class MainGameScreen implements Screen {
 			font.draw(batch,
 					"Player " + game.commonData.getActivePlayerID() + "'s turn",
 					100, 80);
+			font.draw(batch,
+					"Turns left: " + game.commonData.getTurnsLeft(),
+					100, 60);
 			
 			handleMouseInput();
 			handleKeyInput();
