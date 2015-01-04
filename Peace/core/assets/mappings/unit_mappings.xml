@@ -182,9 +182,8 @@
         <name>Sharpshooter 1</name>
         <strength>1</strength>
         <hp>6</hp>
-        <cost>4</cost>
+        <cost>3</cost>
         <img>SNIPER_1.png</img>
-        <attribute>FIRST_STRIKE</attribute>
     </unit>
     <unit>
         <id>SNIPER_1</id>
@@ -194,7 +193,6 @@
         <cost>3</cost>
         <img>SNIPER_1.png</img>
         <attribute>DEFENDER</attribute>
-        <attribute>FIRST_STRIKE</attribute>
     </unit>
     <unit>
         <id>SOLDIER_0</id>
