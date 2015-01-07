@@ -133,14 +133,6 @@ public class MainGameScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		camera.update();
 		
-		// TODO: Move this functionality to a menu
-		if (game.startRequested == false)
-		{
-			if (Gdx.input.isKeyPressed(Keys.S)) {
-				game.requestStartGame(); // Request to start the game
-			}
-		}
-		
 		batch.begin();
 		
 		game.processEvents();

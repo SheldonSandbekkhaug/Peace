@@ -7,7 +7,6 @@ public class Peace extends Game {
 	CommonData commonData;
 	private PeaceNetworkClient network;
 	int playerID; // The user's playerID
-	boolean startRequested = false; // Requested to start the game
 	
 	@Override
 	public void create () {
@@ -18,10 +17,9 @@ public class Peace extends Game {
 	/* Start a new game.
 	 * ipAddr is the IP address of the server to connect to.
 	 */
-	public void newGame(String ipAddr)
+	public void setUpNewGame()
 	{
 		commonData = new CommonData(true);
-		connectToServer(ipAddr);
 	}
 	
 	/* Connect to a game server */
@@ -37,6 +35,16 @@ public class Peace extends Game {
 		PacketMessage pm = new PacketMessage(playerName); // Player name
 		pm.type = EventType.JOIN;
 		network.sendToServer(pm, -1);
+	}
+	
+	/* Return true if the client is connected to the server,
+	 * false otherwise.
+	 */
+	public boolean isConnected()
+	{
+		if (network != null)
+			return true;
+		return false;
 	}
 	
 	/* Process game events */
@@ -62,6 +70,13 @@ public class Peace extends Game {
 			System.out.println("Received playerID: " + playerID); // TODO: remove
 			break;
 		case SETUP_DONE: // Server is done setting up
+			// Change screens to the Main Game Screen
+			if (this.getScreen() instanceof LobbyScreen)
+			{
+				LobbyScreen ls = (LobbyScreen) this.getScreen();
+				this.setScreen(new MainGameScreen(this));
+				ls.dispose();
+	        }
 			commonData.startGame();
 			break;
 		case NEXT_TURN: // End turn and go to next Player
@@ -70,7 +85,6 @@ public class Peace extends Game {
 		case WINNER: // A Player won the game
 			// Return to Lobby. TODO: more sophisticated behavior
 			this.setScreen(new LobbyScreen(this));
-			startRequested = false;
 			
 			// Leave the server
 			PacketMessage leaveMessage = new PacketMessage();
@@ -130,17 +144,12 @@ public class Peace extends Game {
 	/* Request the server to start the game. */
 	public void requestStartGame()
 	{
-		if (startRequested == false)
-		{
-			// Start the game with the specified skin
-			PacketMessage pm = new PacketMessage(commonData.skin);
-			pm.type = EventType.START;
-			network.sendToServer(pm, playerID);
-			
-			// TODO: wait for some other condition to start the game
-			System.out.println("Client asked to start the game");
-			startRequested = true;
-		}
+		// Start the game with the specified skin
+		PacketMessage pm = new PacketMessage(commonData.skin);
+		pm.type = EventType.START;
+		network.sendToServer(pm, playerID);
+		
+		System.out.println("Client asked to start the game");
 	}
 	
 	/*

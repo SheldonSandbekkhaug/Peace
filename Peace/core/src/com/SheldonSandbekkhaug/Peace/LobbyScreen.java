@@ -116,14 +116,16 @@ public class LobbyScreen implements Screen {
 				playerListTable.setVisible(true);
 				serverIPField.setVisible(false);
 				connectButton.setVisible(false);
+				
+				// Set up the game in anticipation of starting
+				setUpNewGame();
 			}
         });
         
         startGameButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				// Start Peace
-		        startGame();
+		        startGame(); // Start Peace
 			}
         });
 	}
@@ -138,25 +140,34 @@ public class LobbyScreen implements Screen {
 
         batch.begin();
         
+        // Required for switching to Main Game Screen
+        if (game.isConnected())
+        {
+        	game.processEvents();
+		}
+        
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
         
         batch.end();
 	}
 	
+	public void setUpNewGame()
+	{
+		game.setUpNewGame();
+		
+		String serverIP = serverIPField.getText();
+        
+        // Use the server IP to connect to the server
+        game.connectToServer(serverIP);
+        
+        // TODO: error handling
+	}
+	
 	/* Connect to the server to play the game. */
 	public void startGame()
 	{
-		String serverIP = serverIPField.getText();
-        System.out.println("server IP: " + serverIP);
-        
-        // Use the server IP to connect to the server
-        game.newGame(serverIP);
-        
-        // TODO: error handling
-        
-		game.setScreen(new MainGameScreen(game));
-        dispose();
+        game.requestStartGame();
 	}
 
 	@Override
@@ -190,5 +201,4 @@ public class LobbyScreen implements Screen {
 		stage.dispose();
 		skin.dispose();
 	}
-
 }
