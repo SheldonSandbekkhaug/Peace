@@ -189,10 +189,9 @@
         <id>SNIPER_1</id>
         <name>Sniper 1</name>
         <strength>1</strength>
-        <hp>3</hp>
-        <cost>3</cost>
+        <hp>4</hp>
+        <cost>2</cost>
         <img>SNIPER_1.png</img>
-        <attribute>DEFENDER</attribute>
     </unit>
     <unit>
         <id>SOLDIER_0</id>
