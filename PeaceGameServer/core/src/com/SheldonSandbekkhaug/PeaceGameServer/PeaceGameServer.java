@@ -554,13 +554,18 @@ public class PeaceGameServer extends ApplicationAdapter {
 		PeaceEntity attacker = commonData.getTile(srcTileID).getE();
 		PeaceEntity defender = commonData.getTile(targetTileID).getE();
 		
-		// Apply IMMOBILIZED if the attacker immobilizes during attacks
-		if (attacker.hasAttribute(Attribute.IMMOBILIZE_ON_ATTACK) &&
-				defender instanceof Unit)
+		for (Attribute a : attacker.getAttributes())
 		{
-			defender.addAttribute(Attribute.IMMOBILIZED);
-			broadcastUpdateEntityAttribute(targetTileID, Attribute.IMMOBILIZED,
-				PacketMessage.ADD);
+			if (a == Attribute.IMMOBILIZE_ON_ATTACK)
+			{
+				// Apply IMMOBILIZED
+				if (defender instanceof Unit)
+				{
+					defender.addAttribute(Attribute.IMMOBILIZED);
+					broadcastUpdateEntityAttribute(targetTileID, 
+							Attribute.IMMOBILIZED, PacketMessage.ADD);
+				}
+			}
 		}
 	}
 	
