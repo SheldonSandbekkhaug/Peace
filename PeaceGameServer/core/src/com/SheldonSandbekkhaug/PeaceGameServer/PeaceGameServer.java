@@ -361,6 +361,8 @@ public class PeaceGameServer extends ApplicationAdapter {
 		broadcastUpdateEntity(srcTileID, "currActions",
 				attacker.getCurrActions());
 		
+		triggerOnAttackEffects(srcTileID, targetTileID);
+		
 		// Resolve first strike before normal combat
 		boolean attackerFirstStrike = 
 			attacker.hasAttribute(Attribute.FIRST_STRIKE);
@@ -407,15 +409,6 @@ public class PeaceGameServer extends ApplicationAdapter {
 			
 			damageEntity(defenderUnit, attacker, false);
 			checkAndHandleDeath(attacker, srcTileID);
-		}
-		
-		// Apply IMMOBILIZED if the attacker immobilizes during attacks
-		if (attacker.hasAttribute(Attribute.IMMOBILIZE_ON_ATTACK) &&
-				defender instanceof Unit)
-		{
-			defender.addAttribute(Attribute.IMMOBILIZED);
-			broadcastUpdateEntityAttribute(targetTileID, Attribute.IMMOBILIZED,
-				PacketMessage.ADD);
 		}
 		
 		if(checkAndHandleDeath(defender, targetTileID) &&
@@ -551,6 +544,24 @@ public class PeaceGameServer extends ApplicationAdapter {
 		moneyUpdate.playerID = playerID;
 		moneyUpdate.number = newVal;
 		network.broadcastToPlayers(moneyUpdate);
+	}
+	
+	/* Handle all effects that are triggered when the Entity at srcID attacks
+	 * the Entity at destID.
+	 */
+	private void triggerOnAttackEffects(int srcTileID, int targetTileID)
+	{
+		PeaceEntity attacker = commonData.getTile(srcTileID).getE();
+		PeaceEntity defender = commonData.getTile(targetTileID).getE();
+		
+		// Apply IMMOBILIZED if the attacker immobilizes during attacks
+		if (attacker.hasAttribute(Attribute.IMMOBILIZE_ON_ATTACK) &&
+				defender instanceof Unit)
+		{
+			defender.addAttribute(Attribute.IMMOBILIZED);
+			broadcastUpdateEntityAttribute(targetTileID, Attribute.IMMOBILIZED,
+				PacketMessage.ADD);
+		}
 	}
 	
 	/* Update all Entities that are affected by the entrance of the Entity at 
