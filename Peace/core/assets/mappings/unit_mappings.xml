@@ -17,6 +17,15 @@
         <img>ASSASSIN_1.png</img>
     </unit>
     <unit>
+        <id>BANDIT_1</id>
+        <name>Bandit</name>
+        <strength>1</strength>
+        <hp>3</hp>
+        <cost>2</cost>
+        <img>ASSASSIN_1.png</img>
+        <attribute>STEAL_ON_ATTACK</attribute>
+    </unit>
+    <unit>
         <id>BLASTMASTER_1</id>
         <name>Blastmaster 1</name>
         <strength>4</strength>

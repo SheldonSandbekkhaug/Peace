@@ -11,7 +11,8 @@ public enum Attribute {
 	NORMAL,
 	MINE,
 	PIERCING,
-	RAIDER;
+	RAIDER,
+	STEAL_ON_ATTACK;
 	
 	/* Return a nicely-formatted String for this attribute. */
 	public String toUIString()
@@ -40,6 +41,8 @@ public enum Attribute {
 			return "Piercing";
 		case RAIDER:
 			return "Raider";
+		case STEAL_ON_ATTACK:
+			return "Steal on attack";
 		default:
 			return "Default Attribute";
 		}

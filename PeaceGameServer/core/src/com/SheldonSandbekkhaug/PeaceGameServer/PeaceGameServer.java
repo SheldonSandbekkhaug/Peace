@@ -556,8 +556,9 @@ public class PeaceGameServer extends ApplicationAdapter {
 		
 		for (Attribute a : attacker.getAttributes())
 		{
-			if (a == Attribute.IMMOBILIZE_ON_ATTACK)
+			switch(a)
 			{
+			case IMMOBILIZE_ON_ATTACK:
 				// Apply IMMOBILIZED
 				if (defender instanceof Unit)
 				{
@@ -565,6 +566,16 @@ public class PeaceGameServer extends ApplicationAdapter {
 					broadcastUpdateEntityAttribute(targetTileID, 
 							Attribute.IMMOBILIZED, PacketMessage.ADD);
 				}
+				break;
+			case STEAL_ON_ATTACK:
+				// Gain 1 unit of money
+				int pid = attacker.getOwner();
+				Player p = commonData.players.get(pid);
+				p.setMoney(p.getMoney() + 1);
+				broadcastUpdatePlayerMoney(p.getMoney(), pid);
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -579,15 +590,16 @@ public class PeaceGameServer extends ApplicationAdapter {
 		
 		for (Attribute a : e.getAttributes())
 		{
-			if (a == Attribute.FORGE)
+			switch(a)
 			{
+			case FORGE:
+				// Forges gain +1 income for every mine
 				Structure forge = (Structure)e;
 				forge.setIncome(forge.getIncome() +
 						commonData.countAttributes(Attribute.MINE));
 				broadcastUpdateEntity(tileID, "income", forge.getIncome());
-			}
-			else if (a == Attribute.HEAL_ON_ENTER)
-			{
+			break;
+			case HEAL_ON_ENTER:
 				// Heal all friendly Units 1 HP
 				Location loc = t.getLocation();
 				for (Tile tile : loc.getTiles())
@@ -601,11 +613,13 @@ public class PeaceGameServer extends ApplicationAdapter {
 								target.getCurrHP());
 					}
 				}
-			}
-			else if (a == Attribute.MINE)
-			{
-			// Forges gain +1 income for every mine
-			updateIncomeByAttribute(Attribute.FORGE, 1);
+			break;
+			case MINE:
+				// Forges gain +1 income for every mine
+				updateIncomeByAttribute(Attribute.FORGE, 1);
+			break;
+			default:
+				break;
 			}
 		}
 	}
@@ -618,10 +632,17 @@ public class PeaceGameServer extends ApplicationAdapter {
 		Tile t = commonData.getTile(tileID);
 		PeaceEntity e = t.getE();
 		
-		if (e.hasAttribute(Attribute.MINE))
+		for (Attribute a : e.getAttributes())
 		{
-			// Forges gain +1 income for every mine
-			updateIncomeByAttribute(Attribute.FORGE, -1);
+			switch(a)
+			{
+			case MINE:
+				// Forges gain +1 income for every mine
+				updateIncomeByAttribute(Attribute.FORGE, -1);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	
