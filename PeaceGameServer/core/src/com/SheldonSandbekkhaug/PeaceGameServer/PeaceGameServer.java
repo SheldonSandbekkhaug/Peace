@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.SheldonSandbekkhaug.Peace.Attribute;
 import com.SheldonSandbekkhaug.Peace.CommonData;
 import com.SheldonSandbekkhaug.Peace.EventType;
+import com.SheldonSandbekkhaug.Peace.GameStateType;
 import com.SheldonSandbekkhaug.Peace.Location;
 import com.SheldonSandbekkhaug.Peace.PacketMessage;
 import com.SheldonSandbekkhaug.Peace.PeaceEntity;
@@ -130,6 +131,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 				declareWinner.type = EventType.WINNER;
 				declareWinner.playerID = winnerID;
 				network.broadcastToPlayers(declareWinner);
+				commonData.setGameStateType(GameStateType.POST_GAME);
 			}
 			else
 			{
@@ -145,6 +147,7 @@ public class PeaceGameServer extends ApplicationAdapter {
 					declareWinner.type = EventType.WINNER;
 					declareWinner.playerID = winnerID;
 					network.broadcastToPlayers(declareWinner);
+					commonData.setGameStateType(GameStateType.POST_GAME);
 				}
 			}
 			break;

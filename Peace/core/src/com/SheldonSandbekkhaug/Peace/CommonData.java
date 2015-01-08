@@ -28,8 +28,9 @@ public class CommonData {
 	// Maximum amount of human players that Peace can support at this time
 	public static final int MAX_USERS = MAX_PLAYERS - 1;
 	
-	public boolean running = false; // True if the game is running
+	private GameStateType gameStateType = GameStateType.PRE_GAME;
 	private int turnsLeft; // Turns remaining before the game ends
+	private int playerAboutToWin = -1; // ID of player about to win
 	
 	// Default number of turns in a game
 	private static final int DEFAULT_TURNS_PER_PLAYER = 15;
@@ -44,6 +45,7 @@ public class CommonData {
 		skin = "default_1.0";
 		players = new ArrayList<Player>();
 		activePlayerID = 1;
+		gameStateType = GameStateType.PRE_GAME;
 		
 		availableForMarket = new HashMap<String, PeaceEntity>();
 		
@@ -58,7 +60,7 @@ public class CommonData {
 	/* Called when the game actually starts. */
 	public void startGame()
 	{
-		running = true;
+		gameStateType = GameStateType.RUNNING;
 		turnsLeft = DEFAULT_TURNS_PER_PLAYER * (players.size() - 1);
 	}
 	
@@ -119,6 +121,14 @@ public class CommonData {
 	/* Put units in the game for testing purposes. */
 	public void defaultTestSetup()
 	{
+		// TODO: Remove this block. Used for testing new Units in dev.
+		/*Unit tg = units.get("BANDIT_1").clone();
+		tg.setOwner(1);
+		Location l = locations.get(1);
+		Tile tile = l.getTiles()[Location.N];
+		tile.setE(tg);
+		*/
+		
 		// TODO: remove test Units
 		// Create Units for testing and place them in a Location
 		for (int i = 0; i < 5; i++)
@@ -379,7 +389,8 @@ public class CommonData {
 	 * Returns -1 if no Player has won.
 	 * 
 	 * The win condition: A Player controls an Entity on the center Tile in
-	 * three out of the five major Locations.
+	 * three out of the five major Locations at the end of two of their
+	 * consecutive turns.
 	 */
 	public int checkNormalVictoryCondition()
 	{
@@ -397,13 +408,18 @@ public class CommonData {
 		
 		for (int i = 0; i < centersControlled.length; i++)
 		{
+			// NEUTRAL cannot win the game
 			if (i != Player.NEUTRAL && centersControlled[i] >= 3)
 			{
-				// NEUTRAL cannot win the game
-				return i;
+				if (playerAboutToWin == i && activePlayerID == i)
+					return i;
+				
+				playerAboutToWin = i;
+				return -1;
 			}
 		}
 	
+		playerAboutToWin = -1;
 		return -1;
 	}
 	
@@ -500,5 +516,13 @@ public class CommonData {
 		}
 		
 		return maxIndex;
+	}
+
+	public GameStateType getGameStateType() {
+		return gameStateType;
+	}
+
+	public void setGameStateType(GameStateType gameStateType) {
+		this.gameStateType = gameStateType;
 	}
 }

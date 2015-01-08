@@ -37,6 +37,17 @@ public class Peace extends Game {
 		network.sendToServer(pm, -1);
 	}
 	
+	/* Disconnect from the game server that we are currently connected to. */
+	public void disconnectFromServer()
+	{
+		this.setScreen(new LobbyScreen(this));
+		
+		// Leave the server
+		PacketMessage leaveMessage = new PacketMessage();
+		leaveMessage.type = EventType.LEAVE;
+		network.sendToServer(leaveMessage, playerID);
+	}
+	
 	/* Return true if the client is connected to the server,
 	 * false otherwise.
 	 */
@@ -83,13 +94,7 @@ public class Peace extends Game {
 			commonData.nextTurn();
 			break;
 		case WINNER: // A Player won the game
-			// Return to Lobby. TODO: more sophisticated behavior
-			this.setScreen(new LobbyScreen(this));
-			
-			// Leave the server
-			PacketMessage leaveMessage = new PacketMessage();
-			leaveMessage.type = EventType.LEAVE;
-			network.sendToServer(leaveMessage, playerID);
+			commonData.setGameStateType(GameStateType.POST_GAME);
 			
 			// Stop the game on the server
 			PacketMessage stopMessage = new PacketMessage();
