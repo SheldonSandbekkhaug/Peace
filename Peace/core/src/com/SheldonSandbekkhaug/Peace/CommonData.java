@@ -517,6 +517,16 @@ public class CommonData {
 		
 		return maxIndex;
 	}
+	
+	public int getPlayerAboutToWin()
+	{
+		return playerAboutToWin;
+	}
+	
+	public void setPlayerAboutToWin(int pid)
+	{
+		playerAboutToWin = pid;
+	}
 
 	public GameStateType getGameStateType() {
 		return gameStateType;

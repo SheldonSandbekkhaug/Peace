@@ -95,6 +95,7 @@ public class Peace extends Game {
 			break;
 		case WINNER: // A Player won the game
 			commonData.setGameStateType(GameStateType.POST_GAME);
+			commonData.setPlayerAboutToWin(pm.playerID);
 			
 			// Stop the game on the server
 			PacketMessage stopMessage = new PacketMessage();
